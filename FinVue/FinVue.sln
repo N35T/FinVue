@@ -5,6 +5,8 @@ VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinVue.Core", "FinVue.Core\FinVue.Core.csproj", "{83A42054-BE79-457B-A5D0-D3DD17D7015C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinVue.Web", "FinVue.Web\FinVue.Web.csproj", "{032C9BE9-3620-4583-8D26-212185C559DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{83A42054-BE79-457B-A5D0-D3DD17D7015C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83A42054-BE79-457B-A5D0-D3DD17D7015C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83A42054-BE79-457B-A5D0-D3DD17D7015C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{032C9BE9-3620-4583-8D26-212185C559DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{032C9BE9-3620-4583-8D26-212185C559DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{032C9BE9-3620-4583-8D26-212185C559DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{032C9BE9-3620-4583-8D26-212185C559DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
