@@ -1,13 +1,15 @@
-﻿namespace FinVue.Core.Entities
-{
-    public class Category
-    {
-        string Id { get; set; }
-        string Name { get; set; }
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-        public Category(string id, string name) {
-            Id = id;
-            Name = name;
-        }
+namespace FinVue.Core.Entities;
+public class Category {
+    public string Id { get; set; }
+    public string Name { get; set; }
+    
+    public Color CategoryColor { get; set; }
+    
+    public Category(string id, string name, Color color) {
+        Id = id;
+        Name = name;
+        CategoryColor = color;
     }
 }

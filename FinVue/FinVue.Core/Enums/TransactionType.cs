@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FinVue.Core.Enums {
-    public enum TransactionType {
-        Income, Outcome
-    }
+﻿namespace FinVue.Core.Enums;
+public enum TransactionType {
+    Income, Outcome
 }
