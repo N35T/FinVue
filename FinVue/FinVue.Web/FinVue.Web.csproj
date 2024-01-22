@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\FinVue.Core\FinVue.Core.csproj" />
+      <ProjectReference Include="..\FinVue.Data\FinVue.Data.csproj" />
     </ItemGroup>
 
 </Project>

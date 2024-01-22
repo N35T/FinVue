@@ -14,4 +14,13 @@ public static class DependencyInjection {
 
         return services;
     }
+    
+    public static async Task EnsureDatabaseOnStartupAsync(this IServiceScope scope, bool isDevelopment) {
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        await db.Database.EnsureCreatedAsync();
+
+        if (isDevelopment) {
+          //  await SeedDatabaseAsync(scope);
+        }
+    }
 }

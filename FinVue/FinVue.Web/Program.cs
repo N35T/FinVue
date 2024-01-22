@@ -1,3 +1,4 @@
+using FinVue.Data;
 using FinVue.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,7 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddDataServices(builder.Configuration);
+
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope()) {
+    await scope.EnsureDatabaseOnStartupAsync(app.Environment.IsDevelopment());
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment()) {
