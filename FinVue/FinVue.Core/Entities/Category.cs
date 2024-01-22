@@ -6,6 +6,8 @@ public class Category {
     public string Name { get; set; }
     
     public Color CategoryColor { get; set; }
+
+    public Category(string id, string name) : this(id, name, new Color(129, 169, 117, 255)) { }
     
     public Category(string id, string name, Color color) {
         Id = id;

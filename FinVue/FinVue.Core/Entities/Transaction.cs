@@ -4,8 +4,20 @@ namespace FinVue.Core.Entities;
 public class Transaction {
     public string Id { get; set; }
     public string Name { get; set; }
-    public int ValueInCent { get; set; }
-    public DateTime CreationDate { get; set; }
+    
+    private int _valueInCent;
+    public int ValueInCent {
+        get => _valueInCent;
+        set {
+            if (value < 0) {
+                throw new ArgumentException("Value can't be less than 0");
+            }
+
+            _valueInCent = value;
+        }
+    }
+    
+    public DateTime CreationDate { get; set; } = DateTime.Now;
     public DateOnly PayDate { get; set; }
     public TransactionType Type { get; set; }
     public PaymentMethod PaymentMethod { get; set; }
@@ -13,11 +25,10 @@ public class Transaction {
     public User PayingUser { get; set; }
     public Category Category { get; set; }
     
-    public Transaction(string id, string name, int valueInCent, DateTime creationDate, DateOnly payDate, TransactionType type, PaymentMethod paymentMethod, User creationUser, User payingUser, Category category) {
+    public Transaction(string id, string name, int valueInCent, DateOnly payDate, TransactionType type, PaymentMethod paymentMethod, User creationUser, User payingUser, Category category) {
         Id = id;
         Name = name;
         ValueInCent = valueInCent;
-        CreationDate = creationDate;
         PayDate = payDate;
         Type = type;
         PaymentMethod = paymentMethod;
