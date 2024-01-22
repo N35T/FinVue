@@ -31,14 +31,17 @@ public class RecurringTransaction {
 
     public TransactionType Type { get; set; }
     
+    public Category Category { get; set; }
+    
     public ICollection<Transaction> Transactions { get; private init; }
 
-    public RecurringTransaction(string id, string name, int valueInCent, int monthFrequency, TransactionType type) {
+    public RecurringTransaction(string id, string name, int valueInCent, int monthFrequency, TransactionType type, Category category) {
         Transactions = new List<Transaction>();
         Id = id;
         Name = name;
         ValueInCent = valueInCent;
         MonthFrequency = monthFrequency;
         Type = type;
+        Category = category;
     }
 }

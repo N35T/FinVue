@@ -19,4 +19,16 @@ public struct Color {
     public Color(byte red, byte green, byte blue, byte alpha) {
         _rgbaColor = red << 3 * 8 | green << 2 * 8 | blue << 8 | alpha;
     }
+
+    private Color(int rgba) {
+        _rgbaColor = rgba;
+    }
+
+    public int ToDto() {
+        return _rgbaColor;
+    }
+
+    public static Color FromDto(int dto) {
+        return new Color(dto);
+    }
 }
