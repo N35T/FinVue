@@ -21,9 +21,9 @@ public class Transaction {
     public DateOnly PayDate { get; set; }
     public TransactionType Type { get; set; }
     public PaymentMethod PaymentMethod { get; set; }
-    public User CreationUser { get; set; }
+    public User? CreationUser { get; set; }
     public User PayingUser { get; set; }
-    public Category Category { get; set; }
+    public Category? Category { get; set; }
     
     public Transaction(string id, string name, int valueInCent, DateOnly payDate, TransactionType type, PaymentMethod paymentMethod, User creationUser, User payingUser, Category category) {
         Id = id;

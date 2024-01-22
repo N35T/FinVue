@@ -36,14 +36,14 @@ internal class ApplicationDbContext : DbContext {
         modelBuilder.Entity<Transaction>()
             .HasOne(e => e.Category)
             .WithMany(e => e.Transactions)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
 
         modelBuilder.Entity<Transaction>()
             .HasOne(e => e.CreationUser)
             .WithMany()
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
 
         modelBuilder.Entity<Transaction>()
             .HasOne(e => e.PayingUser)
@@ -54,8 +54,8 @@ internal class ApplicationDbContext : DbContext {
         modelBuilder.Entity<RecurringTransaction>()
             .HasOne(e => e.Category)
             .WithMany()
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 
     private static void ConfigureUser(EntityTypeBuilder<User> user) {

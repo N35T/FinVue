@@ -31,7 +31,7 @@ public class RecurringTransaction {
 
     public TransactionType Type { get; set; }
     
-    public Category Category { get; set; }
+    public Category? Category { get; set; }
     
     public ICollection<Transaction> Transactions { get; private init; }
 
