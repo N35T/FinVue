@@ -15,4 +15,6 @@ public class Category {
         Name = name;
         CategoryColor = color;
     }
+    
+    private Category() {}
 }

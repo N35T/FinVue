@@ -36,4 +36,6 @@ public class Transaction {
         PayingUser = payingUser;
         Category = category;
     }
+    
+    private Transaction() {}
 }

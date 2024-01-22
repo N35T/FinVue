@@ -44,4 +44,6 @@ public class RecurringTransaction {
         Type = type;
         Category = category;
     }
+    
+    private RecurringTransaction() {}
 }

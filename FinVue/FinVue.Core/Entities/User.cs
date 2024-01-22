@@ -7,4 +7,6 @@ public class User {
         Id = id;
         Username = username;
     }
+    
+    private User() {}
 }
