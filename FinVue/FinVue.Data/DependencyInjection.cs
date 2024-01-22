@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FinVue.Data.Seeding;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,7 +21,8 @@ public static class DependencyInjection {
         await db.Database.EnsureCreatedAsync();
 
         if (isDevelopment) {
-          //  await SeedDatabaseAsync(scope);
+            var dbSeeding = new DatabaseSeeding(db);
+            await dbSeeding.SeedAsync();
         }
     }
 }
