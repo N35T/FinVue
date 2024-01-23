@@ -35,7 +35,7 @@ public class RecurringTransaction {
     
     public Category? Category { get; set; }
     
-    public ICollection<Transaction> Transactions { get; private init; }
+    public List<Transaction> Transactions { get; private init; }
 
     public RecurringTransaction(string id, string name, int valueInCent, int monthFrequency, Month nextExecute, TransactionType type, Category category) {
         Transactions = new List<Transaction>();
