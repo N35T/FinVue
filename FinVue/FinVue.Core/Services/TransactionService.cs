@@ -1,6 +1,8 @@
 ﻿using FinVue.Core.Entities;
+using FinVue.Core.Enums;
 using FinVue.Core.Exceptions;
 using FinVue.Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace FinVue.Core.Services;
 public class TransactionService {
@@ -14,8 +16,29 @@ public class TransactionService {
         return await _dbContext.Transactions.FindAsync(transactionId);
     }
 
-    public async Task<Transaction?> GetAllTransactionsFromMonthAndYearAsync(int month, int year) {
-        throw new NotImplementedException();
+    public Task<List<Transaction>> GetAllTransactionsFromMonthAndYearAsync(int month, int year) {
+        return _dbContext.Transactions
+            .Where(e => e.PayDate.Month == month && e.PayDate.Year == year)
+            .ToListAsync();
+    }
+
+    public Task<List<IGrouping<string?, Transaction>>> GetAllTransactionsFromMonthAndYearAndTypeGroupByCategoryAsync(int month, int year, TransactionType type) {
+        return _dbContext.Transactions
+            .Where(e => e.PayDate.Month == month && e.PayDate.Year == year && e.Type == type)
+            .GroupBy(e => e.CategoryId)
+            .ToListAsync();
+    }
+
+    public Task<List<Transaction>> GetAllTransactionsFromYearAndCategoryAsync(int year, string categoryId) {
+        return _dbContext.Transactions
+            .Where(e => e.CategoryId == categoryId && e.PayDate.Year == year)
+            .ToListAsync();
+    }
+
+    public Task<List<Transaction>> GetAllTransactionsFromYearAsync(int year) {
+        return _dbContext.Transactions
+            .Where(e => e.PayDate.Year == year)
+            .ToListAsync();
     }
 
     public async Task<Transaction> AddTransactionAsync(Transaction transaction) {
@@ -43,5 +66,29 @@ public class TransactionService {
             return transaction;
         }
         throw new TransactionException("Failed deleting the transaction: \n" + transaction.ToString());
+    }
+
+    public Task<int> GetTotalSumFromYearAsync(TransactionType type, int year) {
+        return _dbContext.Transactions
+            .Where(e => e.PayDate.Year == year && e.Type == type)
+            .SumAsync(e => e.ValueInCent);
+    }
+
+    public Task<int> GetTotalSumFromYearAndMonthAsync(TransactionType type, int year, int month) {
+        return _dbContext.Transactions
+            .Where(e => e.PayDate.Year == year && e.PayDate.Month == month && e.Type == type)
+            .SumAsync(e => e.ValueInCent);
+    }
+
+    public Task<int> GetTotalSumFromYearAndCategoryAsync(TransactionType type, int year, string categoryId) {
+        return _dbContext.Transactions
+            .Where(e => e.PayDate.Year == year && e.CategoryId == categoryId && e.Type == type)
+            .SumAsync(e => e.ValueInCent);
+    }
+
+    public Task<int> GetTotalSumFromYearAndMonthAndCategoryAsync(TransactionType type, int year, int month, string categoryId) {
+        return _dbContext.Transactions
+            .Where(e => e.PayDate.Year == year && e.PayDate.Month == month && e.Type == type && e.CategoryId == categoryId)
+            .SumAsync(e => e.ValueInCent);
     }
 }

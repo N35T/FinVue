@@ -37,6 +37,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext{
         modelBuilder.Entity<Transaction>()
             .HasOne(e => e.Category)
             .WithMany(e => e.Transactions)
+            .HasForeignKey(e => e.CategoryId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.SetNull);
 
@@ -57,6 +58,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext{
         modelBuilder.Entity<RecurringTransaction>()
             .HasOne(e => e.Category)
             .WithMany()
+            .HasForeignKey(e => e.CategoryId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.SetNull);
     }
