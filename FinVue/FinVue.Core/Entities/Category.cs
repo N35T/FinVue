@@ -6,7 +6,7 @@ public class Category {
     public string Name { get; set; }
     public Color CategoryColor { get; set; }
 
-    public ICollection<Transaction> Transactions { get; private init; } = new List<Transaction>();
+    public List<Transaction> Transactions { get; private init; } = new List<Transaction>();
 
     public Category(string id, string name) : this(id, name, new Color(129, 169, 117, 255)) { }
     
