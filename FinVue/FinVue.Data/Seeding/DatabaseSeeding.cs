@@ -82,11 +82,11 @@ public class DatabaseSeeding {
 
     private Task SeedRecurringTransactionsAsync() {
         TestRecurringTransactions = new List<RecurringTransaction> {
-            new RecurringTransaction(Guid.NewGuid().ToString(), "Miete", 44300, 1, Month.FEBUARY,
+            new RecurringTransaction(Guid.NewGuid().ToString(), "Miete", 44300, 1, Month.Febuary,
                 TransactionType.Outcome, TestCategories[1]),
-            new RecurringTransaction(Guid.NewGuid().ToString(), "Gehalt", 500000, 1, Month.FEBUARY,
+            new RecurringTransaction(Guid.NewGuid().ToString(), "Gehalt", 500000, 1, Month.Febuary,
                 TransactionType.Income, TestCategories[2]),
-            new RecurringTransaction(Guid.NewGuid().ToString(), "Autoversicherung", 200000, 1, Month.JANUARY,
+            new RecurringTransaction(Guid.NewGuid().ToString(), "Autoversicherung", 200000, 1, Month.January,
                 TransactionType.Outcome, TestCategories[3]),
         };
         

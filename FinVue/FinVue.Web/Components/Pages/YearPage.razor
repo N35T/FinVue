@@ -1,0 +1,14 @@
+﻿@page "/"
+@page "/year"
+@page "/year/{Year:int}"
+
+<PageTitle>@{Year} - Dashboard</PageTitle>
+
+<SideNav Year="@Year" />
+
+@code {
+
+    [Parameter]
+    public int Year { get; set; } = DateTime.Now.Year;
+
+}

@@ -1,0 +1,21 @@
+﻿@using Microsoft.EntityFrameworkCore.Storage.ValueConversion
+@using FinVue.Core.Enums
+
+<nav id="side-nav">
+    <NavLink href="">
+        <span>Full Year</span>
+    </NavLink>
+    @for (int i = 0; i < 12; ++i) {
+        <NavLink href=@($"year/{Year}/month/{i}")>
+            <span>@(Enum.GetNames<Month>()[i])</span>
+        </NavLink>
+
+    }
+</nav>
+
+@code {
+
+    [Parameter]
+    public int Year { get; set; } 
+    
+}
