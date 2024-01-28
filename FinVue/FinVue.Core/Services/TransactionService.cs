@@ -12,7 +12,7 @@ public class TransactionService {
             _dbContext = dbContext;
     }
 
-    public async Task<Transaction?> GetTransactionAsync(string transactionId) {
+    public async Task<Transaction?> GetTransactionFromIdAsync(string transactionId) {
         return await _dbContext.Transactions.FindAsync(transactionId);
     }
 
@@ -25,6 +25,7 @@ public class TransactionService {
     public Task<List<IGrouping<string?, Transaction>>> GetAllTransactionsFromMonthAndYearAndTypeGroupByCategoryAsync(int month, int year, TransactionType type) {
         return _dbContext.Transactions
             .Where(e => e.PayDate.Month == month && e.PayDate.Year == year && e.Type == type)
+            .OrderBy(e => e.PayDate)
             .GroupBy(e => e.CategoryId)
             .ToListAsync();
     }
@@ -53,7 +54,7 @@ public class TransactionService {
     }
 
     public async Task<Transaction> DeleteTransactionAsync(string transactionId) {
-        var transaction = await GetTransactionAsync(transactionId);
+        var transaction = await GetTransactionFromIdAsync(transactionId);
 
         if (transaction is null) { 
             throw new TransactionException("Failed deleting the transaction: \n" + transactionId);
@@ -66,6 +67,27 @@ public class TransactionService {
             return transaction;
         }
         throw new TransactionException("Failed deleting the transaction: \n" + transaction.ToString());
+    }
+
+    public async Task<Transaction> ChangeCategorieFromTransactionAsync(string transactionId, string categoryId) {
+        var transaction = await GetTransactionFromIdAsync(transactionId);
+        var category = await _dbContext.Categories.FindAsync(categoryId);
+
+        if (transaction is null) {
+            throw new TransactionException("Failed changing the transaction: \n" + transactionId);
+        }
+        if(category is null) {
+            throw new TransactionException("Couldn't find category with the id: \n" + categoryId);
+        }
+
+        transaction.Category = category;
+        transaction.CategoryId = categoryId;
+
+        var changedRows = await _dbContext.SaveChangesAsync();
+        if (changedRows > 0) {
+            return transaction;
+        }
+        throw new TransactionException("Failed changing the transaction: \n" + transaction.ToString());
     }
 
     public Task<int> GetTotalSumFromYearAsync(TransactionType type, int year) {
