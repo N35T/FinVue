@@ -1,15 +1,18 @@
-﻿@using Microsoft.EntityFrameworkCore.Storage.ValueConversion
-@using FinVue.Core.Enums
+﻿@using FinVue.Core.Enums
 
-<nav id="side-nav">
-    <NavLink href="">
-        <span>Full Year</span>
-    </NavLink>
-    @for (int i = 0; i < 12; ++i) {
-        <NavLink href=@($"year/{Year}/month/{i}")>
-            <span>@(Enum.GetNames<Month>()[i])</span>
+<nav class="back2" id="side-nav">
+    <div class="block">
+        <NavLink class="no-link-design" href="@BuildLink(-1)">
+            <span class="@(Month == null ? "color-primary" : "")">Full Year</span>
         </NavLink>
-
+    </div>
+    @for (int i = 0; i < 12; i++) {
+        var monthIndex = i;
+        <div class="block">
+            <NavLink class="no-link-design" href="@BuildLink(monthIndex)">
+                <span class="@GetMonthClasses(monthIndex)">@GetMonthName(monthIndex)</span>
+            </NavLink>
+        </div>
     }
 </nav>
 
@@ -18,4 +21,28 @@
     [Parameter]
     public int Year { get; set; } 
     
+    [Parameter]
+    public int? Month { get; set; }
+
+    private string GetMonthName(int monthIndex) {
+        return Enum.GetNames<Month>()[monthIndex];
+    }
+
+    private string GetMonthClasses(int monthIndex) {
+        var classList = "";
+        if (Year == DateTime.Now.Year && monthIndex > DateTime.Now.Month - 1) {
+            classList += "low-opac";
+        }
+        if (Month != null && monthIndex == Month) {
+            classList += " color-primary";
+        }
+        return classList;
+    }
+    
+    private string BuildLink(int monthIndex) {
+        if (monthIndex == -1) {
+            return "/year/" + Year;
+        }
+        return "/year/" + Year + "/month/" + monthIndex;
+    }
 }

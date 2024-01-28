@@ -1,3 +1,25 @@
-﻿#side-nav {
-    background-color: blue;
+﻿.block {
+    display:block;
+}
+
+span {
+    font-size: var(--font-size--medium);
+}
+
+nav {
+    padding-inline: 1em;
+}
+
+nav > div {
+    margin-top: 1.2em;
+    margin-left: 1.2em;
+    
+}
+
+nav > :first-child {
+    margin-bottom: 2em;
+}
+
+nav > :first-child span {
+    font-size: var(--font-size--large-heading);
 }
