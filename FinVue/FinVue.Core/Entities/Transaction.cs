@@ -22,9 +22,12 @@ public class Transaction {
     public TransactionType Type { get; set; }
     public PaymentMethod PaymentMethod { get; set; }
     public User? CreationUser { get; set; }
+    public string? CreationUserId { get; set; }
     public User PayingUser { get; set; }
+    public string PayingUserId { get; set; }
     public Category? Category { get; set; }
-    
+    public string? CategoryId { get; set; }
+
     public Transaction(string id, string name, int valueInCent, DateOnly payDate, TransactionType type, PaymentMethod paymentMethod, User creationUser, User payingUser, Category category) {
         Id = id;
         Name = name;
@@ -33,8 +36,11 @@ public class Transaction {
         Type = type;
         PaymentMethod = paymentMethod;
         CreationUser = creationUser;
+        CreationUserId = creationUser?.Id;
         PayingUser = payingUser;
+        PayingUserId = payingUser.Id;
         Category = category;
+        CategoryId = category?.Id;
     }
     
     private Transaction() {}

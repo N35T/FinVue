@@ -1,4 +1,6 @@
-﻿using FinVue.Data.Seeding;
+﻿using FinVue.Core.Interfaces;
+using FinVue.Core.Services;
+using FinVue.Data.Seeding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +14,9 @@ public static class DependencyInjection {
         services.AddDbContext<ApplicationDbContext>(opt => {
             opt.UseSqlite(configuration.GetConnectionString("DefaultConnection"));
         });
+        services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
+        services.AddTransient<TransactionService>();
+        services.AddTransient<CategoryService>();
 
         return services;
     }

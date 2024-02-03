@@ -1,10 +1,11 @@
 ﻿using FinVue.Core.Entities;
+using FinVue.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FinVue.Data; 
 
-internal class ApplicationDbContext : DbContext {
+public class ApplicationDbContext : DbContext, IApplicationDbContext{
 
     public DbSet<Category> Categories { get; private set; }
     public DbSet<RecurringTransaction> RecurringTransactions { get; private set; }
@@ -36,24 +37,28 @@ internal class ApplicationDbContext : DbContext {
         modelBuilder.Entity<Transaction>()
             .HasOne(e => e.Category)
             .WithMany(e => e.Transactions)
+            .HasForeignKey(e => e.CategoryId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.SetNull);
 
         modelBuilder.Entity<Transaction>()
             .HasOne(e => e.CreationUser)
             .WithMany()
+            .HasForeignKey(e => e.CreationUserId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.SetNull);
 
         modelBuilder.Entity<Transaction>()
             .HasOne(e => e.PayingUser)
             .WithMany()
+            .HasForeignKey(e => e.PayingUserId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<RecurringTransaction>()
             .HasOne(e => e.Category)
             .WithMany()
+            .HasForeignKey(e => e.CategoryId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.SetNull);
     }
@@ -128,5 +133,9 @@ internal class ApplicationDbContext : DbContext {
             .Property(e => e.Name)
             .HasMaxLength(50)
             .IsRequired();
+    }
+
+    public Task<int> SaveChangesAsync() {
+        return base.SaveChangesAsync();
     }
 }

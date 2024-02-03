@@ -34,7 +34,8 @@ public class RecurringTransaction {
     public TransactionType Type { get; set; }
     
     public Category? Category { get; set; }
-    
+    public string? CategoryId { get; set; }
+
     public List<Transaction> Transactions { get; private init; }
 
     public RecurringTransaction(string id, string name, int valueInCent, int monthFrequency, Month nextExecute, TransactionType type, Category category) {
@@ -46,6 +47,7 @@ public class RecurringTransaction {
         NextExecute = nextExecute;
         Type = type;
         Category = category;
+        CategoryId = category?.Id;
     }
     
     private RecurringTransaction() {}
