@@ -2,6 +2,7 @@
 using FinVue.Core.Entities;
 using FinVue.Core.Exceptions;
 using FinVue.Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace FinVue.Core.Services;
 internal class CategorieService {
@@ -13,8 +14,8 @@ internal class CategorieService {
     public async Task<Category?> GetCategoryFromIdAsync(string categoryId) {
         return await _dbContext.Categories.FindAsync(categoryId);
     }
-    public List<Category> GetAllCategoriesAsync() {
-        return _dbContext.Categories.ToList();
+    public Task<List<Category>> GetAllCategoriesAsync() {
+        return _dbContext.Categories.ToListAsync();
     }
 
     public async Task<Category> AddCategoryAsync(Category category) {

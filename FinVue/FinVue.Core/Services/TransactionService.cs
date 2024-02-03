@@ -96,6 +96,14 @@ public class TransactionService {
             .SumAsync(e => e.ValueInCent);
     }
 
+    public Task<List<int>> GetTotalSumFromYearAndAllMonthsAsync(TransactionType type, int year) {
+        return _dbContext.Transactions
+            .Where(e => e.PayDate.Year == year && e.Type == type)
+            .GroupBy(e => e.PayDate.Month)
+            .Select(e => e.Sum(t => t.ValueInCent))
+            .ToListAsync();
+    }
+
     public Task<int> GetTotalSumFromYearAndMonthAsync(TransactionType type, int year, int month) {
         return _dbContext.Transactions
             .Where(e => e.PayDate.Year == year && e.PayDate.Month == month && e.Type == type)
