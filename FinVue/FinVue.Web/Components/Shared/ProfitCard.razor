@@ -1,0 +1,30 @@
+﻿<div class="profit-card back2">
+    <h3 class="profit-info">@Title</h3>
+    <h1 class="profit-value @GetColorClass(Value)">@Value</h1>
+    @if (AverageValue != null) {
+        <h3 class="profit-info low-opac">Avg. <span class="@GetColorClass(@AverageValue)">@AverageValue</span></h3>
+    }
+</div>
+
+
+@code {
+    
+    [Parameter]
+    public string Title { get; set; }
+    
+    [Parameter]
+    public string Value { get; set; }
+
+    [Parameter]
+    public bool ReverseColors { get; set; } = false;
+    
+    [Parameter]
+    public string? AverageValue { get; set; }
+
+    private string GetColorClass(string value) {
+        if (value.StartsWith("-")) {
+            return ReverseColors ? "color-primary" : "color-red";
+        }
+        return ReverseColors ? "color-red" : "color-primary";
+    }
+}
