@@ -1,0 +1,13 @@
+﻿.profit-card {
+    height: 12rem;
+    width: 20rem;
+    padding: 1em 2em; 
+}
+
+.profit-info {
+    font-size: var(--font-size--medium);
+}
+
+.profit-value {
+    font-size: var(--font-size--large);
+}

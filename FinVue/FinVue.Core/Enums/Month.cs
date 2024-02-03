@@ -1,16 +1,16 @@
 ﻿namespace FinVue.Core.Enums; 
 
 public enum Month {
-    JANUARY,
-    FEBUARY,
-    MARCH,
-    APRIL,
-    MAI,
-    JUNE,
-    JULY,
-    AUGUST,
-    SEPTEMBER,
-    OCTOBER,
-    NOVEMBER,
-    DECEMBER,
+    January,
+    Febuary,
+    March,
+    April,
+    May,
+    June,
+    July,
+    August,
+    September,
+    October,
+    November,
+    December,
 }
