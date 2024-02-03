@@ -27,6 +27,7 @@ public class Transaction {
     public string PayingUserId { get; set; }
     public Category? Category { get; set; }
     public string? CategoryId { get; set; }
+    public string? RecurringTransactionId { get; set; }
 
     public Transaction(string id, string name, int valueInCent, DateOnly payDate, TransactionType type, PaymentMethod paymentMethod, User creationUser, User payingUser, Category category) {
         Id = id;
@@ -41,7 +42,24 @@ public class Transaction {
         PayingUserId = payingUser.Id;
         Category = category;
         CategoryId = category?.Id;
+        RecurringTransactionId = null;
     }
-    
+
+    public Transaction(string id, RecurringTransaction rt, User creationUser, DateOnly payDate) {
+        Id = id;
+        Name = rt.Name;
+        ValueInCent = rt.ValueInCent;
+        PayDate = payDate;
+        Type = rt.Type;
+        PaymentMethod = PaymentMethod.Transfer;
+        CreationUser = creationUser;
+        CreationUserId = creationUser?.Id;
+        PayingUser = creationUser!;
+        PayingUserId = creationUser!.Id;
+        Category = rt.Category;
+        CategoryId = rt.Category?.Id;
+        RecurringTransactionId = rt.Id;
+    }
+
     private Transaction() {}
 }
