@@ -20,6 +20,18 @@ public struct Color {
         _rgbaColor = red << 3 * 8 | green << 2 * 8 | blue << 8 | alpha;
     }
 
+    public Color() {
+        var rng = new Random();
+        byte r = (byte)rng.Next(256);
+        byte g = (byte)rng.Next(256);
+        byte b = (byte)rng.Next(256);
+        _rgbaColor = r << 3 * 8 | g << 2 * 8 | b << 8 | (byte) 255;
+    }
+
+    public override string ToString() {
+        return Hex;
+    }
+
     private Color(int rgba) {
         _rgbaColor = rgba;
     }

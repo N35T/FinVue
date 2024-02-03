@@ -1,4 +1,5 @@
-﻿using FinVue.Core.Entities;
+﻿using FinVue.Core.DataTransferObjects;
+using FinVue.Core.Entities;
 using FinVue.Core.Enums;
 using FinVue.Core.Exceptions;
 using FinVue.Core.Interfaces;
@@ -120,5 +121,14 @@ public class TransactionService {
         return _dbContext.Transactions
             .Where(e => e.PayDate.Year == year && e.PayDate.Month == month && e.Type == type && e.CategoryId == categoryId)
             .SumAsync(e => e.ValueInCent);
+    }
+    
+    public Task<List<SumByCategoryDto>> GetTotalSumsFromYearGroupedByCategoryAsync(int year, TransactionType type) {
+        return _dbContext.Transactions
+            .Where(e => e.PayDate.Year == year && e.Type == type && e.CategoryId != null)
+            .Include(e => e.Category)
+            .GroupBy(e => e.CategoryId)
+            .Select(e => new SumByCategoryDto{ CategoryName = e.First().Category != null ? e.First().Category!.Name : "Misc",CategoryColor = e.First().Category != null ? e.First().Category!.CategoryColor : new Color(237,227,227,144),TotalSum = e.Sum(t => t.ValueInCent)})
+            .ToListAsync();
     }
 }

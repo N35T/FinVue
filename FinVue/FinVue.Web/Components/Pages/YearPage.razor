@@ -1,9 +1,15 @@
 ﻿@using FinVue.Web.Components.Layout
 @using FinVue.Web.Components.Shared
 @using Newtonsoft.Json
+@using FinVue.Core.Services
+@using FinVue.Core.Enums
+@using FinVue.Core.DataTransferObjects
+@using System.Globalization
 @page "/"
 @page "/year"
 @page "/year/{Year:int}"
+
+@inject TransactionService TransactionService
 
 <PageTitle>@Year - Dashboard</PageTitle>
 
@@ -12,23 +18,27 @@
 <section id="view-content">
     <h1 class="span-cols align-left category-select">All Categories</h1>
     <div>
-        <ProfitCard Title="Total Income" Value="25.000,24 €" AverageValue="2.000,24 €"/>
+        <ProfitCard Title="Total Income" Value="@TotalIncome" AverageValue="@AverageIncome"/>
     </div>
     <div>
-        <ProfitCard Title="Total Outcome" ReverseColors="true" Value="4.000 €" AverageValue="123 €"/>
+        <ProfitCard Title="Total Outcome" ReverseColors="true" Value="@TotalOutcome" AverageValue="@AverageOutcome"/>
     </div>
     <div>
-    <ProfitCard Title="Total Profit" Value="3.000,24 €" AverageValue="125,24 €"/>
+    <ProfitCard Title="Total Profit" Value="@TotalProfit" AverageValue="@AverageProfit"/>
     </div>
     
     
     <canvas id="profit-chart" class="span-cols back2" style="width:100%; height: 20rem"></canvas>
     
+    <canvas id="category-sums-chart" class="span-cols back2" style="width:100%; height: 20rem"></canvas>
+    
 </section>
 <script>
-const income = JSON.parse("@JsonConvert.SerializeObject(IncomeSumsPerMonth)");
-const outcome = JSON.parse("@JsonConvert.SerializeObject(OutcomeSumsPerMonth)");
+const income = JSON.parse("@JsonConvert.SerializeObject(IncomeSumsPerMonth)").map(e => e / 100);
+const outcome = JSON.parse("@JsonConvert.SerializeObject(OutcomeSumsPerMonth)").map(e => e / 100);
 const months = ["Jan", "Feb", "Mar", "May", "Apr", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"];
+
+const sumByCategory = JSON.parse("@JsonConvert.SerializeObject(OutcomeByCategory)");
 
 new Chart("profit-chart", {
   type: "line",
@@ -52,9 +62,51 @@ new Chart("profit-chart", {
     }]
   },
   options: {
-    legend: {display: true}
+    legend: {display: true},
+    scales: {
+        yAxes: [{
+            ticks: {
+                callback: function(value, index, values) {
+                    return numberToCurrency(value, true);
+                }
+            }
+        }]
+    },
+    tooltips: {
+        callbacks: {
+            label: function(tooltipItem, data) {
+                return data.datasets[tooltipItem.datasetIndex].label + ': ' + numberToCurrency(tooltipItem.yLabel);
+            }
+        }
+    }
   }
 });
+
+new Chart("category-sums-chart", {
+        type: "pie",
+        data: {
+            labels: sumByCategory.map(e => e.CategoryName),
+            datasets: [{
+            label: 'My First Dataset',
+            data: sumByCategory.map(e => e.TotalSum / 100),
+            backgroundColor: sumByCategory.map(e => "#" + e.CategoryColor.Hex),
+            hoverOffset: 4
+            }]
+        },
+        options: {
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        return data['labels'][tooltipItem['index']] + ': ' + numberToCurrency(data['datasets'][0]['data'][tooltipItem['index']]);
+                    }
+                }
+            }
+        }
+    });
+
+    function numberToCurrency(num, noComma = false) {
+        return Intl.NumberFormat('de-DE',{currency:"EUR", style:"currency", maximumFractionDigits: noComma ? 0 : 2}).format(num);
+    }
 
 </script>
 
@@ -63,40 +115,53 @@ new Chart("profit-chart", {
     [Parameter]
     public int Year { get; set; }
     
-    public double[] IncomeSumsPerMonth { get; set; }
-    public double[] OutcomeSumsPerMonth { get; set; }
+    public List<int> IncomeSumsPerMonth { get; set; }
+    public List<int> OutcomeSumsPerMonth { get; set; }
+    
+    public string TotalIncome { get; set; }
+    public string AverageIncome { get; set; }
+    
+    public string TotalOutcome { get; set; }
+    public string AverageOutcome { get; set; }
+    
+    public string TotalProfit { get; set; }
+    public string AverageProfit { get; set; }
+    
+    public List<SumByCategoryDto> OutcomeByCategory { get; set; }
 
-    protected override void OnInitialized() {
-        base.OnInitialized();
+    protected override async Task OnInitializedAsync() {
+        await base.OnInitializedAsync();
         Year = Year == 0 ? DateTime.Now.Year : Year;
-        IncomeSumsPerMonth = new[] {
-            2000.00,
-            1893.00,
-            1893.00,
-            1993.00,
-            2000.00,
-            1893.00,
-            1893.00,
-            1993.00,
-            2000.00,
-            1893.00,
-            3293.00,
-            1993.00,
-        };       
-        OutcomeSumsPerMonth = new[] {
-            534.00,
-            3485.00,
-            1094.00,
-            3552.00,
-            3316.00,
-            524.00,
-            1719.00,
-            461.00,
-            926.00,
-            875.00,
-            2695.00,
-            2501.00,
-        };
+
+        await InitializeLineGraph();
+        InitializeProfitCards();
+
+        await InitializeCakeDiagram();
+
     }
 
+    private async Task InitializeCakeDiagram() {
+        OutcomeByCategory = await TransactionService.GetTotalSumsFromYearGroupedByCategoryAsync(Year, TransactionType.Outcome);
+    }
+
+    private async Task InitializeLineGraph() {
+        IncomeSumsPerMonth = await TransactionService.GetTotalSumFromYearAndAllMonthsAsync(TransactionType.Income, Year);
+        OutcomeSumsPerMonth = await TransactionService.GetTotalSumFromYearAndAllMonthsAsync(TransactionType.Outcome, Year);
+    }
+    
+    private void InitializeProfitCards() {
+        var income = IncomeSumsPerMonth.Sum() / 100.0;
+        var outcome = OutcomeSumsPerMonth.Sum() / 100.0;
+
+        TotalIncome = income.ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
+        TotalOutcome = outcome.ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
+        TotalProfit = (income - outcome).ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
+        
+        var avgIncome = IncomeSumsPerMonth.Average() / 100.0;
+        var avgOutcome = OutcomeSumsPerMonth.Average() / 100.0;
+
+        AverageIncome = avgIncome.ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
+        AverageOutcome = avgOutcome.ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
+        AverageProfit = (avgIncome - avgOutcome).ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
+    }
 }

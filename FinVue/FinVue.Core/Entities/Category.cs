@@ -8,7 +8,7 @@ public class Category {
 
     public List<Transaction> Transactions { get; private init; } = new List<Transaction>();
 
-    public Category(string id, string name) : this(id, name, new Color(129, 169, 117, 255)) { }
+    public Category(string id, string name) : this(id, name, new Color()) { }
     
     public Category(string id, string name, Color color) {
         Id = id;
