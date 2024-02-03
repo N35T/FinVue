@@ -5,10 +5,10 @@ using FinVue.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinVue.Core.Services;
-internal class CategorieService {
+public class CategoryService {
     private readonly IApplicationDbContext _dbContext;
 
-    public CategorieService(IApplicationDbContext dbContext) {
+    public CategoryService(IApplicationDbContext dbContext) {
         _dbContext = dbContext;
     }
     public async Task<Category?> GetCategoryFromIdAsync(string categoryId) {
