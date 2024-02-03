@@ -100,6 +100,7 @@ public class TransactionService {
         return _dbContext.Transactions
             .Where(e => e.PayDate.Year == year && e.Type == type)
             .GroupBy(e => e.PayDate.Month)
+            .OrderBy(e => e.Key)
             .Select(e => e.Sum(t => t.ValueInCent))
             .ToListAsync();
     }
