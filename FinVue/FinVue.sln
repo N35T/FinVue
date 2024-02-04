@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinVue.Web", "FinVue.Web\Fi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinVue.Data", "FinVue.Data\FinVue.Data.csproj", "{E759DD8B-BB06-4D27-87B3-069345B8BE4A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinVue.Test", "FinVue.Test\FinVue.Test.csproj", "{5F8D945D-1E78-4E19-AA91-F68EB49F8CB3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{E759DD8B-BB06-4D27-87B3-069345B8BE4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E759DD8B-BB06-4D27-87B3-069345B8BE4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E759DD8B-BB06-4D27-87B3-069345B8BE4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F8D945D-1E78-4E19-AA91-F68EB49F8CB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F8D945D-1E78-4E19-AA91-F68EB49F8CB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F8D945D-1E78-4E19-AA91-F68EB49F8CB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F8D945D-1E78-4E19-AA91-F68EB49F8CB3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
