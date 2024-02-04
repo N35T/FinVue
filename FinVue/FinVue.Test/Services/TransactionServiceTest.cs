@@ -96,7 +96,7 @@ public class TransactionServiceTest : IDisposable, IAsyncDisposable {
         
         Assert.NotNull(found);
         Assert.Equal(trans, found);
-        Assert.Null(_dbContext.Transactions.Find(trans.Id));
+        Assert.Null(_dbContext.Transactions.Find(trans.Id)); 
     }
     
     [Fact]
