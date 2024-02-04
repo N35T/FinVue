@@ -75,7 +75,33 @@ public class RecurringTransactionServiceTest {
         Assert.Empty(res);
     }
     
+    [Fact]
+    public async Task RecurringTransactionService_Should_MarkRecurringTransactionAsDone() {
+        var rt = _dbContext.RecurringTransactions.First();
+        var user = _dbContext.Users.First();
+        var monthFrequency = rt.MonthFrequency;
+        var currentMonth = rt.NextExecute;
+        
+        var res = await _sut.MarkRecurringTransactionAsDone(rt.Id, DateOnly.Parse("1.1.24"), user);
+        
+        Assert.NotNull(res);
+        Assert.Equal(Enum.Parse<Month>(((int)currentMonth + monthFrequency).ToString()), rt.NextExecute);
+        Assert.Equal(1, res.PayDate.Month);
+        Assert.Equal(1, res.PayDate.Day);
+        Assert.Equal(2024, res.PayDate.Year);
+        Assert.Equal(rt.Name, res.Name);
+    }
     
+    [Fact]
+    public async Task RecurringTransactionService_Should_DeleteTransaction() {
+        var trans = _dbContext.RecurringTransactions.First();        
+        
+        var found = await _sut.DeleteRecurringTransactionFromIdAsync(trans.Id);
+        
+        Assert.NotNull(found);
+        Assert.Equal(trans, found);
+        Assert.Null(_dbContext.RecurringTransactions.Find(trans.Id));
+    }
     
     private List<RecurringTransaction> CreateTestRecurringTransactions(List<Category> cat) {
         var i = 0;
