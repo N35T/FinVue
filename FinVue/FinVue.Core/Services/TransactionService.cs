@@ -43,7 +43,7 @@ public class TransactionService {
             .ToListAsync();
     }
 
-    public async Task<Transaction> AddTransactionAsync(Transaction transaction) {
+    public virtual async Task<Transaction> AddTransactionAsync(Transaction transaction) {
         _dbContext.Transactions.Add(transaction);
         var changedRows = await _dbContext.SaveChangesAsync();
 

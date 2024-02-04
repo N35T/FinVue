@@ -9,4 +9,8 @@ public class RecurringTransactionDto : RecurringTransaction
     {
         PayedThisMonth = payedThisMonth;
     }
+
+    public RecurringTransactionDto() :base(){
+        
+    }
 }

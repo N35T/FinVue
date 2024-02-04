@@ -51,9 +51,5 @@ public class RecurringTransaction {
         CategoryId = category?.Id;
     }
     
-    private RecurringTransaction() {}
-
-    public RecurringTransactionDto ToDto(bool payedThisMonth) {
-        return new RecurringTransactionDto(this, payedThisMonth);
-    }
+    private protected RecurringTransaction() {}
 }

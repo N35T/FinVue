@@ -36,10 +36,20 @@ public class RecurringTransactionService {
         return _dbContext.RecurringTransactions.ToListAsync();
     }
     // Schauen ob es welche in diesem Monat gibt -> Liste an RT_DTO mit unbezahl und bezahlt 
-    public Task<List<RecurringTransactionDto>> GetAllRecurringTransactionsFromMonthAsync(Month month) {
+    public Task<List<RecurringTransactionDto>> GetAllRecurringTransactionsFromMonthAsync(int year, Month month) {
         var unpayed = _dbContext.RecurringTransactions
             .Where(rt => rt.NextExecute == month)
-            .Select(rt => rt.ToDto(false));
+            .Select(rt => new RecurringTransactionDto() {
+                Category = rt.Category,
+                CategoryId = rt.CategoryId,
+                Id = rt.Id,
+                NextExecute = rt.NextExecute,
+                Name = rt.Name,
+                MonthFrequency = rt.MonthFrequency,
+                Type = rt.Type,
+                ValueInCent = rt.MonthFrequency,
+                PayedThisMonth = false
+            });
 
         var payed = _dbContext.Transactions
             .Join(
@@ -49,10 +59,20 @@ public class RecurringTransactionService {
                 (t, rt) => new {RecurringTransaction = rt, Transaction = t }
             )
             .Where(t => t.Transaction.PayDate.Month == (int)month+1)
-            .Select(t => t.RecurringTransaction.ToDto(true));
+            .Select(t => new RecurringTransactionDto() {
+                Category = t.RecurringTransaction.Category,
+                CategoryId = t.RecurringTransaction.CategoryId,
+                Id = t.RecurringTransaction.Id,
+                NextExecute = t.RecurringTransaction.NextExecute,
+                Name = t.RecurringTransaction.Name,
+                MonthFrequency = t.RecurringTransaction.MonthFrequency,
+                Type = t.RecurringTransaction.Type,
+                ValueInCent = t.RecurringTransaction.MonthFrequency,
+                PayedThisMonth = true
+            });
 
         return unpayed
-            .Union(payed)
+            .Concat(payed)
             .ToListAsync();
     }
 
@@ -84,7 +104,7 @@ public class RecurringTransactionService {
     }
 
     // Delete,
-    public async Task<RecurringTransaction?> DeleteCategoryFromIdAsync(string id) {
+    public async Task<RecurringTransaction?> DeleteRecurringTransactionFromIdAsync(string id) {
         var rt = await GetRecurringTransactionByIdAsync(id);
 
         if (rt is null) {
