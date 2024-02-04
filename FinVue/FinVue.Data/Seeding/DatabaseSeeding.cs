@@ -48,7 +48,7 @@ public class DatabaseSeeding {
 
         TestCategories = new List<Category> {
             new Category(Guid.NewGuid().ToString(), "Essen"),
-            new Category(Guid.NewGuid().ToString(), "Miete"),
+            new Category(Guid.NewGuid().ToString(), "Haus"),
             new Category(Guid.NewGuid().ToString(), "Gehalt"),
             new Category(Guid.NewGuid().ToString(), "Versicherung"),
         };
@@ -62,19 +62,21 @@ public class DatabaseSeeding {
         TestTransactions = new List<Transaction>() {
             new Transaction(Guid.NewGuid().ToString(), "Kantine", 231, DateOnly.Parse("22.1.24"), TransactionType.Outcome, PaymentMethod.Card, TestUsers,TestUsers, TestCategories[0]),
             new Transaction(Guid.NewGuid().ToString(), "Kantine", 211, DateOnly.Parse("21.1.24"), TransactionType.Outcome, PaymentMethod.Card, TestUsers,TestUsers, TestCategories[0]),
-            new Transaction(Guid.NewGuid().ToString(), "Kantine", 531, DateOnly.Parse("25.1.24"), TransactionType.Outcome, PaymentMethod.Card, TestUsers,TestUsers, TestCategories[0]),
+            new Transaction(Guid.NewGuid().ToString(), "Kantine", 531, DateOnly.Parse("25.1.24"), TransactionType.Outcome, PaymentMethod.Cash, TestUsers,TestUsers, TestCategories[0]),
             new Transaction(Guid.NewGuid().ToString(), "Kantine", 261, DateOnly.Parse("28.1.24"), TransactionType.Outcome, PaymentMethod.Card, TestUsers,TestUsers, TestCategories[0]),
-            new Transaction(Guid.NewGuid().ToString(), "Kantine", 531, DateOnly.Parse("12.1.24"), TransactionType.Outcome, PaymentMethod.Card, TestUsers,TestUsers, TestCategories[0]),
+            new Transaction(Guid.NewGuid().ToString(), "Kantine", 531, DateOnly.Parse("12.1.24"), TransactionType.Outcome, PaymentMethod.Cash, TestUsers,TestUsers, TestCategories[0]),
             new Transaction(Guid.NewGuid().ToString(), "Kantine", 261, DateOnly.Parse("12.1.24"), TransactionType.Outcome, PaymentMethod.Card, TestUsers,TestUsers, TestCategories[0]),
             
             new Transaction(Guid.NewGuid().ToString(), "Miete", 44300, DateOnly.Parse("1.1.24"), TransactionType.Outcome, PaymentMethod.Transfer, TestUsers,TestUsers, TestCategories[1]),
+            new Transaction(Guid.NewGuid().ToString(), "Strom", 12600, DateOnly.Parse("17.1.24"), TransactionType.Outcome, PaymentMethod.Transfer, TestUsers,TestUsers, TestCategories[1]),
+            new Transaction(Guid.NewGuid().ToString(), "Wasser", 9800, DateOnly.Parse("17.1.24"), TransactionType.Outcome, PaymentMethod.Transfer, TestUsers,TestUsers, TestCategories[1]),
             
             new Transaction(Guid.NewGuid().ToString(), "Gehalt", 500000, DateOnly.Parse("1.1.24"), TransactionType.Income, PaymentMethod.Card, TestUsers,TestUsers, TestCategories[2]),
         };
 
         TestCategories[0].Transactions.AddRange(TestTransactions[0..6]);
-        TestCategories[1].Transactions.Add(TestTransactions[6]);
-        TestCategories[2].Transactions.Add(TestTransactions[7]);
+        TestCategories[1].Transactions.AddRange(TestTransactions[6..9]);
+        TestCategories[2].Transactions.Add(TestTransactions[9]);
         
         _dbContext.Transactions.AddRange(TestTransactions);
         return _dbContext.SaveChangesAsync();
