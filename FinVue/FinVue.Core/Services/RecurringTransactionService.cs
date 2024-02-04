@@ -58,7 +58,7 @@ public class RecurringTransactionService {
                 rt => rt.Id,
                 (t, rt) => new {RecurringTransaction = rt, Transaction = t }
             )
-            .Where(t => t.Transaction.PayDate.Month == (int)month+1)
+            .Where(t => t.Transaction.PayDate.Month == (int)month+1 && t.Transaction.PayDate.Year == year)
             .Select(t => new RecurringTransactionDto() {
                 Category = t.RecurringTransaction.Category,
                 CategoryId = t.RecurringTransaction.CategoryId,
