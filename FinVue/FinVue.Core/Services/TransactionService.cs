@@ -70,7 +70,7 @@ public class TransactionService {
         throw new TransactionException("Failed deleting the transaction: \n" + transaction.ToString());
     }
 
-    public async Task<Transaction> ChangeCategorieFromTransactionAsync(string transactionId, string categoryId) {
+    public async Task<Transaction> ChangeCategoryFromTransactionAsync(string transactionId, string categoryId) {
         var transaction = await GetTransactionFromIdAsync(transactionId);
         var category = await _dbContext.Categories.FindAsync(categoryId);
 
@@ -126,7 +126,7 @@ public class TransactionService {
     
     public Task<List<SumByCategoryDto>> GetTotalSumsFromYearGroupedByCategoryAsync(int year, TransactionType type) {
         return _dbContext.Transactions
-            .Where(e => e.PayDate.Year == year && e.Type == type && e.CategoryId != null)
+            .Where(e => e.PayDate.Year == year && e.Type == type)
             .Include(e => e.Category)
             .GroupBy(e => e.CategoryId)
             .Select(e => new SumByCategoryDto{ CategoryName = e.First().Category != null ? e.First().Category!.Name : "Misc",CategoryColor = e.First().Category != null ? e.First().Category!.CategoryColor : new Color(237,227,227,144),TotalSum = e.Sum(t => t.ValueInCent)})

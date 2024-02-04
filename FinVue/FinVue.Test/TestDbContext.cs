@@ -10,8 +10,9 @@ public class TestDbContext : DbContext, IApplicationDbContext {
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<User> Users { get; set;  }
 
+    private static int counter = 0;    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-        optionsBuilder.UseInMemoryDatabase("TestDb");
+        optionsBuilder.UseInMemoryDatabase("TestDb" + counter++);
     }
 
     public Task<int> SaveChangesAsync() {
