@@ -78,7 +78,7 @@ public class TransactionServiceTest : IDisposable, IAsyncDisposable {
     public async Task TransactionService_Should_AddTransaction() {
         var category = _dbContext.Categories.First();
         var user = _dbContext.Users.First();
-        var trans = new Transaction("balbal", "Test", 10000, DateOnly.Parse("1.1.1999"), TransactionType.Outcome,
+        var trans = new Transaction("balbal", "Test", 10000, new DateOnly(1999,1,1), TransactionType.Outcome,
             PaymentMethod.Card, user, user, category);
         
         var found = await _sut.AddTransactionAsync(trans);
@@ -192,7 +192,7 @@ public class TransactionServiceTest : IDisposable, IAsyncDisposable {
     [Fact]
     public async Task TransactionService_Should_GetTotalOutcomeSumsFromYearGroupedByCategory() {
         var user = _dbContext.Users.First();
-        var newtrans = new Transaction(Guid.NewGuid().ToString(), "Transaction5623", 5023, DateOnly.Parse("6.9.24"),
+        var newtrans = new Transaction(Guid.NewGuid().ToString(), "Transaction5623", 5023, new DateOnly(2024,9,6),
             TransactionType.Outcome, PaymentMethod.Card, user, user, null);
         _dbContext.Transactions.Add(newtrans);
         await _dbContext.SaveChangesAsync();
@@ -221,7 +221,7 @@ public class TransactionServiceTest : IDisposable, IAsyncDisposable {
     [Fact]
     public async Task TransactionService_Should_GetTotalIncomeSumsFromYearGroupedByCategory() {
         var user = _dbContext.Users.First();
-        var newtrans = new Transaction(Guid.NewGuid().ToString(), "Transaction5623", 5023, DateOnly.Parse("6.9.24"),
+        var newtrans = new Transaction(Guid.NewGuid().ToString(), "Transaction5623", 5023, new DateOnly(2024,9,6),
             TransactionType.Income, PaymentMethod.Card, user, user, null);
         _dbContext.Transactions.Add(newtrans);
         await _dbContext.SaveChangesAsync();
@@ -251,18 +251,18 @@ public class TransactionServiceTest : IDisposable, IAsyncDisposable {
         var testUser = new User("blabla" ,"testuser");
         var i = 1;
         var transactions = new List<Transaction> {
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 10, DateOnly.Parse("4.1.23"), TransactionType.Income, PaymentMethod.Card, testUser,testUser, categories[0]),
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 10, DateOnly.Parse("4.1.24"), TransactionType.Income, PaymentMethod.Card, testUser,testUser, categories[0]),
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 20, DateOnly.Parse("6.1.24"), TransactionType.Income, PaymentMethod.Card, testUser,testUser, categories[1]),
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 5, DateOnly.Parse("7.1.24"), TransactionType.Outcome, PaymentMethod.Card, testUser,testUser, categories[2]),
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 100, DateOnly.Parse("7.1.24"), TransactionType.Outcome, PaymentMethod.Card, testUser,testUser, categories[3]),
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 20, DateOnly.Parse("10.1.24"), TransactionType.Income, PaymentMethod.Card, testUser,testUser, categories[4]),
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 340, DateOnly.Parse("3.2.24"), TransactionType.Income, PaymentMethod.Card, testUser,testUser, categories[0]),
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 610, DateOnly.Parse("15.2.24"), TransactionType.Outcome, PaymentMethod.Card, testUser,testUser, categories[1]),
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 1087, DateOnly.Parse("23.2.24"), TransactionType.Outcome, PaymentMethod.Card, testUser,testUser, categories[2]),
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 102, DateOnly.Parse("1.3.24"), TransactionType.Income, PaymentMethod.Card, testUser,testUser, categories[3]),
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 106, DateOnly.Parse("3.3.24"), TransactionType.Income, PaymentMethod.Card, testUser,testUser, categories[4]),
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 803, DateOnly.Parse("6.3.24"), TransactionType.Outcome, PaymentMethod.Card, testUser,testUser, categories[5]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 10, new DateOnly(2023,1,4), TransactionType.Income, PaymentMethod.Card, testUser,testUser, categories[0]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 10, new DateOnly(2024,1,4), TransactionType.Income, PaymentMethod.Card, testUser,testUser, categories[0]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 20, new DateOnly(2024,1,6), TransactionType.Income, PaymentMethod.Card, testUser,testUser, categories[1]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 5, new DateOnly(2024,1,7), TransactionType.Outcome, PaymentMethod.Card, testUser,testUser, categories[2]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 100, new DateOnly(2024,1,7), TransactionType.Outcome, PaymentMethod.Card, testUser,testUser, categories[3]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 20, new DateOnly(2024,1,10), TransactionType.Income, PaymentMethod.Card, testUser,testUser, categories[4]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 340, new DateOnly(2024,2,3), TransactionType.Income, PaymentMethod.Card, testUser,testUser, categories[0]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 610, new DateOnly(2024,2,15), TransactionType.Outcome, PaymentMethod.Card, testUser,testUser, categories[1]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 1087, new DateOnly(2024,2,23), TransactionType.Outcome, PaymentMethod.Card, testUser,testUser, categories[2]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 102, new DateOnly(2024,3,1), TransactionType.Income, PaymentMethod.Card, testUser,testUser, categories[3]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 106, new DateOnly(2024,3,3), TransactionType.Income, PaymentMethod.Card, testUser,testUser, categories[4]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 803, new DateOnly(2024,3,6), TransactionType.Outcome, PaymentMethod.Card, testUser,testUser, categories[5]),
         };
 
         return transactions;

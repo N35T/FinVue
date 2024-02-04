@@ -82,7 +82,7 @@ public class RecurringTransactionServiceTest {
         var monthFrequency = rt.MonthFrequency;
         var currentMonth = rt.NextExecute;
         
-        var res = await _sut.MarkRecurringTransactionAsDone(rt.Id, DateOnly.Parse("1.1.24"), user);
+        var res = await _sut.MarkRecurringTransactionAsDone(rt.Id, new DateOnly(2024,1,1), user);
         
         Assert.NotNull(res);
         Assert.Equal(Enum.Parse<Month>(((int)currentMonth + monthFrequency).ToString()), rt.NextExecute);
@@ -114,7 +114,7 @@ public class RecurringTransactionServiceTest {
     private List<Transaction> CreateTestTransactions(List<RecurringTransaction> rT) {
         var user = new User("blasdf", "TestUser");
         return new List<Transaction> {
-            new Transaction(Guid.NewGuid().ToString(), rT[1], user, DateOnly.Parse("1.1.24"))
+            new Transaction(Guid.NewGuid().ToString(), rT[1], user, new DateOnly(2024,1,1))
         };
     }
 
