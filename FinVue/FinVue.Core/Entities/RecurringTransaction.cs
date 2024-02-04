@@ -1,4 +1,5 @@
-﻿using FinVue.Core.Enums;
+﻿using FinVue.Core.DataTransferObjects;
+using FinVue.Core.Enums;
 
 namespace FinVue.Core.Entities;
 public class RecurringTransaction {
@@ -51,4 +52,8 @@ public class RecurringTransaction {
     }
     
     private RecurringTransaction() {}
+
+    public RecurringTransactionDto ToDto(bool payedThisMonth) {
+        return new RecurringTransactionDto(this, payedThisMonth);
+    }
 }
