@@ -1,0 +1,41 @@
+﻿.group-table {
+    padding: 1em;
+}
+
+.transaction, .transaction > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.transaction > div > p {
+    padding: 0em 2em;
+}
+
+.transaction {
+    padding: 0em 2em;
+    justify-content: space-between;
+}
+
+.transaction:hover {
+    background: var(--background);
+}
+
+.group:hover + .transaction-list, .group:hover {
+    background: var(--background);
+}
+
+.group {
+    padding: 20px 0.5em;
+    margin: 0;
+}
+
+.transaction-list {
+    display: none;
+    transition: ease-in-out;
+}
+
+.transaction-list.active {
+    display: block;
+    transition: ease-in-out;
+}

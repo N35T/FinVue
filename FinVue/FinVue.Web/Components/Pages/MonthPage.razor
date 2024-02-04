@@ -1,0 +1,93 @@
+﻿@using FinVue.Web.Components.Layout
+@using FinVue.Web.Components.Shared
+@using Newtonsoft.Json
+@using FinVue.Core.Services
+@using FinVue.Core.Entities
+@using FinVue.Core.Enums
+@using FinVue.Core.DataTransferObjects
+@using System.Globalization
+
+@page "/year/{Year:int}/month/{SelectedMonth:int}"
+
+@inject TransactionService TransactionService
+
+<PageTitle>@((Month)SelectedMonth) - @Year</PageTitle>
+
+<SideNav Year="@Year" Month="@SelectedMonth"/>
+
+<section id="view-content">
+    <h1 class="span-cols align-left">@((Month)SelectedMonth) - @Year</h1>
+    <div>
+        <ProfitCard Title="Total Income" Value="@TotalIncome"/>
+    </div>
+    <div>
+        <ProfitCard Title="Total Outcome" ReverseColors="true" Value="@TotalOutcome"/>
+    </div>
+    <div>
+        <ProfitCard Title="Total Profit" Value="@TotalProfit"/>
+    </div>
+
+    <div class ="span-cols align-left" style="width: 100%">
+        <button>Income</button>
+        <button>Outcome</button>
+        <button>Planned Transactions</button>
+        <div>
+            <TransactionTable TransactionsByCategory="@IncomeTransactions" />
+            <TransactionTable TransactionsByCategory="@OutcomeTransactions" />
+        </div>
+    </div>
+
+</section>
+<script>
+    
+
+</script>
+
+@code {
+
+    [Parameter]
+    public int Year { get; set; }
+    [Parameter]
+    public int SelectedMonth { get; set; }
+
+    //public List<int> IncomeSumsPerMonth { get; set; }
+    //public List<int> OutcomeSumsPerMonth { get; set; }
+
+    public string TotalIncome { get; set; }
+
+    public string TotalOutcome { get; set; }
+
+    public string TotalProfit { get; set; }
+
+    public List<TransactionsByCategoryDto> IncomeTransactions { get; set; }
+    public List<TransactionsByCategoryDto> OutcomeTransactions { get; set; }
+    public List<RecurringTransactionDto> RecurringTransactions { get; set; }
+
+    protected override async Task OnInitializedAsync() {
+        await base.OnInitializedAsync();
+        Year = Year == 0 ? DateTime.Now.Year : Year;
+
+        InitializeProfitCards();
+        InitializeTransactionTables();
+        //await InitializeCakeDiagram();
+
+    }
+
+    //private async Task InitializeCakeDiagram() {
+    //    OutcomeByCategory = await TransactionService.GetTotalSumsFromYearGroupedByCategoryAsync(Year, TransactionType.Outcome);
+    //}
+
+    private async void InitializeTransactionTables() {
+        IncomeTransactions = await TransactionService.GetAllTransactionsFromMonthAndYearAndTypeGroupByCategoryAsync(SelectedMonth + 1, Year, TransactionType.Income);
+        OutcomeTransactions = await TransactionService.GetAllTransactionsFromMonthAndYearAndTypeGroupByCategoryAsync(SelectedMonth + 1, Year, TransactionType.Outcome);
+    }
+    
+    private async void InitializeProfitCards() {
+        var income = await TransactionService.GetTotalSumFromYearAndMonthAsync(TransactionType.Income, Year, SelectedMonth + 1) / 100.0;
+        var outcome = await TransactionService.GetTotalSumFromYearAndMonthAsync(TransactionType.Outcome, Year, SelectedMonth + 1) / 100.0;
+
+        TotalIncome = income.ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
+        TotalOutcome = outcome.ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
+        TotalProfit = (income - outcome).ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
+    }
+}

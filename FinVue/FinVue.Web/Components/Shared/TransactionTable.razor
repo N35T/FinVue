@@ -1,0 +1,51 @@
+﻿@using FinVue.Core.DataTransferObjects
+@using FinVue.Core.Services
+@using FinVue.Core.Entities
+@using FinVue.Core.Enums
+@using System.Globalization
+
+<script>
+    function toggleTransactionList(group, id) {
+        if (group.classList.contains("active")) {
+            group.firstElementChild.innerHTML = ">";
+        } else {
+            group.firstElementChild.innerHTML = "v";
+        }
+        group.classList.toggle("active");
+        document.getElementById(id).classList.toggle("active");
+    }
+</script>
+
+<div class="group-table back2">
+    @foreach (TransactionsByCategoryDto group in TransactionsByCategory) {
+        <h1 class="group active" style="color: #@group.CategoryColor" onclick="toggleTransactionList(this, '@group.CategoryName')"><span>v</span> @group.CategoryName <span class="low-opac">@NumberToCurrency(group.TotalSum)</span></h1>
+        <div class="transaction-list active" id="@group.CategoryName">
+            @foreach (Transaction t in group.Transactions) {
+                <div class="transaction">
+                    <div>
+                        <h3>@t.Name</h3>
+                        <p class="low-opac">@t.PayDate.ToString()</p>
+                    </div>
+                    <div>
+                        <h3>@NumberToCurrency(t.ValueInCent)</h3>
+                        <p class="low-opac">@t.PaymentMethod</p>
+                        <p>@t.PayingUser.Username</p>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+
+
+
+@code {
+
+    [Parameter]
+    public List<TransactionsByCategoryDto> TransactionsByCategory { get; set; }
+
+    public string NumberToCurrency(int valueInCent) {
+        return (valueInCent/100.0).ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
+    }
+}

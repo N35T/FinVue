@@ -1,0 +1,32 @@
+﻿#view-content {
+    --grid-layout-gap: 10px;
+    --grid-column-count: 3;
+    --grid-item--min-width: 20rem;
+    --gap-count: calc(var(--grid-column-count) - 1);
+    --total-gap-width: calc(var(--gap-count) * var(--grid-layout-gap));
+    --grid-item--max-width: calc((100% - var(--total-gap-width)) / var(--grid-column-count));
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(max(var(--grid-item--min-width), var(--grid-item--max-width)), 1fr));
+    grid-gap: var(--grid-layout-gap);
+    grid-auto-rows: max-content;
+    justify-content: center;
+    justify-items: center;
+    padding: 1em 2em;
+    width: min(100%, 1140px);
+    justify-self: center;
+    row-gap: 2em;
+}
+
+    #view-content > .category-select {
+        margin-left: 1em;
+    }
+
+@media (min-width: 1221px) {
+    #view-content :nth-child(2) {
+        justify-self: left;
+    }
+
+    #view-content :nth-child(4) {
+        justify-self: right;
+    }
+}
