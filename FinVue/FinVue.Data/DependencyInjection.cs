@@ -16,6 +16,7 @@ public static class DependencyInjection {
         });
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
         services.AddTransient<TransactionService>();
+        services.AddTransient<RecurringTransactionService>();
         services.AddTransient<CategoryService>();
 
         return services;

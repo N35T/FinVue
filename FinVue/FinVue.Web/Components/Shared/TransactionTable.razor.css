@@ -17,9 +17,9 @@
     justify-content: space-between;
 }
 
-.transaction:hover {
-    background: var(--background);
-}
+    .transaction:hover {
+        background: var(--background);
+    }
 
 .group:hover + .transaction-list, .group:hover {
     background: var(--background);
@@ -28,6 +28,28 @@
 .group {
     padding: 20px 0.5em;
     margin: 0;
+    cursor: pointer;
+}
+
+    .group.planned {
+        cursor: default;
+    }
+
+button.complete {
+    border: none;
+    background: var(--background);
+    padding: 0.8em;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+.transaction:hover > div > .complete {
+    background: var(--back1);
+}
+
+.transaction:hover button.complete:hover {
+    background: var(--back2);
 }
 
 .transaction-list {

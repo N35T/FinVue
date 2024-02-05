@@ -32,12 +32,11 @@
 
 :root {
     --background: #20201d;
+    --back1: #10101055;
     --back2: #101010;
     --primary: #81a975;
     --text: #ede3e3;
     --red: #ac4d4d;
-    
-    
     --font-size--small: 14px;
     --font-size--default: 16px;
     --font-size--medium: 20px;

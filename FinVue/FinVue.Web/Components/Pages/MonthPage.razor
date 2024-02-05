@@ -10,6 +10,7 @@
 @page "/year/{Year:int}/month/{SelectedMonth:int}"
 
 @inject TransactionService TransactionService
+@inject RecurringTransactionService RecurringTransactionService
 
 <PageTitle>@((Month)SelectedMonth) - @Year</PageTitle>
 
@@ -28,18 +29,40 @@
     </div>
 
     <div class ="span-cols align-left" style="width: 100%">
-        <button>Income</button>
-        <button>Outcome</button>
-        <button>Planned Transactions</button>
+        <div class="buttons">
+            <button id="planned" onclick="switchTableTo('planned')" class="back2">Planned Transactions</button>
+            <button id="income" onclick="switchTableTo('income')">Income</button>
+            <button id="outcome" onclick="switchTableTo('outcome')">Outcome</button>
+        </div>
         <div>
-            <TransactionTable TransactionsByCategory="@IncomeTransactions" />
-            <TransactionTable TransactionsByCategory="@OutcomeTransactions" />
+            <div id="planned-table" class="table active">
+                <TransactionTable RecurringTransactions="@RecurringTransactions" Planned="true" />
+            </div>
+            <div id="income-table" class="table">
+                <TransactionTable TransactionsByCategory="@IncomeTransactions" />
+            </div>
+            <div id="outcome-table" class="table">
+                <TransactionTable TransactionsByCategory="@OutcomeTransactions" />
+            </div>
         </div>
     </div>
 
 </section>
 <script>
-    
+    function switchTableTo(id) {
+        const tables = document.getElementsByClassName("table");
+        const buttons = document.getElementsByClassName("buttons")[0].children;
+
+        for (t of tables) {
+            t.classList.remove("active");
+        }
+        for (b of buttons) {
+            b.classList.remove("back2");
+        }
+
+        document.getElementById(id).classList.add("back2");
+        document.getElementById(id+"-table").classList.add("active");
+    }
 
 </script>
 
@@ -80,6 +103,7 @@
     private async void InitializeTransactionTables() {
         IncomeTransactions = await TransactionService.GetAllTransactionsFromMonthAndYearAndTypeGroupByCategoryAsync(SelectedMonth + 1, Year, TransactionType.Income);
         OutcomeTransactions = await TransactionService.GetAllTransactionsFromMonthAndYearAndTypeGroupByCategoryAsync(SelectedMonth + 1, Year, TransactionType.Outcome);
+        RecurringTransactions = await RecurringTransactionService.GetAllRecurringTransactionsFromMonthAsync(Year, (Month)SelectedMonth);
     }
     
     private async void InitializeProfitCards() {

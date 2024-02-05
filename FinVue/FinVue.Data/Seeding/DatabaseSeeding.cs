@@ -93,7 +93,7 @@ public class DatabaseSeeding {
         };
         
         TestRecurringTransactions[0].Transactions.Add(TestTransactions[6]);
-        TestRecurringTransactions[1].Transactions.Add(TestTransactions[7]);
+        TestRecurringTransactions[1].Transactions.Add(TestTransactions[9]);
 
         _dbContext.RecurringTransactions.AddRange(TestRecurringTransactions);
 
