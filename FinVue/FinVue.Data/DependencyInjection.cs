@@ -28,6 +28,7 @@ public static class DependencyInjection {
 
     private static void ConfigureAuth(this IServiceCollection services) {
         services.AddSingleton<JwtHandler>();
+        services.AddAuthorization();
         
         services.AddAuthentication(opt => {
             opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

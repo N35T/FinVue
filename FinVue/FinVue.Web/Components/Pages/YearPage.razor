@@ -5,6 +5,11 @@
 @using FinVue.Core.Enums
 @using FinVue.Core.DataTransferObjects
 @using System.Globalization
+@using FinVue.Web.Auth
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize(Roles = Roles.AccessRole)]
+
 @page "/"
 @page "/year"
 @page "/year/{Year:int}"

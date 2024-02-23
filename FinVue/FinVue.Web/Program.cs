@@ -26,7 +26,7 @@ if (!app.Environment.IsDevelopment()) {
 app.UseStatusCodePages(context => {
     var response = context.HttpContext.Response;
     if (response.StatusCode == (int) HttpStatusCode.Unauthorized) {
-        response.Redirect($"{app.Configuration["IdentityUrl"]!}/auth/login");
+        response.Redirect($"{app.Configuration["IdentityUrl"]}/auth/login?returnUrl={app.Configuration["AuthReturnUrl"]}");
     }
 
     return Task.CompletedTask;
@@ -36,6 +36,9 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapRazorComponents<App>();
 
