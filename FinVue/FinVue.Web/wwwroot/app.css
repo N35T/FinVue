@@ -30,7 +30,7 @@
 }
 
 
-:root {
+:root, ::backdrop {
     --background: #20201d;
     --back1: #10101055;
     --back2: #101010;
@@ -65,6 +65,10 @@ html, body {
     text-align: left;
 }
 
+.align-right {
+    float: right;
+}
+
 h1,h2,h3 {
     font-family: 'JetBrainsMono Nerd Font';
 }
@@ -92,6 +96,11 @@ h1,h2,h3 {
 .no-link-design, .no-link-design:visited {
     color: var(--text);
     text-decoration: none;
+}
+
+dialog {
+    color: var(--text);
+    border: none;
 }
 
 body::-webkit-scrollbar-track {
