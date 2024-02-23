@@ -1,3 +1,4 @@
+using System.Net;
 using FinVue.Data;
 using FinVue.Web.Components;
 
@@ -20,6 +21,16 @@ if (!app.Environment.IsDevelopment()) {
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+
+app.UseStatusCodePages(context => {
+    var response = context.HttpContext.Response;
+    if (response.StatusCode == (int) HttpStatusCode.Unauthorized) {
+        response.Redirect($"{app.Configuration["IdentityUrl"]!}/auth/login");
+    }
+
+    return Task.CompletedTask;
+});
 
 app.UseHttpsRedirection();
 
