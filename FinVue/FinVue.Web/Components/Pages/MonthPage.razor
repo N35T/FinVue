@@ -73,9 +73,6 @@
     [Parameter]
     public int SelectedMonth { get; set; }
 
-    //public List<int> IncomeSumsPerMonth { get; set; }
-    //public List<int> OutcomeSumsPerMonth { get; set; }
-
     public string TotalIncome { get; set; }
 
     public string TotalOutcome { get; set; }
@@ -92,13 +89,8 @@
 
         InitializeProfitCards();
         InitializeTransactionTables();
-        //await InitializeCakeDiagram();
 
     }
-
-    //private async Task InitializeCakeDiagram() {
-    //    OutcomeByCategory = await TransactionService.GetTotalSumsFromYearGroupedByCategoryAsync(Year, TransactionType.Outcome);
-    //}
 
     private async void InitializeTransactionTables() {
         IncomeTransactions = await TransactionService.GetAllTransactionsFromMonthAndYearAndTypeGroupByCategoryAsync(SelectedMonth + 1, Year, TransactionType.Income);
