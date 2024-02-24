@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinVue.Web", "FinVue.Web\Fi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinVue.Data", "FinVue.Data\FinVue.Data.csproj", "{E759DD8B-BB06-4D27-87B3-069345B8BE4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinVue.Test", "FinVue.Test\FinVue.Test.csproj", "{5F8D945D-1E78-4E19-AA91-F68EB49F8CB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinVue.Test", "FinVue.Test\FinVue.Test.csproj", "{5F8D945D-1E78-4E19-AA91-F68EB49F8CB3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
