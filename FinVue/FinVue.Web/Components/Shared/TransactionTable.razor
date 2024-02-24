@@ -14,6 +14,10 @@
         group.classList.toggle("active");
         document.getElementById(id).classList.toggle("active");
     }
+
+    function openDialog(id) {
+        document.getElementById(id).showModal();
+    }
 </script>
 
 <div class="group-table back2">
@@ -34,7 +38,12 @@
                         <div>
                             <h3>@NumberToCurrency(rt.ValueInCent)</h3>
                             <p class="low-opac">Every @rt.MonthFrequency Months</p>
-                            <button class="color-primary complete">Done</button>
+                            <button class="color-primary complete" onclick="openDialog('@rt.Id')">Done</button>
+                            <dialog class="back2 no-link-design" id="@rt.Id">
+                                <button class="align-right color-red close" onclick="document.getElementById('@rt.Id').close()">x</button>
+                                <AddTransaction Rt="@rt"></AddTransaction>
+                                <button class="align-right color-primary" onclick="document.getElementById('@rt.Id').close()">Confirm</button>
+                            </dialog>
                         </div>
                     </div>
                 }
@@ -78,9 +87,6 @@
         }
     }
 </div>
-
-
-
 
 @code {
 

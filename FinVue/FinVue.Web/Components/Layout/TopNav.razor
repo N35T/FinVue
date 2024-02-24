@@ -1,2 +1,8 @@
 ﻿<nav class="back2" id="top-nav">
+    <button class="color-primary back2 align-right add" onclick="document.getElementById('new-transaction').showModal()">+</button>
+    <dialog class="back2 no-link-design" id="new-transaction">
+        <button class="align-right color-red close" onclick="document.getElementById('new-transaction').close()">x</button>
+        <FinVue.Web.Components.Shared.AddTransaction></FinVue.Web.Components.Shared.AddTransaction>
+        <button class="align-right color-primary" onclick="document.getElementById('new-transaction').close()">Confirm</button>
+    </dialog>
 </nav>

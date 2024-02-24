@@ -43,6 +43,28 @@ button.complete {
     cursor: pointer;
 }
 
+::backdrop {
+    background: var(--background);
+    opacity: 0.90;
+}
+
+dialog button {
+    border: none;
+    background: var(--background);
+    padding: 0.8em;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+dialog button:hover {
+    color: var(--text);
+    background: var(--primary);
+}
+
+dialog button.close:hover {
+    color: var(--text);
+    background: var(--red);
+}
 
 .transaction:hover > div > .complete {
     background: var(--back1);
