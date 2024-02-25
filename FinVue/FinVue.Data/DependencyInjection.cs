@@ -1,9 +1,12 @@
 ﻿using FinVue.Core.Interfaces;
 using FinVue.Core.Services;
+using FinVue.Data.Auth;
 using FinVue.Data.Seeding;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace FinVue.Data; 
 
@@ -17,8 +20,24 @@ public static class DependencyInjection {
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
         services.AddTransient<TransactionService>();
         services.AddTransient<CategoryService>();
+        
+        services.ConfigureAuth();
 
         return services;
+    }
+
+    private static void ConfigureAuth(this IServiceCollection services) {
+        services.AddSingleton<JwtHandler>();
+        services.AddAuthorization();
+        
+        services.AddAuthentication(opt => {
+            opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, null);
+
+        // Add Jwt configuration after initialization
+        services.AddSingleton<IConfigureOptions<JwtBearerOptions>, JwtOptionsConfiguration>();
     }
     
     public static async Task EnsureDatabaseOnStartupAsync(this IServiceScope scope, bool isDevelopment) {
