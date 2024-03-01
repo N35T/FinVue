@@ -67,11 +67,12 @@ dialog button.close:hover {
 }
 
 .transaction:hover > div > .complete {
-    background: var(--back1);
+    background: var(--back2);
 }
 
 .transaction:hover button.complete:hover {
-    background: var(--back2);
+    background: var(--primary);
+    color: var(--text);
 }
 
 .transaction-list {
