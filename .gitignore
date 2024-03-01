@@ -8,7 +8,7 @@ riderModule.iml
 keys/
 *.db
 dev.db*
-
+appsettings.Development.json
 # ---------------- visualstudio ----------------
 
 ## Ignore Visual Studio temporary files, build results, and

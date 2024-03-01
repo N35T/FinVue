@@ -1,3 +1,4 @@
+using System.Net;
 using FinVue.Data;
 using FinVue.Web.Components;
 
@@ -21,10 +22,23 @@ if (!app.Environment.IsDevelopment()) {
     app.UseHsts();
 }
 
+
+app.UseStatusCodePages(context => {
+    var response = context.HttpContext.Response;
+    if (response.StatusCode == (int) HttpStatusCode.Unauthorized) {
+        response.Redirect($"{app.Configuration["IdentityUrl"]}/auth/login?returnUrl={app.Configuration["AuthReturnUrl"]}");
+    }
+
+    return Task.CompletedTask;
+});
+
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapRazorComponents<App>();
 
