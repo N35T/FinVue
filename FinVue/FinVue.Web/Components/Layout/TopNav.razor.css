@@ -15,9 +15,11 @@ button {
     background: var(--background);
     border-radius: 5px;
     cursor: pointer;
+    padding: 10px;
 }
 
     button.add {
+        padding: 5px;
         width: 80px;
         align-self: center;
         margin-right: 10px;

@@ -1,8 +1,22 @@
 ﻿<nav class="back2" id="top-nav">
-    <button class="color-primary back2 align-right add" onclick="document.getElementById('new-transaction').showModal()">+</button>
+    <button class="color-primary back2 align-right add" onclick="document.getElementById('new-transaction').showModal()">+ 💸</button>
     <dialog class="back2 no-link-design" id="new-transaction">
         <button class="align-right color-red close" onclick="document.getElementById('new-transaction').close()">x</button>
         <FinVue.Web.Components.Shared.AddTransaction></FinVue.Web.Components.Shared.AddTransaction>
         <button class="align-right color-primary" onclick="document.getElementById('new-transaction').close()">Confirm</button>
+    </dialog>
+
+    <button class="color-primary back2 align-right add" onclick="document.getElementById('new-category').showModal()">+ 📂</button>
+    <dialog class="back2 no-link-design" id="new-category">
+        <button class="align-right color-red close" onclick="document.getElementById('new-category').close()">x</button>
+        <FinVue.Web.Components.Shared.AddCategory></FinVue.Web.Components.Shared.AddCategory>
+        <button class="align-right color-primary" onclick="document.getElementById('new-category').close()">Confirm</button>
+    </dialog>
+
+    <button class="color-primary back2 align-right add" onclick="document.getElementById('new-rt').showModal()">+ 💳</button>
+    <dialog class="back2 no-link-design" id="new-rt">
+        <button class="align-right color-red close" onclick="document.getElementById('new-rt').close()">x</button>
+        <FinVue.Web.Components.Shared.AddRecurringTransaction></FinVue.Web.Components.Shared.AddRecurringTransaction>
+        <button class="align-right color-primary" onclick="document.getElementById('new-rt').close()">Confirm</button>
     </dialog>
 </nav>
