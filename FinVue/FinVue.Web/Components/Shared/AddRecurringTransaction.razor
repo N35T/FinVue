@@ -1,0 +1,76 @@
+﻿@using FinVue.Core.DataTransferObjects
+@using FinVue.Core.Services
+@using FinVue.Core.Entities
+@using FinVue.Core.Enums
+@using System.Globalization
+
+@inject CategoryService CategoryService
+
+<div class="">
+    <h1 class="color-primary">New Recurring Transaction</h1>
+    
+    <div class="inputs">
+        <div>
+            <div class="input">
+                <label for="fname" class="low-opac">Name</label>
+                <input id="fname" required />
+            </div>
+            <div class="input">
+                <label for="fpaydate" class="low-opac">Next Execute</label>
+                <input id="fpaydate" type="month" required />
+            </div>
+            <div class="input">
+                <label for="ftype" class="low-opac">Type</label>
+                <select name="ftype" id="ftype" required>
+                    @foreach (var type in Enum.GetValues(typeof(TransactionType))) {
+                        <option value="@type">@type</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div>
+            <div class="input">
+                <label for="fvalue" class="low-opac">Value</label>
+                <span class="currencyinput"><input id="fvalue" required />€</span>
+            </div>
+            <div class="input">
+                <label for="fmonthfrequency" class="low-opac">Month Frequency</label>
+                <input id="fmonthfrequency" type="number" min="1" required />
+            </div>
+            <div class="input">
+                <label for="fpaymethod" class="low-opac">Pay Method</label>
+                <input id="fpaymethod" class="low-opac" value="@PaymentMethod.Transfer" required readonly />
+            </div>
+        </div>
+
+        <div class="input span-cols">
+            <label for="fcategory" class="low-opac">Category</label>
+            <select name="fcategory" id="fcategory">
+                @foreach (var cat in Categories) {
+                    <option style="color:#@(cat.CategoryColor.ToString())" value="@cat">@cat.Name</option>
+                }
+            </select>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public RecurringTransactionDto? Rt { get; set; }
+
+    public List<Category> Categories{ get; set; }
+    public List<User> Users { get; set; }
+
+    protected override async Task OnInitializedAsync() {
+        await base.OnInitializedAsync();
+
+        InitializeDropdowns();
+
+    }
+
+    private async void InitializeDropdowns() {
+        //Users
+        Categories = await CategoryService.GetAllCategoriesAsync();
+
+    }
+}

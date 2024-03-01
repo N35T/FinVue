@@ -22,13 +22,18 @@
                 </div>
                 <div class="input">
                     <label for="ftype" class="low-opac">Type</label>
-                    <input id="ftype" required />
+                    <select name="ftype" id="ftype" required>
+                        @foreach (var type in Enum.GetValues(typeof(TransactionType))) {
+                            <option value="@type">@type</option>
+                        }
+                    </select>
                 </div>
             </div>
             <div>
                 <div class="input">
                     <label for="fvalue" class="low-opac">Value</label>
-                    <input id="fvalue" required />
+
+                    <span class="currencyinput"><input id="fvalue" required />€</span>
                 </div>
                 <div class="input">
                     <label for="fpayinguser" class="low-opac">Paying User</label>
@@ -36,19 +41,21 @@
                 </div>
                 <div class="input">
                     <label for="fpaymethod" class="low-opac">Pay Method</label>
-                    <input id="fpaymethod" required />
+                    <select name="fpaymethod" id="fpaymethod" required>
+                        @foreach (var method in Enum.GetValues(typeof(PaymentMethod))) {
+                            <option value="@method">@method</option>
+                        }
+                    </select>
                 </div>
             </div>
 
             <div class="input span-cols">
                 <label for="fcategory" class="low-opac">Category</label>
-                <input id="fcategory" required class="dropdown" />
-                <a href="javascript:void(0)" class="dropbtn">Dropdown</a>
-                <div class="dropdown-content">
-                    @foreach(Category cat in Categories) {
-                        <a style="color:@cat.CategoryColor" href="">@cat.Name</a>
+                <select name="fcategory" id="fcategory">
+                    @foreach(var cat in Categories) {
+                        <option style="color:#@(cat.CategoryColor.ToString())" value="@cat">@cat.Name</option>
                     }
-                </div>
+                </select>
             </div>
         </div>
     } else {
@@ -107,5 +114,6 @@
     private async void InitializeDropdowns() {
         //Users
         Categories = await CategoryService.GetAllCategoriesAsync();
+
     }
 }
