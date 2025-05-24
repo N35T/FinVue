@@ -36,18 +36,31 @@ public class RecurringTransactionService {
         return _dbContext.RecurringTransactions.ToListAsync();
     }
     // Schauen ob es welche in diesem Monat gibt -> Liste an RT_DTO mit unbezahl und bezahlt 
-    public Task<List<RecurringTransactionDto>> GetAllRecurringTransactionsFromMonthAsync(int year, Month month) {
+    public Task<List<RecurringTransactionDto>> GetAllRecurringTransactionsFromMonthAsync(int year, Month month)
+    {
         var unpayed = _dbContext.RecurringTransactions
-            .Where(rt => rt.NextExecute == month)
-            .Select(rt => new RecurringTransactionDto() {
-                Category = rt.Category,
-                CategoryId = rt.CategoryId,
-                Id = rt.Id,
-                NextExecute = rt.NextExecute,
-                Name = rt.Name,
-                MonthFrequency = rt.MonthFrequency,
-                Type = rt.Type,
-                ValueInCent = rt.MonthFrequency,
+            .Include(r => r.Transactions)
+            .Select(e => new
+            {
+                recurringTransaction = e,
+                newestTransaction = e.Transactions.OrderByDescending(t => t.PayDate).FirstOrDefault(),
+            })
+            .Where(e => e.newestTransaction == null ||
+                        (
+                            (year - e.newestTransaction.PayDate.Year) * 12 +
+                            (((int)month) - e.newestTransaction.PayDate.Month) > 0 &&
+                            (year - e.newestTransaction.PayDate.Year) * 12 +
+                            (((int)month) - e.newestTransaction.PayDate.Month) %
+                            e.recurringTransaction.MonthFrequency == 0
+                        )
+            ).Select(e => new RecurringTransactionDto() {
+                Category = e.recurringTransaction.Category,
+                CategoryId = e.recurringTransaction.CategoryId,
+                Id = e.recurringTransaction.Id,
+                Name = e.recurringTransaction.Name,
+                MonthFrequency = e.recurringTransaction.MonthFrequency,
+                Type = e.recurringTransaction.Type,
+                ValueInCent = e.recurringTransaction.ValueInCent,
                 PayedThisMonth = false
             });
 
@@ -58,16 +71,15 @@ public class RecurringTransactionService {
                 rt => rt.Id,
                 (t, rt) => new {RecurringTransaction = rt, Transaction = t }
             )
-            .Where(t => t.Transaction.PayDate.Month == (int)month+1 && t.Transaction.PayDate.Year == year)
+            .Where(t => t.Transaction.PayDate.Month == (int)month && t.Transaction.PayDate.Year == year)
             .Select(t => new RecurringTransactionDto() {
                 Category = t.RecurringTransaction.Category,
                 CategoryId = t.RecurringTransaction.CategoryId,
                 Id = t.RecurringTransaction.Id,
-                NextExecute = t.RecurringTransaction.NextExecute,
                 Name = t.RecurringTransaction.Name,
                 MonthFrequency = t.RecurringTransaction.MonthFrequency,
                 Type = t.RecurringTransaction.Type,
-                ValueInCent = t.RecurringTransaction.MonthFrequency,
+                ValueInCent = t.RecurringTransaction.ValueInCent,
                 PayedThisMonth = true
             });
 
@@ -86,14 +98,6 @@ public class RecurringTransactionService {
 
         var id = Guid.NewGuid().ToString();
         var transaction = new Transaction(id, rt, creationUser, payDate);
-        
-        var nextExecute = (int)rt.NextExecute + rt.MonthFrequency;
-
-        if (nextExecute > 12) {
-            nextExecute -= 12;
-        }
-
-        rt.NextExecute = (Month)nextExecute;
 
         var changedRows = await _dbContext.SaveChangesAsync();
         if (changedRows <= 0) {
