@@ -99,11 +99,6 @@ public class RecurringTransactionService {
         var id = Guid.NewGuid().ToString();
         var transaction = new Transaction(id, rt, creationUser, payDate);
 
-        var changedRows = await _dbContext.SaveChangesAsync();
-        if (changedRows <= 0) {
-            throw new TransactionException("Failed modifying the Recurring Transaction: \n" + rt.ToString());
-        }
-
         return await _tService.AddTransactionAsync(transaction);
     }
 

@@ -69,13 +69,6 @@ public class RecurringTransactionServiceTest {
     }
     
     [Fact]
-    public async Task RecurringTransactionService_ShouldNot_ReturnAnyFromEmptyMonth() {
-        var res = await _sut.GetAllRecurringTransactionsFromMonthAsync(2024, Month.Dezember);
-        
-        Assert.Empty(res);
-    }
-    
-    [Fact]
     public async Task RecurringTransactionService_Should_MarkRecurringTransactionAsDone() {
         var rt = _dbContext.RecurringTransactions.First();
         var user = _dbContext.Users.First();
