@@ -12,7 +12,7 @@
         <div>
             <div class="input">
                 <label for="fname" class="low-opac">Name</label>
-                <input id="fname" required />
+                <input id="fname" @bind="CategoryName" required />
             </div>
             <div class="input">
                 <label for="fcolor" class="low-opac">Farbe</label>
@@ -20,5 +20,25 @@
             </div>
         </div>
     </div>
+    <button class="btn btn-primary"
+            hx-post="/addCategory"
+            hx-target="closest .counter"
+            hx-swap="outerHTML">
+        Hinzufügen
+    </button>
 </div>
+
+
+@code {
+    [Parameter, EditorRequired]
+    public string CategoryName { get; set; } = string.Empty;
+    public HtmxAddCategory State { get; set; } = new();
+
+    protected override async Task OnInitializedAsync() {
+        await base.OnInitializedAsync();
+    }
+    public class HtmxAddCategory {
+        public Category Category { get; set; } = new Category(new Guid().ToString(), CategoryName);
+    }
+}
 

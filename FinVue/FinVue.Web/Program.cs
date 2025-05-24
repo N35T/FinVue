@@ -1,6 +1,9 @@
 using System.Net;
+using FinVue.Core.Services;
 using FinVue.Data;
 using FinVue.Web.Components;
+using FinVue.Web.Components.Shared;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents();
 
 builder.Services.AddDataServices(builder.Configuration);
+builder.Services.AddSingleton<AddCategory.HtmxAddCategory>();
 
 var app = builder.Build();
 
@@ -41,5 +45,13 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorComponents<App>();
+
+app.MapPost("/addCategory",
+    async (AddCategory.HtmxAddCategory category) => {
+        await CategoryService.AddCategoryAsync(category);
+        return new RazorComponentResult<AddCategory>(
+            new { State = category }
+        );
+    });
 
 app.Run();
