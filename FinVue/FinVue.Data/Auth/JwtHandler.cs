@@ -25,7 +25,7 @@ public class JwtHandler : IDisposable {
     private void ConfigureRsa(string publicKeyPath) {
         _publicRsa = RSA.Create();
         var publicKeyXml = File.ReadAllText(publicKeyPath);
-        _publicRsa.FromXmlString(publicKeyXml);
+        _publicRsa.ImportFromPem(publicKeyXml);
         _issuerSigningKey = new RsaSecurityKey(_publicRsa);
     }
 
