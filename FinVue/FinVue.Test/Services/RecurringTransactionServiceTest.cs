@@ -70,7 +70,7 @@ public class RecurringTransactionServiceTest {
     
     [Fact]
     public async Task RecurringTransactionService_ShouldNot_ReturnAnyFromEmptyMonth() {
-        var res = await _sut.GetAllRecurringTransactionsFromMonthAsync(2024, Month.December);
+        var res = await _sut.GetAllRecurringTransactionsFromMonthAsync(2024, Month.Dezember);
         
         Assert.Empty(res);
     }

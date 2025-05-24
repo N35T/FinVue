@@ -12,5 +12,5 @@ public enum Month {
     September = 9,
     Oktober = 10,
     November = 11,
-    December = 12,
+    Dezember = 12,
 }
