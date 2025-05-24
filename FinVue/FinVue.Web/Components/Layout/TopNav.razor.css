@@ -1,3 +1,37 @@
 ﻿#top-nav {
     height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 }
+
+::backdrop {
+    background: var(--background);
+    opacity: 0.90;
+}
+
+button {
+    border: none;
+    background: var(--background);
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+}
+
+    button.add {
+        padding: 5px;
+        width: 80px;
+        align-self: center;
+        margin-right: 10px;
+        font-size: var(--font-size--large);
+    }
+
+    button:hover {
+        color: var(--text);
+        background: var(--primary);
+    }
+
+    button.close:hover {
+        color: var(--text);
+        background: var(--red);
+    }

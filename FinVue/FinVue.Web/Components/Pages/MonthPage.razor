@@ -1,0 +1,109 @@
+﻿@using FinVue.Web.Components.Layout
+@using FinVue.Web.Components.Shared
+@using Newtonsoft.Json
+@using FinVue.Core.Services
+@using FinVue.Core.Entities
+@using FinVue.Core.Enums
+@using FinVue.Core.DataTransferObjects
+@using System.Globalization
+
+@page "/year/{Year:int}/month/{SelectedMonth:int}"
+
+@inject TransactionService TransactionService
+@inject RecurringTransactionService RecurringTransactionService
+
+<PageTitle>@((Month)SelectedMonth) - @Year</PageTitle>
+
+<SideNav Year="@Year" Month="@SelectedMonth"/>
+
+<section id="view-content">
+    <h1 class="span-cols align-left">@((Month)SelectedMonth) - @Year</h1>
+    <div>
+        <ProfitCard Title="Total Income" Value="@TotalIncome"/>
+    </div>
+    <div>
+        <ProfitCard Title="Total Outcome" ReverseColors="true" Value="@TotalOutcome"/>
+    </div>
+    <div>
+        <ProfitCard Title="Total Profit" Value="@TotalProfit"/>
+    </div>
+
+    <div class ="span-cols align-left" style="width: 100%">
+        <div class="buttons">
+            <button id="planned" onclick="switchTableTo('planned')" class="back2">Planned Transactions</button>
+            <button id="income" onclick="switchTableTo('income')">Income</button>
+            <button id="outcome" onclick="switchTableTo('outcome')">Outcome</button>
+        </div>
+        <div>
+            <div id="planned-table" class="table active">
+                <TransactionTable RecurringTransactions="@RecurringTransactions" Type="planned"/>
+            </div>
+            <div id="income-table" class="table">
+                <TransactionTable TransactionsByCategory="@IncomeTransactions" Type="@nameof(TransactionType.Income)"/>
+            </div>
+            <div id="outcome-table" class="table">
+                <TransactionTable TransactionsByCategory="@OutcomeTransactions" Type="@nameof(TransactionType.Outcome)" />
+            </div>
+        </div>
+    </div>
+
+</section>
+<script>
+    function switchTableTo(id) {
+        const tables = document.getElementsByClassName("table");
+        const buttons = document.getElementsByClassName("buttons")[0].children;
+
+        for (t of tables) {
+            t.classList.remove("active");
+        }
+        for (b of buttons) {
+            b.classList.remove("back2");
+        }
+
+        document.getElementById(id).classList.add("back2");
+        document.getElementById(id+"-table").classList.add("active");
+    }
+
+</script>
+
+@code {
+
+    [Parameter]
+    public int Year { get; set; }
+    [Parameter]
+    public int SelectedMonth { get; set; }
+
+    public string TotalIncome { get; set; }
+
+    public string TotalOutcome { get; set; }
+
+    public string TotalProfit { get; set; }
+
+    public List<TransactionsByCategoryDto> IncomeTransactions { get; set; }
+    public List<TransactionsByCategoryDto> OutcomeTransactions { get; set; }
+    public List<RecurringTransactionDto> RecurringTransactions { get; set; }
+
+    protected override async Task OnInitializedAsync() {
+        await base.OnInitializedAsync();
+        Year = Year == 0 ? DateTime.Now.Year : Year;
+
+        InitializeProfitCards();
+        InitializeTransactionTables();
+
+    }
+
+    private async void InitializeTransactionTables() {
+        IncomeTransactions = await TransactionService.GetAllTransactionsFromMonthAndYearAndTypeGroupByCategoryAsync(SelectedMonth, Year, TransactionType.Income);
+        OutcomeTransactions = await TransactionService.GetAllTransactionsFromMonthAndYearAndTypeGroupByCategoryAsync(SelectedMonth, Year, TransactionType.Outcome);
+        RecurringTransactions = await RecurringTransactionService.GetAllRecurringTransactionsFromMonthAsync(Year, (Month)SelectedMonth);
+    }
+    
+    private async void InitializeProfitCards() {
+        var income = await TransactionService.GetTotalSumFromYearAndMonthAsync(TransactionType.Income, Year, SelectedMonth) / 100.0;
+        var outcome = await TransactionService.GetTotalSumFromYearAndMonthAsync(TransactionType.Outcome, Year, SelectedMonth) / 100.0;
+
+        TotalIncome = income.ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
+        TotalOutcome = outcome.ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
+        TotalProfit = (income - outcome).ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
+    }
+}

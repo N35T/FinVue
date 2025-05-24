@@ -6,11 +6,11 @@
             <span class="@(Month == null ? "color-primary" : "")">Full Year</span>
         </NavLink>
     </div>
-    @for (int i = 0; i < 12; i++) {
-        var monthIndex = i;
+    @for (int i = 1; i <= 12; i++) {
+        var month = i;
         <div class="block">
-            <NavLink class="no-link-design" href="@BuildLink(monthIndex)">
-                <span class="@GetMonthClasses(monthIndex)">@GetMonthName(monthIndex)</span>
+            <NavLink class="no-link-design" href="@BuildLink(month)">
+                <span class="@GetMonthClasses(month)">@GetMonthName(month)</span>
             </NavLink>
         </div>
     }
@@ -24,25 +24,25 @@
     [Parameter]
     public int? Month { get; set; }
 
-    private string GetMonthName(int monthIndex) {
-        return Enum.GetNames<Month>()[monthIndex];
+    private string GetMonthName(int month) {
+        return Enum.GetNames<Month>()[month-1];
     }
 
-    private string GetMonthClasses(int monthIndex) {
+    private string GetMonthClasses(int month) {
         var classList = "";
-        if (Year == DateTime.Now.Year && monthIndex > DateTime.Now.Month - 1) {
+        if (Year == DateTime.Now.Year && month > DateTime.Now.Month) {
             classList += "low-opac";
         }
-        if (Month != null && monthIndex == Month) {
+        if (Month != null && month == Month) {
             classList += " color-primary";
         }
         return classList;
     }
     
-    private string BuildLink(int monthIndex) {
-        if (monthIndex == -1) {
+    private string BuildLink(int month) {
+        if (month <= 0) {
             return "/year/" + Year;
         }
-        return "/year/" + Year + "/month/" + monthIndex;
+        return "/year/" + Year + "/month/" + month;
     }
 }

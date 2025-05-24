@@ -152,6 +152,14 @@ new Chart("category-sums-chart", {
     private async Task InitializeLineGraph() {
         IncomeSumsPerMonth = await TransactionService.GetTotalSumFromYearAndAllMonthsAsync(TransactionType.Income, Year);
         OutcomeSumsPerMonth = await TransactionService.GetTotalSumFromYearAndAllMonthsAsync(TransactionType.Outcome, Year);
+
+        while (IncomeSumsPerMonth.Count < 12) {
+            IncomeSumsPerMonth.Add(0);
+        }
+
+        while (OutcomeSumsPerMonth.Count < 12) {
+            OutcomeSumsPerMonth.Add(0);
+        }
     }
     
     private void InitializeProfitCards() {

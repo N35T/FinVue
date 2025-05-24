@@ -1,0 +1,24 @@
+﻿@using FinVue.Core.DataTransferObjects
+@using FinVue.Core.Services
+@using FinVue.Core.Entities
+@using FinVue.Core.Enums
+@using System.Globalization
+
+@inject CategoryService CategoryService
+
+<div class="">
+    <h1 class="color-primary">New Category</h1>
+    <div class="inputs">
+        <div>
+            <div class="input">
+                <label for="fname" class="low-opac">Name</label>
+                <input id="fname" required />
+            </div>
+            <div class="input">
+                <label for="fcolor" class="low-opac">Color</label>
+                <input id="fcolor" type="color" required />
+            </div>
+        </div>
+    </div>
+</div>
+

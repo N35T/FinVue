@@ -1,0 +1,41 @@
+﻿h1 {
+    padding-left: 10px;
+}
+
+.inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.input {
+    display: grid;
+    padding: 10px;
+}
+
+input, select, .currencyinput {
+    background: none;
+    border: none;
+    border-bottom: 2px solid var(--background);
+    font-size: var(--font-size--medium);
+    margin-top: 10px;
+    color: var(--text);
+    color-scheme: dark;
+}
+
+    input:focus-visible, select:focus-visible {
+        outline: none;
+        border-bottom: 2px solid var(--primary);
+    }
+
+option {
+    background: var(--background);
+    border: 2px solid var(--primary);
+}
+
+.currencyinput {
+    margin: 0;
+}
+
+.currencyinput input {
+    border: none;
+}
