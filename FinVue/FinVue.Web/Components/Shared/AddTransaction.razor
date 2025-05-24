@@ -5,6 +5,7 @@
 @using System.Globalization
 
 @inject CategoryService CategoryService
+@inject UserService UserService
 
 <div class="">
     <h1 class="color-primary">Neue Transaktion</h1>
@@ -37,7 +38,11 @@
                 </div>
                 <div class="input">
                     <label for="fpayinguser" class="low-opac">Betroffener Nutzer</label>
-                    <input id="fpayinguser" required />
+                    <select name="fpayinguser" id="fpayinguser">
+                        @foreach (var user in Users) {
+                            <option value="@user">@user.Username</option>
+                        }
+                    </select>
                 </div>
                 <div class="input">
                     <label for="fpaymethod" class="low-opac">Zahlungsmethode</label>
@@ -106,14 +111,11 @@
 
     protected override async Task OnInitializedAsync() {
         await base.OnInitializedAsync();
-
         InitializeDropdowns();
-
     }
 
     private async void InitializeDropdowns() {
-        //Users
+        Users = await UserService.GetAllUsersAsync();
         Categories = await CategoryService.GetAllCategoriesAsync();
-
     }
 }
