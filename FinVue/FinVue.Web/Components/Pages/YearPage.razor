@@ -41,6 +41,8 @@
 <script>
 const income = JSON.parse("@JsonConvert.SerializeObject(IncomeSumsPerMonth)").map(e => e / 100);
 const outcome = JSON.parse("@JsonConvert.SerializeObject(OutcomeSumsPerMonth)").map(e => e / 100);
+const profit = JSON.parse("@JsonConvert.SerializeObject(ProfitSumsPerMonth)").map(e => e / 100);
+const cumProfit = JSON.parse("@JsonConvert.SerializeObject(CumulatedProfitPerMonth)").map(e => e / 100);
 const months = ["Jan", "Feb", "Mär", "Mai", "Apr", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
 
 const sumByCategory = JSON.parse("@JsonConvert.SerializeObject(OutcomeByCategory)");
@@ -60,10 +62,15 @@ new Chart("profit-chart", {
       fill: false,
       label: "Einkommen"
     },{
-      data: income.map((e,i) => e-outcome[i]),
+      data: profit,
       borderColor: "#ede3e390",
       fill: false,
-      label: "Profit"
+      label: "Profit pro Monat"
+    },{
+        data: cumProfit,
+        borderColor: "#33aad6",
+        fill: false,
+        label: "Kumulierter Profit"
     }]
   },
   options: {
@@ -122,6 +129,8 @@ new Chart("category-sums-chart", {
     
     public List<int> IncomeSumsPerMonth { get; set; }
     public List<int> OutcomeSumsPerMonth { get; set; }
+    public int[] ProfitSumsPerMonth { get; set; }
+    public int[] CumulatedProfitPerMonth { get; set; }
     
     public string TotalIncome { get; set; }
     public string AverageIncome { get; set; }
@@ -150,15 +159,24 @@ new Chart("category-sums-chart", {
     }
 
     private async Task InitializeLineGraph() {
-        IncomeSumsPerMonth = await TransactionService.GetTotalSumFromYearAndAllMonthsAsync(TransactionType.Einkommen, Year);
-        OutcomeSumsPerMonth = await TransactionService.GetTotalSumFromYearAndAllMonthsAsync(TransactionType.Ausgaben, Year);
-
-        while (IncomeSumsPerMonth.Count < 12) {
+        IncomeSumsPerMonth = await TransactionService.GetTotalSumFromYearAndAllRelevantMonthsAsync(TransactionType.Einkommen, Year);
+        OutcomeSumsPerMonth = await TransactionService.GetTotalSumFromYearAndAllRelevantMonthsAsync(TransactionType.Ausgaben, Year);
+        var maxLength = Math.Max(Math.Max(IncomeSumsPerMonth.Count, OutcomeSumsPerMonth.Count), 1);
+        while (IncomeSumsPerMonth.Count < maxLength) {
             IncomeSumsPerMonth.Add(0);
         }
 
-        while (OutcomeSumsPerMonth.Count < 12) {
+        while (OutcomeSumsPerMonth.Count < maxLength) {
             OutcomeSumsPerMonth.Add(0);
+        }
+
+        ProfitSumsPerMonth = new int[maxLength];        
+        CumulatedProfitPerMonth = new int[maxLength];
+        ProfitSumsPerMonth[0] = IncomeSumsPerMonth[0] - OutcomeSumsPerMonth[0];
+        CumulatedProfitPerMonth[0] = ProfitSumsPerMonth[0];
+        for (int i = 1; i < maxLength; ++i) {
+            ProfitSumsPerMonth[i] = IncomeSumsPerMonth[i] - OutcomeSumsPerMonth[i];
+            CumulatedProfitPerMonth[i] = CumulatedProfitPerMonth[i-1] + ProfitSumsPerMonth[i];
         }
     }
     

@@ -99,13 +99,18 @@ public class TransactionService {
             .SumAsync(e => e.ValueInCent);
     }
 
-    public Task<List<int>> GetTotalSumFromYearAndAllMonthsAsync(TransactionType type, int year) {
-        return _dbContext.Transactions
+    public async Task<List<int>> GetTotalSumFromYearAndAllRelevantMonthsAsync(TransactionType type, int year) {
+        var sumByMonths = await _dbContext.Transactions
             .Where(e => e.PayDate.Year == year && e.Type == type)
             .GroupBy(e => e.PayDate.Month)
             .OrderBy(e => e.Key)
-            .Select(e => e.Sum(t => t.ValueInCent))
+            .Select(e => new { Month = e.Key, Sum = e.Sum(t => t.ValueInCent) })
             .ToListAsync();
+
+        var lastMonth = sumByMonths.Max(x => x.Month);
+        return Enumerable.Range(1, lastMonth)
+            .Select(month => sumByMonths.FirstOrDefault(x => x.Month == month)?.Sum ?? 0)
+            .ToList();
     }
 
     public Task<int> GetTotalSumFromYearAndMonthAsync(TransactionType type, int year, int month) {
