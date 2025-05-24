@@ -7,7 +7,7 @@
 @inject CategoryService CategoryService
 
 <div class="">
-    <h1 class="color-primary">New Transaction</h1>
+    <h1 class="color-primary">Neue Transaktion</h1>
     
     @if (Rt is null) {
         <div class="inputs">
@@ -17,11 +17,11 @@
                     <input id="fname" required />
                 </div>
                 <div class="input">
-                    <label for="fpaydate" class="low-opac">Pay Date</label>
+                    <label for="fpaydate" class="low-opac">Zahlungsdatum</label>
                     <input id="fpaydate" type="date" required />
                 </div>
                 <div class="input">
-                    <label for="ftype" class="low-opac">Type</label>
+                    <label for="ftype" class="low-opac">Typ</label>
                     <select name="ftype" id="ftype" required>
                         @foreach (var type in Enum.GetValues(typeof(TransactionType))) {
                             <option value="@type">@type</option>
@@ -31,16 +31,16 @@
             </div>
             <div>
                 <div class="input">
-                    <label for="fvalue" class="low-opac">Value</label>
+                    <label for="fvalue" class="low-opac">Volumen</label>
 
                     <span class="currencyinput"><input id="fvalue" required />€</span>
                 </div>
                 <div class="input">
-                    <label for="fpayinguser" class="low-opac">Paying User</label>
+                    <label for="fpayinguser" class="low-opac">Betroffener Nutzer</label>
                     <input id="fpayinguser" required />
                 </div>
                 <div class="input">
-                    <label for="fpaymethod" class="low-opac">Pay Method</label>
+                    <label for="fpaymethod" class="low-opac">Zahlungsmethode</label>
                     <select name="fpaymethod" id="fpaymethod" required>
                         @foreach (var method in Enum.GetValues(typeof(PaymentMethod))) {
                             <option value="@method">@method</option>
@@ -50,7 +50,7 @@
             </div>
 
             <div class="input span-cols">
-                <label for="fcategory" class="low-opac">Category</label>
+                <label for="fcategory" class="low-opac">Kategorie</label>
                 <select name="fcategory" id="fcategory">
                     @foreach(var cat in Categories) {
                         <option style="color:#@(cat.CategoryColor.ToString())" value="@cat">@cat.Name</option>
@@ -66,31 +66,31 @@
                     <input id="fname" class="low-opac" readonly value="@Rt.Name" />
                 </div>
                 <div class="input">
-                    <label for="fpaydate" class="low-opac">Pay Date</label>
+                    <label for="fpaydate" class="low-opac">Zahlungsdatum</label>
                     <input id="fpaydate" type="date" required value="@DateTime.Now.Date.ToString("yyyy-MM-dd")" />
                 </div>
                 <div class="input">
-                    <label for="ftype" class="low-opac">Type</label>
+                    <label for="ftype" class="low-opac">Typ</label>
                     <input id="ftype" class="low-opac" readonly value="@Rt.Type" />
                 </div>
             </div>
             <div>
                 <div class="input">
-                    <label for="fvalue" class="low-opac">Value</label>
+                    <label for="fvalue" class="low-opac">Volumen</label>
                     <input id="fvalue" required value="@Rt.ValueInCent" />
                 </div>
                 <div class="input">
-                    <label for="fpayinguser" class="low-opac">Paying User</label>
+                    <label for="fpayinguser" class="low-opac">Betroffener Nutzer</label>
                     <input id="fpayinguser" class="low-opac" readonly />
                 </div>
                 <div class="input">
-                    <label for="fpaymethod" class="low-opac">Pay Method</label>
-                    <input id="fpaymethod" class="low-opac" readonly value="@PaymentMethod.Transfer" />
+                    <label for="fpaymethod" class="low-opac">Zahlungsmethode</label>
+                    <input id="fpaymethod" class="low-opac" readonly value="@PaymentMethod.Überweisung" />
                 </div>
             </div>
 
             <div class="input span-cols">
-                <label for="fcategory" class="low-opac">Category</label>
+                <label for="fcategory" class="low-opac">Kategorie</label>
                 <input id="fcategory" class="low-opac" readonly value="@Rt.Category?.Name" />
             </div>
         </div>

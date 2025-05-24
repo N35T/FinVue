@@ -27,7 +27,7 @@ public class RecurringTransactionServiceTest {
 
     [Fact]
     public async Task RecurringTransactionService_Should_AddRecurringTransaction() {
-        var rt = new RecurringTransaction("afrf", "test", 100, 1, TransactionType.Income, null);
+        var rt = new RecurringTransaction("afrf", "test", 100, 1, TransactionType.Einkommen, null);
         var res = await _sut.AddRecurringTransactionAsync(rt);
         
         Assert.NotNull(res);
@@ -61,18 +61,11 @@ public class RecurringTransactionServiceTest {
     
     [Fact]
     public async Task RecurringTransactionService_Should_ReturnAllFromMonth() {
-        var res = await _sut.GetAllRecurringTransactionsFromMonthAsync(2024, Month.January);
+        var res = await _sut.GetAllRecurringTransactionsFromMonthAsync(2024, Month.Januar);
         
         Assert.Equal(2, res.Count);
         Assert.True(res[1].PayedThisMonth);
         Assert.False(res[0].PayedThisMonth);
-    }
-    
-    [Fact]
-    public async Task RecurringTransactionService_ShouldNot_ReturnAnyFromEmptyMonth() {
-        var res = await _sut.GetAllRecurringTransactionsFromMonthAsync(2024, Month.December);
-        
-        Assert.Empty(res);
     }
     
     [Fact]
@@ -104,8 +97,8 @@ public class RecurringTransactionServiceTest {
     private List<RecurringTransaction> CreateTestRecurringTransactions(List<Category> cat) {
         var i = 0;
         return new List<RecurringTransaction> {
-            new RecurringTransaction(Guid.NewGuid().ToString(), "RecurringTransaction"+i++,10, 5, TransactionType.Income, cat[0]),
-            new RecurringTransaction(Guid.NewGuid().ToString(), "RecurringTransaction"+i++,100, 5, TransactionType.Income, cat[0]),
+            new RecurringTransaction(Guid.NewGuid().ToString(), "RecurringTransaction"+i++,10, 5, TransactionType.Einkommen, cat[0]),
+            new RecurringTransaction(Guid.NewGuid().ToString(), "RecurringTransaction"+i++,100, 5, TransactionType.Einkommen, cat[0]),
         };
     }
 

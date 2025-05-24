@@ -25,13 +25,13 @@
 <div class="group-table back2">
     @if (IsPlanned) {
         @if (RecurringTransactions is null) {
-            <h1>No Planned Transactions Available</h1>
+            <h1>Keine geplanten Transaktionen verfügbar!</h1>
         } else {
-            <h1 class="group planned">Outstanding</h1>
+            <h1 class="group planned">Ausstehend</h1>
             <div class="transaction-list active">
                 @foreach (RecurringTransactionDto rt in RecurringTransactions.Where(r => r.PayedThisMonth is false)) {
                     string type = "color-primary";
-                    @if (rt.Type == TransactionType.Outcome) type = "color-red";
+                    @if (rt.Type == TransactionType.Ausgaben) type = "color-red";
                     <div class="transaction">
                         <div>
                             <h3>@rt.Name</h3>
@@ -39,18 +39,18 @@
                         </div>
                         <div>
                             <h3>@NumberToCurrency(rt.ValueInCent)</h3>
-                            <p class="low-opac">Every @rt.MonthFrequency Months</p>
-                            <button class="color-primary complete" onclick="openDialog('@rt.Id')">Done</button>
+                            <p class="low-opac">Alle @rt.MonthFrequency Monate</p>
+                            <button class="color-primary complete" onclick="openDialog('@rt.Id')">Bezahlt</button>
                             <dialog class="back2 no-link-design" id="@rt.Id">
                                 <button class="align-right color-red close" onclick="document.getElementById('@rt.Id').close()">x</button>
                                 <AddTransaction Rt="@rt"></AddTransaction>
-                                <button class="align-right color-primary" onclick="document.getElementById('@rt.Id').close()">Confirm</button>
+                                <button class="align-right color-primary" onclick="document.getElementById('@rt.Id').close()">Bestätigen</button>
                             </dialog>
                         </div>
                     </div>
                 }
             </div>
-            <h1 class="group planned">Completed</h1>
+            <h1 class="group planned">Bezahlt</h1>
             <div class="transaction-list active">
                 @foreach (RecurringTransactionDto rt in RecurringTransactions.Where(r => r.PayedThisMonth is true)) {
                     <div class="transaction">
@@ -60,14 +60,14 @@
                         </div>
                         <div>
                             <h3 class="low-opac">@NumberToCurrency(rt.ValueInCent)</h3>
-                            <p class="low-opac">Every @rt.MonthFrequency Months</p>
+                            <p class="low-opac">Alle @rt.MonthFrequency Monate</p>
                         </div>
                     </div>
                 }
             </div>
         }
     } else if (TransactionsByCategory is null || TransactionsByCategory.IsNullOrEmpty()) {
-        <h1>No Transactions Available</h1>
+        <h1>Keine Transaktionen verfügbar!</h1>
     } else {
         @foreach (TransactionsByCategoryDto group in TransactionsByCategory) {
             <h1 class="group" style="color: #@group.CategoryColor" onclick="toggleTransactionList(this, '@(Type + "-" + group.CategoryName)')"><span>></span> @group.CategoryName <span class="low-opac">@NumberToCurrency(group.TotalSum)</span></h1>

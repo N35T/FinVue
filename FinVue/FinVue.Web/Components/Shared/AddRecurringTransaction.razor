@@ -7,7 +7,7 @@
 @inject CategoryService CategoryService
 
 <div class="">
-    <h1 class="color-primary">New Recurring Transaction</h1>
+    <h1 class="color-primary">Neue geplante Transaktion</h1>
     
     <div class="inputs">
         <div>
@@ -16,11 +16,7 @@
                 <input id="fname" required />
             </div>
             <div class="input">
-                <label for="fpaydate" class="low-opac">Next Execute</label>
-                <input id="fpaydate" type="month" required />
-            </div>
-            <div class="input">
-                <label for="ftype" class="low-opac">Type</label>
+                <label for="ftype" class="low-opac">Typ</label>
                 <select name="ftype" id="ftype" required>
                     @foreach (var type in Enum.GetValues(typeof(TransactionType))) {
                         <option value="@type">@type</option>
@@ -30,21 +26,21 @@
         </div>
         <div>
             <div class="input">
-                <label for="fvalue" class="low-opac">Value</label>
+                <label for="fvalue" class="low-opac">Volumen</label>
                 <span class="currencyinput"><input id="fvalue" required />€</span>
             </div>
             <div class="input">
-                <label for="fmonthfrequency" class="low-opac">Month Frequency</label>
+                <label for="fmonthfrequency" class="low-opac">Monatsfrequenz</label>
                 <input id="fmonthfrequency" type="number" min="1" required />
             </div>
             <div class="input">
-                <label for="fpaymethod" class="low-opac">Pay Method</label>
-                <input id="fpaymethod" class="low-opac" value="@PaymentMethod.Transfer" required readonly />
+                <label for="fpaymethod" class="low-opac">Zahlungsmethode</label>
+                <input id="fpaymethod" class="low-opac" value="@PaymentMethod.Überweisung" required readonly />
             </div>
         </div>
 
         <div class="input span-cols">
-            <label for="fcategory" class="low-opac">Category</label>
+            <label for="fcategory" class="low-opac">Kategorie</label>
             <select name="fcategory" id="fcategory">
                 @foreach (var cat in Categories) {
                     <option style="color:#@(cat.CategoryColor.ToString())" value="@cat">@cat.Name</option>
