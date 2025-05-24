@@ -36,13 +36,13 @@
         </div>
         <div>
             <div id="planned-table" class="table active">
-                <TransactionTable RecurringTransactions="@RecurringTransactions" Planned="true" />
+                <TransactionTable RecurringTransactions="@RecurringTransactions" Type="planned"/>
             </div>
             <div id="income-table" class="table">
-                <TransactionTable TransactionsByCategory="@IncomeTransactions" />
+                <TransactionTable TransactionsByCategory="@IncomeTransactions" Type="@nameof(TransactionType.Income)"/>
             </div>
             <div id="outcome-table" class="table">
-                <TransactionTable TransactionsByCategory="@OutcomeTransactions" />
+                <TransactionTable TransactionsByCategory="@OutcomeTransactions" Type="@nameof(TransactionType.Outcome)" />
             </div>
         </div>
     </div>
@@ -93,14 +93,14 @@
     }
 
     private async void InitializeTransactionTables() {
-        IncomeTransactions = await TransactionService.GetAllTransactionsFromMonthAndYearAndTypeGroupByCategoryAsync(SelectedMonth + 1, Year, TransactionType.Income);
-        OutcomeTransactions = await TransactionService.GetAllTransactionsFromMonthAndYearAndTypeGroupByCategoryAsync(SelectedMonth + 1, Year, TransactionType.Outcome);
+        IncomeTransactions = await TransactionService.GetAllTransactionsFromMonthAndYearAndTypeGroupByCategoryAsync(SelectedMonth, Year, TransactionType.Income);
+        OutcomeTransactions = await TransactionService.GetAllTransactionsFromMonthAndYearAndTypeGroupByCategoryAsync(SelectedMonth, Year, TransactionType.Outcome);
         RecurringTransactions = await RecurringTransactionService.GetAllRecurringTransactionsFromMonthAsync(Year, (Month)SelectedMonth);
     }
     
     private async void InitializeProfitCards() {
-        var income = await TransactionService.GetTotalSumFromYearAndMonthAsync(TransactionType.Income, Year, SelectedMonth + 1) / 100.0;
-        var outcome = await TransactionService.GetTotalSumFromYearAndMonthAsync(TransactionType.Outcome, Year, SelectedMonth + 1) / 100.0;
+        var income = await TransactionService.GetTotalSumFromYearAndMonthAsync(TransactionType.Income, Year, SelectedMonth) / 100.0;
+        var outcome = await TransactionService.GetTotalSumFromYearAndMonthAsync(TransactionType.Outcome, Year, SelectedMonth) / 100.0;
 
         TotalIncome = income.ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
         TotalOutcome = outcome.ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));

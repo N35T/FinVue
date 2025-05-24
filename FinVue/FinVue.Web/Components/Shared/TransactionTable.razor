@@ -1,8 +1,10 @@
-﻿@using FinVue.Core.DataTransferObjects
+﻿@using System.Collections.ObjectModel
+@using FinVue.Core.DataTransferObjects
 @using FinVue.Core.Services
 @using FinVue.Core.Entities
 @using FinVue.Core.Enums
 @using System.Globalization
+@using Microsoft.IdentityModel.Tokens
 
 <script>
     function toggleTransactionList(group, id) {
@@ -21,7 +23,7 @@
 </script>
 
 <div class="group-table back2">
-    @if (Planned) {
+    @if (IsPlanned) {
         @if (RecurringTransactions is null) {
             <h1>No Planned Transactions Available</h1>
         } else {
@@ -64,12 +66,12 @@
                 }
             </div>
         }
-    } else if (TransactionsByCategory is null) {
+    } else if (TransactionsByCategory is null || TransactionsByCategory.IsNullOrEmpty()) {
         <h1>No Transactions Available</h1>
     } else {
         @foreach (TransactionsByCategoryDto group in TransactionsByCategory) {
-            <h1 class="group" style="color: #@group.CategoryColor" onclick="toggleTransactionList(this, '@group.CategoryName')"><span>></span> @group.CategoryName <span class="low-opac">@NumberToCurrency(group.TotalSum)</span></h1>
-            <div class="transaction-list" id="@group.CategoryName">
+            <h1 class="group" style="color: #@group.CategoryColor" onclick="toggleTransactionList(this, '@(Type + "-" + group.CategoryName)')"><span>></span> @group.CategoryName <span class="low-opac">@NumberToCurrency(group.TotalSum)</span></h1>
+            <div class="transaction-list" id="@(Type + "-" + group.CategoryName)">
                 @foreach (Transaction t in group.Transactions) {
                     <div class="transaction">
                         <div>
@@ -96,8 +98,9 @@
     [Parameter]
     public List<RecurringTransactionDto>? RecurringTransactions { get; set; }
 
-    [Parameter]
-    public bool Planned { get; set; } = false;
+    [Parameter] public string Type { get; set; } = string.Empty;
+
+    private bool IsPlanned => "planned".Equals(Type);
 
     public string NumberToCurrency(int valueInCent) {
         return (valueInCent/100.0).ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
