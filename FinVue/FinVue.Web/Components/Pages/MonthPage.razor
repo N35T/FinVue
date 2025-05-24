@@ -19,30 +19,30 @@
 <section id="view-content">
     <h1 class="span-cols align-left">@((Month)SelectedMonth) - @Year</h1>
     <div>
-        <ProfitCard Title="Total Income" Value="@TotalIncome"/>
+        <ProfitCard Title="Einkommen (Gesamt)" Value="@TotalIncome"/>
     </div>
     <div>
-        <ProfitCard Title="Total Outcome" ReverseColors="true" Value="@TotalOutcome"/>
+        <ProfitCard Title="Ausgaben (Gesamt)" ReverseColors="true" Value="@TotalOutcome"/>
     </div>
     <div>
-        <ProfitCard Title="Total Profit" Value="@TotalProfit"/>
+        <ProfitCard Title="Profit (Gesamt)" Value="@TotalProfit"/>
     </div>
 
     <div class ="span-cols align-left" style="width: 100%">
         <div class="buttons">
-            <button id="planned" onclick="switchTableTo('planned')" class="back2">Planned Transactions</button>
-            <button id="income" onclick="switchTableTo('income')">Income</button>
-            <button id="outcome" onclick="switchTableTo('outcome')">Outcome</button>
+            <button id="planned" onclick="switchTableTo('planned')" class="back2">Geplante Transaktionen</button>
+            <button id="income" onclick="switchTableTo('income')">Einkommen</button>
+            <button id="outcome" onclick="switchTableTo('outcome')">Ausgaben</button>
         </div>
         <div>
             <div id="planned-table" class="table active">
                 <TransactionTable RecurringTransactions="@RecurringTransactions" Type="planned"/>
             </div>
             <div id="income-table" class="table">
-                <TransactionTable TransactionsByCategory="@IncomeTransactions" Type="@nameof(TransactionType.Income)"/>
+                <TransactionTable TransactionsByCategory="@IncomeTransactions" Type="@nameof(TransactionType.Einkommen)"/>
             </div>
             <div id="outcome-table" class="table">
-                <TransactionTable TransactionsByCategory="@OutcomeTransactions" Type="@nameof(TransactionType.Outcome)" />
+                <TransactionTable TransactionsByCategory="@OutcomeTransactions" Type="@nameof(TransactionType.Ausgaben)" />
             </div>
         </div>
     </div>
@@ -93,14 +93,14 @@
     }
 
     private async void InitializeTransactionTables() {
-        IncomeTransactions = await TransactionService.GetAllTransactionsFromMonthAndYearAndTypeGroupByCategoryAsync(SelectedMonth, Year, TransactionType.Income);
-        OutcomeTransactions = await TransactionService.GetAllTransactionsFromMonthAndYearAndTypeGroupByCategoryAsync(SelectedMonth, Year, TransactionType.Outcome);
+        IncomeTransactions = await TransactionService.GetAllTransactionsFromMonthAndYearAndTypeGroupByCategoryAsync(SelectedMonth, Year, TransactionType.Einkommen);
+        OutcomeTransactions = await TransactionService.GetAllTransactionsFromMonthAndYearAndTypeGroupByCategoryAsync(SelectedMonth, Year, TransactionType.Ausgaben);
         RecurringTransactions = await RecurringTransactionService.GetAllRecurringTransactionsFromMonthAsync(Year, (Month)SelectedMonth);
     }
     
     private async void InitializeProfitCards() {
-        var income = await TransactionService.GetTotalSumFromYearAndMonthAsync(TransactionType.Income, Year, SelectedMonth) / 100.0;
-        var outcome = await TransactionService.GetTotalSumFromYearAndMonthAsync(TransactionType.Outcome, Year, SelectedMonth) / 100.0;
+        var income = await TransactionService.GetTotalSumFromYearAndMonthAsync(TransactionType.Einkommen, Year, SelectedMonth) / 100.0;
+        var outcome = await TransactionService.GetTotalSumFromYearAndMonthAsync(TransactionType.Ausgaben, Year, SelectedMonth) / 100.0;
 
         TotalIncome = income.ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
         TotalOutcome = outcome.ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));

@@ -16,20 +16,20 @@
 
 @inject TransactionService TransactionService
 
-<PageTitle>@Year - Dashboard</PageTitle>
+<PageTitle>@Year - Übersicht</PageTitle>
 
 <SideNav Year="@Year" />
 
 <section id="view-content">
-    <h1 class="span-cols align-left category-select">All Categories</h1>
+    <h1 class="span-cols align-left category-select">Alle Kategorien</h1>
     <div>
-        <ProfitCard Title="Total Income" Value="@TotalIncome" AverageValue="@AverageIncome"/>
+        <ProfitCard Title="Einkommen (Gesamt)" Value="@TotalIncome" AverageValue="@AverageIncome"/>
     </div>
     <div>
-        <ProfitCard Title="Total Outcome" ReverseColors="true" Value="@TotalOutcome" AverageValue="@AverageOutcome"/>
+        <ProfitCard Title="Ausgaben (Gesamt)" ReverseColors="true" Value="@TotalOutcome" AverageValue="@AverageOutcome"/>
     </div>
     <div>
-    <ProfitCard Title="Total Profit" Value="@TotalProfit" AverageValue="@AverageProfit"/>
+    <ProfitCard Title="Profit (Gesamt)" Value="@TotalProfit" AverageValue="@AverageProfit"/>
     </div>
     
     
@@ -41,7 +41,7 @@
 <script>
 const income = JSON.parse("@JsonConvert.SerializeObject(IncomeSumsPerMonth)").map(e => e / 100);
 const outcome = JSON.parse("@JsonConvert.SerializeObject(OutcomeSumsPerMonth)").map(e => e / 100);
-const months = ["Jan", "Feb", "Mar", "May", "Apr", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"];
+const months = ["Jan", "Feb", "Mär", "Mai", "Apr", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
 
 const sumByCategory = JSON.parse("@JsonConvert.SerializeObject(OutcomeByCategory)");
 
@@ -53,12 +53,12 @@ new Chart("profit-chart", {
       data: outcome,
       borderColor: "#ac4d4d",
       fill: false,
-      label: "Outcome"
+      label: "Ausgaben"
     },{
       data: income,
       borderColor: "#81a975",
       fill: false,
-      label: "Income"
+      label: "Einkommen"
     },{
       data: income.map((e,i) => e-outcome[i]),
       borderColor: "#ede3e390",
@@ -92,7 +92,7 @@ new Chart("category-sums-chart", {
         data: {
             labels: sumByCategory.map(e => e.CategoryName),
             datasets: [{
-            label: 'My First Dataset',
+            label: 'Kategorien',
             data: sumByCategory.map(e => e.TotalSum / 100),
             backgroundColor: sumByCategory.map(e => "#" + e.CategoryColor.Hex),
             hoverOffset: 4
@@ -146,12 +146,12 @@ new Chart("category-sums-chart", {
     }
 
     private async Task InitializeCakeDiagram() {
-        OutcomeByCategory = await TransactionService.GetTotalSumsFromYearGroupedByCategoryAsync(Year, TransactionType.Outcome);
+        OutcomeByCategory = await TransactionService.GetTotalSumsFromYearGroupedByCategoryAsync(Year, TransactionType.Ausgaben);
     }
 
     private async Task InitializeLineGraph() {
-        IncomeSumsPerMonth = await TransactionService.GetTotalSumFromYearAndAllMonthsAsync(TransactionType.Income, Year);
-        OutcomeSumsPerMonth = await TransactionService.GetTotalSumFromYearAndAllMonthsAsync(TransactionType.Outcome, Year);
+        IncomeSumsPerMonth = await TransactionService.GetTotalSumFromYearAndAllMonthsAsync(TransactionType.Einkommen, Year);
+        OutcomeSumsPerMonth = await TransactionService.GetTotalSumFromYearAndAllMonthsAsync(TransactionType.Ausgaben, Year);
 
         while (IncomeSumsPerMonth.Count < 12) {
             IncomeSumsPerMonth.Add(0);
