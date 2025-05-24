@@ -27,7 +27,7 @@ public class RecurringTransactionServiceTest {
 
     [Fact]
     public async Task RecurringTransactionService_Should_AddRecurringTransaction() {
-        var rt = new RecurringTransaction("afrf", "test", 100, 1, Month.January, TransactionType.Income, null);
+        var rt = new RecurringTransaction("afrf", "test", 100, 1, TransactionType.Income, null);
         var res = await _sut.AddRecurringTransactionAsync(rt);
         
         Assert.NotNull(res);
@@ -80,12 +80,10 @@ public class RecurringTransactionServiceTest {
         var rt = _dbContext.RecurringTransactions.First();
         var user = _dbContext.Users.First();
         var monthFrequency = rt.MonthFrequency;
-        var currentMonth = rt.NextExecute;
         
         var res = await _sut.MarkRecurringTransactionAsDone(rt.Id, new DateOnly(2024,1,1), user);
         
         Assert.NotNull(res);
-        Assert.Equal(Enum.Parse<Month>(((int)currentMonth + monthFrequency).ToString()), rt.NextExecute);
         Assert.Equal(1, res.PayDate.Month);
         Assert.Equal(1, res.PayDate.Day);
         Assert.Equal(2024, res.PayDate.Year);
@@ -106,8 +104,8 @@ public class RecurringTransactionServiceTest {
     private List<RecurringTransaction> CreateTestRecurringTransactions(List<Category> cat) {
         var i = 0;
         return new List<RecurringTransaction> {
-            new RecurringTransaction(Guid.NewGuid().ToString(), "RecurringTransaction"+i++,10, 5, Month.January, TransactionType.Income, cat[0]),
-            new RecurringTransaction(Guid.NewGuid().ToString(), "RecurringTransaction"+i++,100, 5, Month.Febuary, TransactionType.Income, cat[0]),
+            new RecurringTransaction(Guid.NewGuid().ToString(), "RecurringTransaction"+i++,10, 5, TransactionType.Income, cat[0]),
+            new RecurringTransaction(Guid.NewGuid().ToString(), "RecurringTransaction"+i++,100, 5, TransactionType.Income, cat[0]),
         };
     }
 
