@@ -1,0 +1,47 @@
+name: Auto Label Issues
+
+on:
+  issues:
+    types: [assigned, closed]
+  pull_request:
+    types: [linked]
+
+permissions:
+  issues: write  # Needed to add/remove labels
+
+jobs:
+  label_on_assigned:
+    if: github.event_name == 'issues' && github.event.action == 'assigned'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add 'In Arbeit' label
+        run: gh issue edit "$ISSUE_URL" --add-label "In Arbeit"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+
+  label_on_pr_linked:
+    if: github.event_name == 'pull_request' && github.event.action == 'linked'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract issue numbers and add 'In Review' label
+        run: |
+          issue_refs=$(echo "${{ github.event.pull_request.body }}" | grep -oE '#[0-9]+' | tr -d '#')
+          for issue_number in $issue_refs; do
+            gh issue edit "$REPO_URL/issues/$issue_number" --add-label "In Review"
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_URL: https://github.com/${{ github.repository }}
+
+  remove_labels_on_close:
+    if: github.event_name == 'issues' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove 'In Arbeit' and 'In Review' labels
+        run: |
+          gh issue edit "$ISSUE_URL" --remove-label "In Arbeit" || true
+          gh issue edit "$ISSUE_URL" --remove-label "In Review" || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
