@@ -78,8 +78,8 @@ public class TransactionServiceTest : IDisposable, IAsyncDisposable {
     public async Task TransactionService_Should_AddTransaction() {
         var category = _dbContext.Categories.First();
         var user = _dbContext.Users.First();
-        var trans = new Transaction("balbal", "Test", 10000, new DateOnly(1999,1,1), TransactionType.Outcome,
-            PaymentMethod.Card, user, user, category);
+        var trans = new Transaction("balbal", "Test", 10000, new DateOnly(1999,1,1), TransactionType.Ausgaben,
+            PaymentMethod.Girokarte, user, user, category);
         
         var found = await _sut.AddTransactionAsync(trans);
         
@@ -113,21 +113,21 @@ public class TransactionServiceTest : IDisposable, IAsyncDisposable {
     
     [Fact]
     public async Task TransactionService_Should_GetTotalOutcomeSumFromYear() {
-        var res = await _sut.GetTotalSumFromYearAsync(TransactionType.Outcome, 2024);
+        var res = await _sut.GetTotalSumFromYearAsync(TransactionType.Ausgaben, 2024);
         
         Assert.Equal(2605, res);
     }
     
     [Fact]
     public async Task TransactionService_Should_GetTotalIncomeSumFromYear() {
-        var res = await _sut.GetTotalSumFromYearAsync(TransactionType.Income, 2024);
+        var res = await _sut.GetTotalSumFromYearAsync(TransactionType.Einkommen, 2024);
         
         Assert.Equal(598, res);
     }
     
     [Fact]
     public async Task TransactionService_Should_GetTotalOutcomeSumFromYearByMonth() {
-        var res = await _sut.GetTotalSumFromYearAndAllMonthsAsync(TransactionType.Outcome, 2024);
+        var res = await _sut.GetTotalSumFromYearAndAllMonthsAsync(TransactionType.Ausgaben, 2024);
         
         Assert.Equal(105, res[0]);
         Assert.Equal(1697, res[1]);
@@ -136,7 +136,7 @@ public class TransactionServiceTest : IDisposable, IAsyncDisposable {
     
     [Fact]
     public async Task TransactionService_Should_GetTotalIncomeSumFromYearByMonth() {
-        var res = await _sut.GetTotalSumFromYearAndAllMonthsAsync(TransactionType.Income, 2024);
+        var res = await _sut.GetTotalSumFromYearAndAllMonthsAsync(TransactionType.Einkommen, 2024);
         
         Assert.Equal(50, res[0]);
         Assert.Equal(340, res[1]);
@@ -145,14 +145,14 @@ public class TransactionServiceTest : IDisposable, IAsyncDisposable {
     
     [Fact]
     public async Task TransactionService_Should_GetTotalOutcomeSumFromYearAndMonth() {
-        var res = await _sut.GetTotalSumFromYearAndMonthAsync(TransactionType.Outcome, 2024, 1);
+        var res = await _sut.GetTotalSumFromYearAndMonthAsync(TransactionType.Ausgaben, 2024, 1);
         
         Assert.Equal(105, res);
     }
     
     [Fact]
     public async Task TransactionService_Should_GetTotalIncomeSumFromYearAndMonth() {
-        var res = await _sut.GetTotalSumFromYearAndMonthAsync(TransactionType.Income, 2024, 1);
+        var res = await _sut.GetTotalSumFromYearAndMonthAsync(TransactionType.Einkommen, 2024, 1);
         
         Assert.Equal(50, res);
     }
@@ -160,7 +160,7 @@ public class TransactionServiceTest : IDisposable, IAsyncDisposable {
     [Fact]
     public async Task TransactionService_Should_GetTotalOutcomeSumFromYearAndCategory() {
         var category = _dbContext.Categories.First(e => e.Name == "Category1");
-        var res = await _sut.GetTotalSumFromYearAndCategoryAsync(TransactionType.Outcome, 2024, category.Id);
+        var res = await _sut.GetTotalSumFromYearAndCategoryAsync(TransactionType.Ausgaben, 2024, category.Id);
         
         Assert.Equal(0, res);
     }
@@ -168,7 +168,7 @@ public class TransactionServiceTest : IDisposable, IAsyncDisposable {
     [Fact]
     public async Task TransactionService_Should_GetTotalIncomeSumFromYearAndCategory() {
         var category = _dbContext.Categories.First(e => e.Name == "Category1");
-        var res = await _sut.GetTotalSumFromYearAndCategoryAsync(TransactionType.Income, 2024, category.Id);
+        var res = await _sut.GetTotalSumFromYearAndCategoryAsync(TransactionType.Einkommen, 2024, category.Id);
         
         Assert.Equal(350, res);
     }
@@ -176,7 +176,7 @@ public class TransactionServiceTest : IDisposable, IAsyncDisposable {
     [Fact]
     public async Task TransactionService_Should_GetTotalOutcomeSumFromYearAndMonthAndCategory() {
         var category = _dbContext.Categories.First(e => e.Name == "Category2");
-        var res = await _sut.GetTotalSumFromYearAndMonthAndCategoryAsync(TransactionType.Outcome, 2024, 2,category.Id);
+        var res = await _sut.GetTotalSumFromYearAndMonthAndCategoryAsync(TransactionType.Ausgaben, 2024, 2,category.Id);
         
         Assert.Equal(610, res);
     }
@@ -184,7 +184,7 @@ public class TransactionServiceTest : IDisposable, IAsyncDisposable {
     [Fact]
     public async Task TransactionService_Should_GetTotalIncomeSumFromYearAndMonthAndCategory() {
         var category = _dbContext.Categories.First(e => e.Name == "Category2");
-        var res = await _sut.GetTotalSumFromYearAndMonthAndCategoryAsync(TransactionType.Income, 2024,  1,category.Id);
+        var res = await _sut.GetTotalSumFromYearAndMonthAndCategoryAsync(TransactionType.Einkommen, 2024,  1,category.Id);
         
         Assert.Equal(20, res);
     }
@@ -193,12 +193,12 @@ public class TransactionServiceTest : IDisposable, IAsyncDisposable {
     public async Task TransactionService_Should_GetTotalOutcomeSumsFromYearGroupedByCategory() {
         var user = _dbContext.Users.First();
         var newtrans = new Transaction(Guid.NewGuid().ToString(), "Transaction5623", 5023, new DateOnly(2024,9,6),
-            TransactionType.Outcome, PaymentMethod.Card, user, user, null);
+            TransactionType.Ausgaben, PaymentMethod.Girokarte, user, user, null);
         _dbContext.Transactions.Add(newtrans);
         await _dbContext.SaveChangesAsync();
         
         
-        var res = await _sut.GetTotalSumsFromYearGroupedByCategoryAsync(2024, TransactionType.Outcome);
+        var res = await _sut.GetTotalSumsFromYearGroupedByCategoryAsync(2024, TransactionType.Ausgaben);
         
         Assert.Equal(5, res.Count);
         var cat2 = res.Single(e => e.CategoryName == "Category2");
@@ -222,12 +222,12 @@ public class TransactionServiceTest : IDisposable, IAsyncDisposable {
     public async Task TransactionService_Should_GetTotalIncomeSumsFromYearGroupedByCategory() {
         var user = _dbContext.Users.First();
         var newtrans = new Transaction(Guid.NewGuid().ToString(), "Transaction5623", 5023, new DateOnly(2024,9,6),
-            TransactionType.Income, PaymentMethod.Card, user, user, null);
+            TransactionType.Einkommen, PaymentMethod.Girokarte, user, user, null);
         _dbContext.Transactions.Add(newtrans);
         await _dbContext.SaveChangesAsync();
         
         
-        var res = await _sut.GetTotalSumsFromYearGroupedByCategoryAsync(2024, TransactionType.Income);
+        var res = await _sut.GetTotalSumsFromYearGroupedByCategoryAsync(2024, TransactionType.Einkommen);
         
         Assert.Equal(5, res.Count);
         var cat1 = res.Single(e => e.CategoryName == "Category1");
@@ -251,18 +251,18 @@ public class TransactionServiceTest : IDisposable, IAsyncDisposable {
         var testUser = new User("blabla" ,"testuser");
         var i = 1;
         var transactions = new List<Transaction> {
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 10, new DateOnly(2023,1,4), TransactionType.Income, PaymentMethod.Card, testUser,testUser, categories[0]),
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 10, new DateOnly(2024,1,4), TransactionType.Income, PaymentMethod.Card, testUser,testUser, categories[0]),
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 20, new DateOnly(2024,1,6), TransactionType.Income, PaymentMethod.Card, testUser,testUser, categories[1]),
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 5, new DateOnly(2024,1,7), TransactionType.Outcome, PaymentMethod.Card, testUser,testUser, categories[2]),
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 100, new DateOnly(2024,1,7), TransactionType.Outcome, PaymentMethod.Card, testUser,testUser, categories[3]),
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 20, new DateOnly(2024,1,10), TransactionType.Income, PaymentMethod.Card, testUser,testUser, categories[4]),
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 340, new DateOnly(2024,2,3), TransactionType.Income, PaymentMethod.Card, testUser,testUser, categories[0]),
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 610, new DateOnly(2024,2,15), TransactionType.Outcome, PaymentMethod.Card, testUser,testUser, categories[1]),
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 1087, new DateOnly(2024,2,23), TransactionType.Outcome, PaymentMethod.Card, testUser,testUser, categories[2]),
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 102, new DateOnly(2024,3,1), TransactionType.Income, PaymentMethod.Card, testUser,testUser, categories[3]),
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 106, new DateOnly(2024,3,3), TransactionType.Income, PaymentMethod.Card, testUser,testUser, categories[4]),
-            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 803, new DateOnly(2024,3,6), TransactionType.Outcome, PaymentMethod.Card, testUser,testUser, categories[5]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 10, new DateOnly(2023,1,4), TransactionType.Einkommen, PaymentMethod.Girokarte, testUser,testUser, categories[0]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 10, new DateOnly(2024,1,4), TransactionType.Einkommen, PaymentMethod.Girokarte, testUser,testUser, categories[0]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 20, new DateOnly(2024,1,6), TransactionType.Einkommen, PaymentMethod.Girokarte, testUser,testUser, categories[1]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 5, new DateOnly(2024,1,7), TransactionType.Ausgaben, PaymentMethod.Girokarte, testUser,testUser, categories[2]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 100, new DateOnly(2024,1,7), TransactionType.Ausgaben, PaymentMethod.Girokarte, testUser,testUser, categories[3]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 20, new DateOnly(2024,1,10), TransactionType.Einkommen, PaymentMethod.Girokarte, testUser,testUser, categories[4]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 340, new DateOnly(2024,2,3), TransactionType.Einkommen, PaymentMethod.Girokarte, testUser,testUser, categories[0]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 610, new DateOnly(2024,2,15), TransactionType.Ausgaben, PaymentMethod.Girokarte, testUser,testUser, categories[1]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 1087, new DateOnly(2024,2,23), TransactionType.Ausgaben, PaymentMethod.Girokarte, testUser,testUser, categories[2]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 102, new DateOnly(2024,3,1), TransactionType.Einkommen, PaymentMethod.Girokarte, testUser,testUser, categories[3]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 106, new DateOnly(2024,3,3), TransactionType.Einkommen, PaymentMethod.Girokarte, testUser,testUser, categories[4]),
+            new Transaction(Guid.NewGuid().ToString(), "Transaction" + i++, 803, new DateOnly(2024,3,6), TransactionType.Ausgaben, PaymentMethod.Girokarte, testUser,testUser, categories[5]),
         };
 
         return transactions;

@@ -60,20 +60,20 @@ public class DatabaseSeeding {
     private Task SeedTransactionsAsync() {
 
         TestTransactions = new List<Transaction>() {
-            new Transaction(Guid.NewGuid().ToString(), "Kantine", 231, DateOnly.Parse("22.1.25"), TransactionType.Outcome, PaymentMethod.Card, TestUsers,TestUsers, TestCategories[0]),
-            new Transaction(Guid.NewGuid().ToString(), "Kantine", 211, DateOnly.Parse("21.1.25"), TransactionType.Outcome, PaymentMethod.Card, TestUsers,TestUsers, TestCategories[0]),
-            new Transaction(Guid.NewGuid().ToString(), "Kantine", 531, DateOnly.Parse("25.1.25"), TransactionType.Outcome, PaymentMethod.Cash, TestUsers,TestUsers, TestCategories[0]),
-            new Transaction(Guid.NewGuid().ToString(), "Kantine", 261, DateOnly.Parse("28.1.25"), TransactionType.Outcome, PaymentMethod.Card, TestUsers,TestUsers, TestCategories[0]),
-            new Transaction(Guid.NewGuid().ToString(), "Kantine", 531, DateOnly.Parse("12.1.25"), TransactionType.Outcome, PaymentMethod.Cash, TestUsers,TestUsers, TestCategories[0]),
-            new Transaction(Guid.NewGuid().ToString(), "Kantine", 261, DateOnly.Parse("12.1.25"), TransactionType.Outcome, PaymentMethod.Card, TestUsers,TestUsers, TestCategories[0]),
+            new Transaction(Guid.NewGuid().ToString(), "Kantine", 231, DateOnly.Parse("22.1.25"), TransactionType.Ausgaben, PaymentMethod.Girokarte, TestUsers,TestUsers, TestCategories[0]),
+            new Transaction(Guid.NewGuid().ToString(), "Kantine", 211, DateOnly.Parse("21.1.25"), TransactionType.Ausgaben, PaymentMethod.Girokarte, TestUsers,TestUsers, TestCategories[0]),
+            new Transaction(Guid.NewGuid().ToString(), "Kantine", 531, DateOnly.Parse("25.1.25"), TransactionType.Ausgaben, PaymentMethod.Bar, TestUsers,TestUsers, TestCategories[0]),
+            new Transaction(Guid.NewGuid().ToString(), "Kantine", 261, DateOnly.Parse("28.1.25"), TransactionType.Ausgaben, PaymentMethod.Girokarte, TestUsers,TestUsers, TestCategories[0]),
+            new Transaction(Guid.NewGuid().ToString(), "Kantine", 531, DateOnly.Parse("12.1.25"), TransactionType.Ausgaben, PaymentMethod.Bar, TestUsers,TestUsers, TestCategories[0]),
+            new Transaction(Guid.NewGuid().ToString(), "Kantine", 261, DateOnly.Parse("12.1.25"), TransactionType.Ausgaben, PaymentMethod.Girokarte, TestUsers,TestUsers, TestCategories[0]),
             
-            new Transaction(Guid.NewGuid().ToString(), "Miete", 44300, DateOnly.Parse("1.1.25"), TransactionType.Outcome, PaymentMethod.Transfer, TestUsers,TestUsers, TestCategories[1]),
-            new Transaction(Guid.NewGuid().ToString(), "Miete", 44300, DateOnly.Parse("1.2.25"), TransactionType.Outcome, PaymentMethod.Transfer, TestUsers,TestUsers, TestCategories[1]),
-            new Transaction(Guid.NewGuid().ToString(), "Strom", 12600, DateOnly.Parse("17.1.25"), TransactionType.Outcome, PaymentMethod.Transfer, TestUsers,TestUsers, TestCategories[1]),
-            new Transaction(Guid.NewGuid().ToString(), "Wasser", 9800, DateOnly.Parse("17.1.25"), TransactionType.Outcome, PaymentMethod.Transfer, TestUsers,TestUsers, TestCategories[1]),
-            new Transaction(Guid.NewGuid().ToString(), "GEZ", 5560, DateOnly.Parse("15.2.25"), TransactionType.Outcome, PaymentMethod.Transfer, TestUsers,TestUsers, TestCategories[1]),
+            new Transaction(Guid.NewGuid().ToString(), "Miete", 44300, DateOnly.Parse("1.1.25"), TransactionType.Ausgaben, PaymentMethod.Überweisung, TestUsers,TestUsers, TestCategories[1]),
+            new Transaction(Guid.NewGuid().ToString(), "Miete", 44300, DateOnly.Parse("1.2.25"), TransactionType.Ausgaben, PaymentMethod.Überweisung, TestUsers,TestUsers, TestCategories[1]),
+            new Transaction(Guid.NewGuid().ToString(), "Strom", 12600, DateOnly.Parse("17.1.25"), TransactionType.Ausgaben, PaymentMethod.Überweisung, TestUsers,TestUsers, TestCategories[1]),
+            new Transaction(Guid.NewGuid().ToString(), "Wasser", 9800, DateOnly.Parse("17.1.25"), TransactionType.Ausgaben, PaymentMethod.Überweisung, TestUsers,TestUsers, TestCategories[1]),
+            new Transaction(Guid.NewGuid().ToString(), "GEZ", 5560, DateOnly.Parse("15.2.25"), TransactionType.Ausgaben, PaymentMethod.Überweisung, TestUsers,TestUsers, TestCategories[1]),
             
-            new Transaction(Guid.NewGuid().ToString(), "Gehalt", 500000, DateOnly.Parse("1.1.25"), TransactionType.Income, PaymentMethod.Card, TestUsers,TestUsers, TestCategories[2]),
+            new Transaction(Guid.NewGuid().ToString(), "Gehalt", 500000, DateOnly.Parse("1.1.25"), TransactionType.Einkommen, PaymentMethod.Girokarte, TestUsers,TestUsers, TestCategories[2]),
         };
 
         TestCategories[0].Transactions.AddRange(TestTransactions[0..6]);
@@ -87,13 +87,13 @@ public class DatabaseSeeding {
     private Task SeedRecurringTransactionsAsync() {
         TestRecurringTransactions = new List<RecurringTransaction> {
             new RecurringTransaction(Guid.NewGuid().ToString(), "Miete", 44300, 1, 
-                TransactionType.Outcome, TestCategories[1]),
+                TransactionType.Ausgaben, TestCategories[1]),
             new RecurringTransaction(Guid.NewGuid().ToString(), "Gehalt", 500000, 1, 
-                TransactionType.Income, TestCategories[2]),
+                TransactionType.Einkommen, TestCategories[2]),
             new RecurringTransaction(Guid.NewGuid().ToString(), "Autoversicherung", 200000, 1, 
-                TransactionType.Outcome, TestCategories[3]),
+                TransactionType.Ausgaben, TestCategories[3]),
             new RecurringTransaction(Guid.NewGuid().ToString(), "GEZ", 5560, 3, 
-                TransactionType.Outcome, TestCategories[1]),
+                TransactionType.Ausgaben, TestCategories[1]),
         };
         
         TestRecurringTransactions[0].Transactions.Add(TestTransactions[6]);

@@ -51,7 +51,7 @@ public class Transaction {
         ValueInCent = rt.ValueInCent;
         PayDate = payDate;
         Type = rt.Type;
-        PaymentMethod = PaymentMethod.Transfer;
+        PaymentMethod = PaymentMethod.Überweisung;
         CreationUser = creationUser;
         CreationUserId = creationUser?.Id;
         PayingUser = creationUser!;
