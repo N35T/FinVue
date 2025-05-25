@@ -5,6 +5,13 @@
 @using FinVue.Core.Enums
 @using FinVue.Core.DataTransferObjects
 @using System.Globalization
+@using ChartJs.Blazor.Common
+@using ChartJs.Blazor.Common.Axes
+@using ChartJs.Blazor.Common.Axes.Ticks
+@using ChartJs.Blazor.Common.Handlers
+@using ChartJs.Blazor.Interop
+@using ChartJs.Blazor.LineChart
+@using ChartJs.Blazor.PieChart
 @using FinVue.Web.Auth
 @using Microsoft.AspNetCore.Authorization
 
@@ -33,93 +40,22 @@
     </div>
     
     
-    <canvas id="profit-chart" class="span-cols back2" style="width:100%; height: 20rem"></canvas>
+    <!--<canvas id="profit-chart" class="span-cols back2" style="width:100%; height: 20rem"></canvas>
     
-    <canvas id="category-sums-chart" class="span-cols back2" style="width:100%; height: 20rem"></canvas>
+    <canvas id="category-sums-chart" class="span-cols back2" style="width:100%; height: 20rem"></canvas>-->
+    
+    <Chart Config="ProfitChartConfig" @ref="ProfitChart"></Chart>
+    <Chart Config="CategoryChartConfig" @ref="CategoryChart"></Chart>
     
 </section>
 <script>
-const income = JSON.parse("@JsonConvert.SerializeObject(IncomeSumsPerMonth)").map(e => e / 100);
-const outcome = JSON.parse("@JsonConvert.SerializeObject(OutcomeSumsPerMonth)").map(e => e / 100);
-const profit = JSON.parse("@JsonConvert.SerializeObject(ProfitSumsPerMonth)").map(e => e / 100);
-const cumProfit = JSON.parse("@JsonConvert.SerializeObject(CumulatedProfitPerMonth)").map(e => e / 100);
-const months = ["Jan", "Feb", "Mär", "Mai", "Apr", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
+function handleAxisScale(value, index, values) {
+    return numberToCurrency(value, true);
+}
 
-const sumByCategory = JSON.parse("@JsonConvert.SerializeObject(OutcomeByCategory)");
-
-new Chart("profit-chart", {
-  type: "line",
-  data: {
-    labels: months,
-    datasets: [{
-      data: outcome,
-      borderColor: "#ac4d4d",
-      fill: false,
-      label: "Ausgaben"
-    },{
-      data: income,
-      borderColor: "#81a975",
-      fill: false,
-      label: "Einkommen"
-    },{
-      data: profit,
-      borderColor: "#ede3e390",
-      fill: false,
-      label: "Profit pro Monat"
-    },{
-        data: cumProfit,
-        borderColor: "#33aad6",
-        fill: false,
-        label: "Kumulierter Profit"
-    }]
-  },
-  options: {
-    legend: {display: true},
-    scales: {
-        yAxes: [{
-            ticks: {
-                callback: function(value, index, values) {
-                    return numberToCurrency(value, true);
-                }
-            }
-        }]
-    },
-    tooltips: {
-        callbacks: {
-            label: function(tooltipItem, data) {
-                return data.datasets[tooltipItem.datasetIndex].label + ': ' + numberToCurrency(tooltipItem.yLabel);
-            }
-        }
-    }
-  }
-});
-
-new Chart("category-sums-chart", {
-        type: "pie",
-        data: {
-            labels: sumByCategory.map(e => e.CategoryName),
-            datasets: [{
-            label: 'Kategorien',
-            data: sumByCategory.map(e => e.TotalSum / 100),
-            backgroundColor: sumByCategory.map(e => "#" + e.CategoryColor.Hex),
-            hoverOffset: 4
-            }]
-        },
-        options: {
-            tooltips: {
-                callbacks: {
-                    label: function(tooltipItem, data) {
-                        return data['labels'][tooltipItem['index']] + ': ' + numberToCurrency(data['datasets'][0]['data'][tooltipItem['index']]);
-                    }
-                }
-            }
-        }
-    });
-
-    function numberToCurrency(num, noComma = false) {
-        return Intl.NumberFormat('de-DE',{currency:"EUR", style:"currency", maximumFractionDigits: noComma ? 0 : 2}).format(num);
-    }
-
+function numberToCurrency(num, noComma = false) {
+    return Intl.NumberFormat('de-DE',{currency:"EUR", style:"currency", maximumFractionDigits: noComma ? 0 : 2}).format(num);
+}
 </script>
 
 @code {
@@ -143,22 +79,92 @@ new Chart("category-sums-chart", {
     
     public List<SumByCategoryDto> OutcomeByCategory { get; set; }
 
+    public LineConfig ProfitChartConfig { get; set; }
+    public Chart ProfitChart { get; set; }
+    public PieConfig CategoryChartConfig { get; set; }
+    public Chart CategoryChart { get; set; }
+    
     protected override async Task OnInitializedAsync() {
         await base.OnInitializedAsync();
         Year = Year == 0 ? DateTime.Now.Year : Year;
 
-        await InitializeLineGraph();
+        await InitializeData();
         InitializeProfitCards();
 
-        await InitializeCakeDiagram();
+        InitializeLineDiagram();
+        InitializeCakeDiagram();
 
     }
 
-    private async Task InitializeCakeDiagram() {
-        OutcomeByCategory = await TransactionService.GetTotalSumsFromYearGroupedByCategoryAsync(Year, TransactionType.Ausgaben);
+    private void InitializeCakeDiagram()
+    {
+        CategoryChartConfig = new PieConfig();
+        foreach (var category in OutcomeByCategory) {
+            CategoryChartConfig.Data.Labels.Add(category.CategoryName);
+        }
+
+        CategoryChartConfig.Data.Datasets.Add(new PieDataset<int>(OutcomeByCategory.Select(e => e.TotalSum / 100).ToList()) {
+            BackgroundColor = new IndexableOption<string>(OutcomeByCategory.Select(e => e.CategoryColor.Hex).ToArray())
+        });
     }
 
-    private async Task InitializeLineGraph() {
+    private void InitializeLineDiagram() {
+        ProfitChartConfig = new LineConfig() {
+            Options = new LineOptions() {
+                Legend = new Legend() {
+                    Display = true
+                },
+                Scales = new Scales() {
+                    YAxes = new List<CartesianAxis>() {
+                        new CategoryAxis() {
+                            Ticks = new CategoryTicks() {
+                                Callback = new JavaScriptHandler<AxisTickCallback>("handleAxisScale")
+                            }
+                        }
+                    }
+                },
+                Tooltips = new Tooltips() {
+                    Enabled = true
+                }
+            }
+        };
+        
+        ProfitChartConfig.Data.Datasets.Add(new LineDataset<int>(OutcomeSumsPerMonth) {
+            Label = "Ausgaben",
+            BorderColor = "#ac4d4d",
+            Fill = false,
+        });
+        ProfitChartConfig.Data.Datasets.Add(new LineDataset<int>(IncomeSumsPerMonth) {
+            Label = "Einkommen",
+            BorderColor = "#81a975",
+            Fill = false,
+        });
+        ProfitChartConfig.Data.Datasets.Add(new LineDataset<int>(ProfitSumsPerMonth) {
+            Label = "Profit pro Monat",
+            BorderColor = "#ede3e390",
+            Fill = false,
+        });
+        ProfitChartConfig.Data.Datasets.Add(new LineDataset<int>(CumulatedProfitPerMonth) {
+            Label = "Kumulierter Profit",
+            BorderColor = "#33aad6",
+            Fill = false,
+        });
+        
+        ProfitChartConfig.Data.XLabels.Add("Jan");
+        ProfitChartConfig.Data.XLabels.Add("Feb");
+        ProfitChartConfig.Data.XLabels.Add("Mär");
+        ProfitChartConfig.Data.XLabels.Add("Apr");
+        ProfitChartConfig.Data.XLabels.Add("Mai");
+        ProfitChartConfig.Data.XLabels.Add("Jun");
+        ProfitChartConfig.Data.XLabels.Add("Jul");
+        ProfitChartConfig.Data.XLabels.Add("Aug");
+        ProfitChartConfig.Data.XLabels.Add("Sep");
+        ProfitChartConfig.Data.XLabels.Add("Okt");
+        ProfitChartConfig.Data.XLabels.Add("Nov");
+        ProfitChartConfig.Data.XLabels.Add("Dez");
+    }
+
+    private async Task InitializeData() {
         IncomeSumsPerMonth = await TransactionService.GetTotalSumFromYearAndAllRelevantMonthsAsync(TransactionType.Einkommen, Year);
         OutcomeSumsPerMonth = await TransactionService.GetTotalSumFromYearAndAllRelevantMonthsAsync(TransactionType.Ausgaben, Year);
         var maxLength = Math.Max(Math.Max(IncomeSumsPerMonth.Count, OutcomeSumsPerMonth.Count), 1);
@@ -178,6 +184,8 @@ new Chart("category-sums-chart", {
             ProfitSumsPerMonth[i] = IncomeSumsPerMonth[i] - OutcomeSumsPerMonth[i];
             CumulatedProfitPerMonth[i] = CumulatedProfitPerMonth[i-1] + ProfitSumsPerMonth[i];
         }
+        
+        OutcomeByCategory = await TransactionService.GetTotalSumsFromYearGroupedByCategoryAsync(Year, TransactionType.Ausgaben);
     }
     
     private void InitializeProfitCards() {
@@ -194,5 +202,9 @@ new Chart("category-sums-chart", {
         AverageIncome = avgIncome.ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
         AverageOutcome = avgOutcome.ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
         AverageProfit = (avgIncome - avgOutcome).ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
+    }
+
+    public String NumberToCurrency(double number, bool test) {
+        return number.ToString();
     }
 }
