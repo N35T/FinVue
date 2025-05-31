@@ -25,10 +25,14 @@
 }
 
 @media (min-width: 1221px) {
-    #view-content :nth-child(3) {
+    #view-content > h1, #view-content > #income-card {
         justify-self: left;
     }
-    #view-content :nth-child(5) {
+    
+    #view-content > #outcome-card {
+        justify-self: center;
+    }
+    #view-content > #profit-card {
         justify-self: right;
     }
 }
