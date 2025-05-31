@@ -3,42 +3,54 @@
 @using FinVue.Core.Entities
 @using FinVue.Core.Enums
 @using System.Globalization
-
+@using Microsoft.AspNetCore.Antiforgery;
+@attribute [RequireAntiforgeryToken]
 @inject CategoryService CategoryService
 
 <div class="">
     <h1 class="color-primary">Neue Kategorie</h1>
-    <div class="inputs">
-        <div>
-            <div class="input">
-                <label for="fname" class="low-opac">Name</label>
-                <input id="fname" @bind="CategoryName" required />
-            </div>
-            <div class="input">
-                <label for="fcolor" class="low-opac">Farbe</label>
-                <input id="fcolor" type="color" required />
+    <EditForm Enhance id="form" Model="NewCategory" OnSubmit="AddNewCategory" FormName="AddCategoryForm">
+        <div class="inputs">
+            <div>
+                <div class="input">
+                    <label for="fname" class="low-opac">Name</label>
+                    <InputText id="fname" @bind-Value="NewCategory.Name" required />
+                </div>
+                <div class="input">
+                    <label for="fcolor" class="low-opac">Farbe</label>
+                    <!-- <input id="fcolor" type="color" required /> -->
+                    <InputText id="fcolorInput" @bind-Value="NewCategory.Color" required  />
+                </div>
             </div>
         </div>
-    </div>
-    <button class="btn btn-primary"
-            hx-post="/addCategory"
-            hx-target="closest .counter"
-            hx-swap="outerHTML">
-        Hinzufügen
-    </button>
+        <button class="btn btn-primary" >
+            Hinzufügen
+        </button>  
+    </EditForm>
 </div>
+
+<script>
+    function loadColor() {
+        let color = document.getElementById("fcolor").value;
+        document.getElementById("fcolorInput").value = color;
+
+        document.getElementById("form").submit();
+    }
+</script>
 
 
 @code {
-    [Parameter, EditorRequired]
-    public string CategoryName { get; set; } = string.Empty;
-    public HtmxAddCategory State { get; set; } = new();
+    [SupplyParameterFromForm]
+    public CategoryDto NewCategory { get; set; } = new();
 
     protected override async Task OnInitializedAsync() {
         await base.OnInitializedAsync();
     }
-    public class HtmxAddCategory {
-        public Category Category { get; set; } = new Category(new Guid().ToString(), CategoryName);
+
+    public async Task AddNewCategory() {
+        var category = new Category(Guid.NewGuid().ToString(), NewCategory.Name, new Color(NewCategory.Color));
+        await CategoryService.AddCategoryAsync(category);
+
     }
 }
 

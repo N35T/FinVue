@@ -1,9 +1,11 @@
 using System.Net;
+using FinVue.Core.Entities;
 using FinVue.Core.Services;
 using FinVue.Data;
 using FinVue.Web.Components;
 using FinVue.Web.Components.Shared;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents();
 
 builder.Services.AddDataServices(builder.Configuration);
-builder.Services.AddSingleton<AddCategory.HtmxAddCategory>();
 
 var app = builder.Build();
 
@@ -39,19 +40,19 @@ app.UseStatusCodePages(context => {
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
-app.UseAntiforgery();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseAntiforgery();
 
 app.MapRazorComponents<App>();
 
 app.MapPost("/addCategory",
-    async (AddCategory.HtmxAddCategory category) => {
-        await CategoryService.AddCategoryAsync(category);
-        return new RazorComponentResult<AddCategory>(
-            new { State = category }
-        );
+    async (CategoryService _categoryService, [FromForm]string catName, [FromForm]string catColor) => {
+        var category = new Category(Guid.NewGuid().ToString(), catName, new Color(catColor));
+
+        await _categoryService.AddCategoryAsync(category);
+        return Results.Ok();
     });
 
 app.Run();
