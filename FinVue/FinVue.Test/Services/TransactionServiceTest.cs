@@ -127,7 +127,7 @@ public class TransactionServiceTest : IDisposable, IAsyncDisposable {
     
     [Fact]
     public async Task TransactionService_Should_GetTotalOutcomeSumFromYearByMonth() {
-        var res = await _sut.GetTotalSumFromYearAndAllMonthsAsync(TransactionType.Ausgaben, 2024);
+        var res = await _sut.GetTotalSumFromYearAndAllRelevantMonthsAsync(TransactionType.Ausgaben, 2024);
         
         Assert.Equal(105, res[0]);
         Assert.Equal(1697, res[1]);
@@ -136,7 +136,7 @@ public class TransactionServiceTest : IDisposable, IAsyncDisposable {
     
     [Fact]
     public async Task TransactionService_Should_GetTotalIncomeSumFromYearByMonth() {
-        var res = await _sut.GetTotalSumFromYearAndAllMonthsAsync(TransactionType.Einkommen, 2024);
+        var res = await _sut.GetTotalSumFromYearAndAllRelevantMonthsAsync(TransactionType.Einkommen, 2024);
         
         Assert.Equal(50, res[0]);
         Assert.Equal(340, res[1]);

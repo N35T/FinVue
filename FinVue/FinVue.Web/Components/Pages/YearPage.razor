@@ -22,13 +22,13 @@
 
 <section id="view-content">
     <h1 class="span-cols align-left category-select">Alle Kategorien</h1>
-    <div>
+    <div id="income-card">
         <ProfitCard Title="Einkommen (Gesamt)" Value="@TotalIncome" AverageValue="@AverageIncome"/>
     </div>
-    <div>
+    <div id="outcome-card">
         <ProfitCard Title="Ausgaben (Gesamt)" ReverseColors="true" Value="@TotalOutcome" AverageValue="@AverageOutcome"/>
     </div>
-    <div>
+    <div id="profit-card">
     <ProfitCard Title="Profit (Gesamt)" Value="@TotalProfit" AverageValue="@AverageProfit"/>
     </div>
     
@@ -39,81 +39,19 @@
     
 </section>
 <script>
-const income = JSON.parse("@JsonConvert.SerializeObject(IncomeSumsPerMonth)").map(e => e / 100);
-const outcome = JSON.parse("@JsonConvert.SerializeObject(OutcomeSumsPerMonth)").map(e => e / 100);
-const months = ["Jan", "Feb", "Mär", "Mai", "Apr", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
-
-const sumByCategory = JSON.parse("@JsonConvert.SerializeObject(OutcomeByCategory)");
-
-new Chart("profit-chart", {
-  type: "line",
-  data: {
-    labels: months,
-    datasets: [{
-      data: outcome,
-      borderColor: "#ac4d4d",
-      fill: false,
-      label: "Ausgaben"
-    },{
-      data: income,
-      borderColor: "#81a975",
-      fill: false,
-      label: "Einkommen"
-    },{
-      data: income.map((e,i) => e-outcome[i]),
-      borderColor: "#ede3e390",
-      fill: false,
-      label: "Profit"
-    }]
-  },
-  options: {
-    legend: {display: true},
-    scales: {
-        yAxes: [{
-            ticks: {
-                callback: function(value, index, values) {
-                    return numberToCurrency(value, true);
-                }
-            }
-        }]
-    },
-    tooltips: {
-        callbacks: {
-            label: function(tooltipItem, data) {
-                return data.datasets[tooltipItem.datasetIndex].label + ': ' + numberToCurrency(tooltipItem.yLabel);
-            }
-        }
-    }
-  }
-});
-
-new Chart("category-sums-chart", {
-        type: "pie",
-        data: {
-            labels: sumByCategory.map(e => e.CategoryName),
-            datasets: [{
-            label: 'Kategorien',
-            data: sumByCategory.map(e => e.TotalSum / 100),
-            backgroundColor: sumByCategory.map(e => "#" + e.CategoryColor.Hex),
-            hoverOffset: 4
-            }]
-        },
-        options: {
-            tooltips: {
-                callbacks: {
-                    label: function(tooltipItem, data) {
-                        return data['labels'][tooltipItem['index']] + ': ' + numberToCurrency(data['datasets'][0]['data'][tooltipItem['index']]);
-                    }
-                }
-            }
-        }
-    });
-
-    function numberToCurrency(num, noComma = false) {
-        return Intl.NumberFormat('de-DE',{currency:"EUR", style:"currency", maximumFractionDigits: noComma ? 0 : 2}).format(num);
-    }
-
+let plotData = {
+    income: JSON.parse("@JsonConvert.SerializeObject(IncomeSumsPerMonth)").map(e => e / 100),
+    outcome: JSON.parse("@JsonConvert.SerializeObject(OutcomeSumsPerMonth)").map(e => e / 100),
+    profit: JSON.parse("@JsonConvert.SerializeObject(ProfitSumsPerMonth)").map(e => e / 100),
+    cumProfit: JSON.parse("@JsonConvert.SerializeObject(CumulatedProfitPerMonth)").map(e => e / 100),
+    sumByCategory: JSON.parse("@JsonConvert.SerializeObject(OutcomeByCategory.Select(e => new {
+        CategoryName = e.CategoryName,
+        CategoryColor = "#" + e.CategoryColor.Hex,
+        TotalSum = e.TotalSum
+    }))"),
+};
 </script>
+<PageScript Src="./Components/Pages/YearPage.razor.js"></PageScript>
 
 @code {
 
@@ -122,6 +60,8 @@ new Chart("category-sums-chart", {
     
     public List<int> IncomeSumsPerMonth { get; set; }
     public List<int> OutcomeSumsPerMonth { get; set; }
+    public int[] ProfitSumsPerMonth { get; set; }
+    public int[] CumulatedProfitPerMonth { get; set; }
     
     public string TotalIncome { get; set; }
     public string AverageIncome { get; set; }
@@ -138,28 +78,33 @@ new Chart("category-sums-chart", {
         await base.OnInitializedAsync();
         Year = Year == 0 ? DateTime.Now.Year : Year;
 
-        await InitializeLineGraph();
+        await InitializeData();
         InitializeProfitCards();
-
-        await InitializeCakeDiagram();
-
+        
     }
 
-    private async Task InitializeCakeDiagram() {
-        OutcomeByCategory = await TransactionService.GetTotalSumsFromYearGroupedByCategoryAsync(Year, TransactionType.Ausgaben);
-    }
-
-    private async Task InitializeLineGraph() {
-        IncomeSumsPerMonth = await TransactionService.GetTotalSumFromYearAndAllMonthsAsync(TransactionType.Einkommen, Year);
-        OutcomeSumsPerMonth = await TransactionService.GetTotalSumFromYearAndAllMonthsAsync(TransactionType.Ausgaben, Year);
-
-        while (IncomeSumsPerMonth.Count < 12) {
+    private async Task InitializeData() {
+        IncomeSumsPerMonth = await TransactionService.GetTotalSumFromYearAndAllRelevantMonthsAsync(TransactionType.Einkommen, Year);
+        OutcomeSumsPerMonth = await TransactionService.GetTotalSumFromYearAndAllRelevantMonthsAsync(TransactionType.Ausgaben, Year);
+        var maxLength = Math.Max(Math.Max(IncomeSumsPerMonth.Count, OutcomeSumsPerMonth.Count), 1);
+        while (IncomeSumsPerMonth.Count < maxLength) {
             IncomeSumsPerMonth.Add(0);
         }
 
-        while (OutcomeSumsPerMonth.Count < 12) {
+        while (OutcomeSumsPerMonth.Count < maxLength) {
             OutcomeSumsPerMonth.Add(0);
         }
+
+        ProfitSumsPerMonth = new int[maxLength];        
+        CumulatedProfitPerMonth = new int[maxLength];
+        ProfitSumsPerMonth[0] = IncomeSumsPerMonth[0] - OutcomeSumsPerMonth[0];
+        CumulatedProfitPerMonth[0] = ProfitSumsPerMonth[0];
+        for (int i = 1; i < maxLength; ++i) {
+            ProfitSumsPerMonth[i] = IncomeSumsPerMonth[i] - OutcomeSumsPerMonth[i];
+            CumulatedProfitPerMonth[i] = CumulatedProfitPerMonth[i-1] + ProfitSumsPerMonth[i];
+        }
+
+        OutcomeByCategory = await TransactionService.GetTotalSumsFromYearGroupedByCategoryAsync(Year, TransactionType.Ausgaben);
     }
     
     private void InitializeProfitCards() {
