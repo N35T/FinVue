@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { ProfitCardModel } from '../../models/profit-card.model';
 
 @Component({
   selector: 'app-profit-card',
@@ -7,5 +8,14 @@ import { Component } from '@angular/core';
   styleUrl: './profit-card.scss'
 })
 export class ProfitCard {
+
+  @Input()
+  public title!: string;
+
+  @Input()
+  public reverseColors?: boolean = false;
+
+  @Input()
+  public model! : ProfitCardModel;
 
 }

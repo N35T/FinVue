@@ -8,7 +8,4 @@ export class CurrentDateService {
 
   public currentDate = signal(new CurrentDate());
 
-  constructor() { 
-    console.log("constructed CurrentDateService")
-  }
 }
