@@ -6,5 +6,5 @@ public class SumByCategoryDto {
     public required string CategoryName { get; set; }
     public required int TotalSum { get; set; }
     
-    public required Color CategoryColor { get; set; }
+    public required String CategoryColor { get; set; }
 }

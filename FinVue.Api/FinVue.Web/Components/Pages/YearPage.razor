@@ -46,7 +46,7 @@ let plotData = {
     cumProfit: JSON.parse("@JsonConvert.SerializeObject(CumulatedProfitPerMonth)").map(e => e / 100),
     sumByCategory: JSON.parse("@JsonConvert.SerializeObject(OutcomeByCategory.Select(e => new {
         CategoryName = e.CategoryName,
-        CategoryColor = "#" + e.CategoryColor.Hex,
+        CategoryColor = e.CategoryColor,
         TotalSum = e.TotalSum
     }))"),
 };

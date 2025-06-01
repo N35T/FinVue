@@ -29,7 +29,7 @@ public class TransactionService {
             .Include(e => e.PayingUser)
             .OrderBy(e => e.PayDate)
             .GroupBy(e => e.CategoryId)
-            .Select(e => new TransactionsByCategoryDto { CategoryName = e.First().Category != null ? e.First().Category!.Name : "Misc", CategoryColor = e.First().Category != null ? e.First().Category!.CategoryColor : new Color(237, 227, 227, 144), TotalSum = e.Sum(t => t.ValueInCent), Transactions = e.ToList() })
+            .Select(e => new TransactionsByCategoryDto { CategoryName = e.First().Category != null ? e.First().Category!.Name : "Misc", CategoryColor = e.First().Category != null ? e.First().Category!.CategoryColor.Hex : new Color(237, 227, 227, 144).Hex, TotalSum = e.Sum(t => t.ValueInCent), Transactions = e.ToList() })
             .ToListAsync();
     }
 
@@ -136,7 +136,7 @@ public class TransactionService {
             .Where(e => e.PayDate.Year == year && e.Type == type)
             .Include(e => e.Category)
             .GroupBy(e => e.CategoryId)
-            .Select(e => new SumByCategoryDto{ CategoryName = e.First().Category != null ? e.First().Category!.Name : "Misc",CategoryColor = e.First().Category != null ? e.First().Category!.CategoryColor : new Color(237,227,227,144),TotalSum = e.Sum(t => t.ValueInCent)})
+            .Select(e => new SumByCategoryDto{ CategoryName = e.First().Category != null ? e.First().Category!.Name : "Misc",CategoryColor = e.First().Category != null ? e.First().Category!.CategoryColor.Hex : new Color(237,227,227,144).Hex,TotalSum = e.Sum(t => t.ValueInCent)})
             .ToListAsync();
     }
 }

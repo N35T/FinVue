@@ -14,7 +14,7 @@ public struct Color {
     [NotMapped]
     public byte Alpha => (byte)(_rgbaColor);
     [NotMapped]
-    public string Hex => _rgbaColor.ToString("X2");
+    public string Hex => "#" + _rgbaColor.ToString("X2");
 
     public Color(byte red, byte green, byte blue, byte alpha) {
         _rgbaColor = red << 3 * 8 | green << 2 * 8 | blue << 8 | alpha;

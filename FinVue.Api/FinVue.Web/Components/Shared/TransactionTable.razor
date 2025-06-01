@@ -70,7 +70,7 @@
         <h1>Keine Transaktionen verfügbar!</h1>
     } else {
         @foreach (TransactionsByCategoryDto group in TransactionsByCategory) {
-            <h1 class="group" style="color: #@group.CategoryColor" onclick="toggleTransactionList(this, '@(Type + "-" + group.CategoryName)')"><span>></span> @group.CategoryName <span class="low-opac">@NumberToCurrency(group.TotalSum)</span></h1>
+            <h1 class="group" style="color: @group.CategoryColor" onclick="toggleTransactionList(this, '@(Type + "-" + group.CategoryName)')"><span>></span> @group.CategoryName <span class="low-opac">@NumberToCurrency(group.TotalSum)</span></h1>
             <div class="transaction-list" id="@(Type + "-" + group.CategoryName)">
                 @foreach (Transaction t in group.Transactions) {
                     <div class="transaction">
