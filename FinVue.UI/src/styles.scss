@@ -1,0 +1,124 @@
+* {
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+@font-face {
+    font-family: "JetBrainsMono Nerd Font";
+    src: local(JetBrains Mono Bold Nerd Font Complete), url("/fonts/JetbrainsBold.woff2") format("woff2"), url("/fonts/JetbrainsBold.ttf") format("truetype");
+    font-stretch: normal;
+    font-style: normal;
+    font-display: swap;
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: "JetBrainsMono Nerd Font";
+    src: local(JetBrains Mono Regular Nerd Font Complete), url("/fonts/JetbrainsRegular.woff2") format("woff2"), url("/fonts/JetbrainsRegular.ttf") format("truetype");
+    font-stretch: normal;
+    font-style: normal;
+    font-display: swap;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: local(Roboto-Regular), url("/fonts/Roboto-Regular.ttf") format("truetype");
+}
+
+
+:root, ::backdrop {
+    --background: #20201d;
+    --back1: #10101055;
+    --back2: #101010;
+    --primary: #81a975;
+    --text: #ede3e3;
+    --red: #ac4d4d;
+    --font-size--small: 14px;
+    --font-size--default: 16px;
+    --font-size--medium: 20px;
+    --font-size--large: 24px;
+    --font-size--large-heading: 32px;
+    --font-size--large-heading-plus: 40px;
+}
+
+.span-cols {
+    grid-column: 1 / -1;
+}
+
+.no-grid-entry {
+    position: absolute;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+
+    margin: 0;
+    
+    background: var(--background);
+    color: var(--text);
+    font-family: 'Roboto';
+}
+
+.align-left {
+    justify-self: left;
+    text-align: left;
+}
+
+.align-right {
+    float: right;
+}
+
+h1,h2,h3 {
+    font-family: 'JetBrainsMono Nerd Font';
+}
+
+.back2 {
+    background: var(--back2);
+}
+
+.color-primary {
+    color: var(--primary);
+}
+
+.bg-primary {
+    background: var(--primary);
+}
+
+.color-red {
+    color: var(--red);
+}
+
+.low-opac {
+    opacity: .6;
+}
+
+.no-link-design, .no-link-design:visited {
+    color: var(--text);
+    text-decoration: none;
+}
+
+dialog {
+    color: var(--text);
+    border: none;
+}
+
+body::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #1f1f1f;
+}
+
+body::-webkit-scrollbar {
+    width: 8px;
+    background-color: #1f1f1f;
+}
+
+body::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #474747;
+}
