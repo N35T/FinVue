@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, signal } from '@angular/core';
 import { CurrentDateService } from '../../services/current-date-service';
 import { RouterModule } from '@angular/router';
+import { MONTHS } from '../../constants/month.constants';
 
 
 @Component({
@@ -12,7 +13,7 @@ import { RouterModule } from '@angular/router';
 })
 export class SideNav {
   
-  public monthNames =["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+  public monthNames = MONTHS;
 
   get currentYear() { return this.currentDateService.currentDate().year; }
   get currentMonth() { return this.currentDateService.currentDate().month; }

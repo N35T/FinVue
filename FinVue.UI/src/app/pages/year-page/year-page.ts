@@ -11,6 +11,7 @@ import { SumByCategory } from '../../models/groupings/sum-by-category.models';
 import { AsyncPipe } from '@angular/common';
 import { YearlyTransactionStatistics } from '../../models/groupings/yearly-transaction-statistics.models';
 import { numberToCurrency } from '../../services/currency.service';
+import { MONTHS_SHORT } from '../../constants/month.constants';
 
 @Component({
   selector: 'app-year-page',
@@ -121,9 +122,8 @@ export class YearPage implements OnInit {
   }
 
   private createProfitChartData(income: number[], outcome: number[], profit: number[], cumProfit: number[]) : any {
-    const months = ["Jan", "Feb", "Mär", "Mai", "Apr", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
     return {
-      labels: months,
+      labels: MONTHS_SHORT,
       datasets: [{
           data: outcome.map(e => e / 100),
           borderColor: "#ac4d4d",
