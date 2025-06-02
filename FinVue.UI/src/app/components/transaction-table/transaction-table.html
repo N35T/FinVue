@@ -1,1 +1,63 @@
-<p>transaction-table works!</p>
+
+<div class="group-table back2">
+    <!-- PLANNED MODE ----------------------------------->
+    <ng-container *ngIf="mode === PLANNING_MODE">
+        <!--no planned available-->
+        <h1 *ngIf="!recurringTransactions || recurringTransactions.length == 0">Keine geplanten Transaktionen verfügbar!</h1>
+        <!--recurring transactions-->
+        <ng-container *ngIf="recurringTransactions && recurringTransactions.length > 0">
+            <!-- outstanding recurring transactions -->
+            <h1 class="group planned">Ausstehend</h1>
+            <div class="transaction-list active">
+                <div *ngFor="let rt of getUnpaidRecurringTransactions()" class="transaction">
+                    <div>
+                        <h3>{{rt.name}}</h3>
+                        <p class="low-opac getTransactionTypeColorClass(rt.Type)">{{ rt.type }}</p>
+                    </div>
+                    <div>
+                        <h3>{{ numberToCurrency(rt.valueInCent / 100) }}</h3>
+                        <p class="low-opac">Alle {{ rt.monthFrequency }} Monate</p>
+                        <button class="color-primary complete" onclick="openPayedDialog(rt)">Bezahlt</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Payed recurring transactions -->
+            <h1 class="group planned">Bezahlt</h1>
+            <div class="transaction-list active">
+                <div *ngFor="let rt of getPayedRecurringTransactions()" class="transaction">
+                    <div>
+                        <h3 class="low-opac">{{ rt.name }}</h3>
+                        <p class="low-opac">{{ rt.type }}</p>
+                    </div>
+                    <div>
+                        <h3 class="low-opac">{{ numberToCurrency(rt.valueInCent / 100) }}</h3>
+                        <p class="low-opac">Alle {{ rt.monthFrequency }} Monate</p>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </ng-container>
+
+    <!--  NORMAL TRANSACTIONS MODE .--------------------------------------------->
+    <ng-container *ngIf="mode !== PLANNING_MODE">
+        <!-- No Transactions available -->
+        <h1 *ngIf="!transactionsByCategory || transactionsByCategory.length == 0">Keine Transaktionen verfügbar!</h1>
+        <!--normal transactions -->
+        <ng-container *ngFor="let group of transactionsByCategory">
+            <h1 class="group" [style]="'color: ' + group.categoryColor" onclick="toggleTransactionList(mode + '-' + group.categoryName)"><span>></span> {{ group.categoryName }} <span class="low-opac">{{ numberToCurrency(group.totalSum / 100) }}</span></h1>
+            <div [class]="'transaction-list ' + getActiveClassForId(mode + '-' + group.categoryName)">
+                <div *ngFor="let t of group.transactions" class="transaction">
+                    <div>
+                        <h3>{{ t.name }}</h3>
+                        <p class="low-opac">{{ t.payDate.toString() }}</p>
+                    </div>
+                    <div>
+                        <h3>{{ numberToCurrency(t.valueInCent / 100) }}</h3>
+                        <p class="low-opac">{{ t.paymentMethod }}</p>
+                        <p>{{ t.payingUser.username }}</p>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </ng-container>
+</div>

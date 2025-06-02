@@ -10,6 +10,7 @@ import { StatisticService } from '../../services/statistics.service';
 import { SumByCategory } from '../../models/groupings/sum-by-category.models';
 import { AsyncPipe } from '@angular/common';
 import { YearlyTransactionStatistics } from '../../models/groupings/yearly-transaction-statistics.models';
+import { numberToCurrency } from '../../services/currency.service';
 
 @Component({
   selector: 'app-year-page',
@@ -162,8 +163,4 @@ export class YearPage implements OnInit {
   public getDefaultProfitCardModel() {
     return ProfitCardModel.defaultModel();
   }
-}
-
-function numberToCurrency(num: any, noComma = false) {
-  return Intl.NumberFormat('de-DE',{currency:"EUR", style:"currency", maximumFractionDigits: noComma ? 0 : 2}).format(num);
 }

@@ -1,1 +1,7 @@
-<p>profit-card works!</p>
+<div class="profit-card back2">
+    <h3 class="profit-info">{{title}}</h3>
+    <h1 [class]="'profit-value' + getColorClass(model.total)">{{ numberToCurrency(model.total) }}</h1>
+
+    <h3 *ngIf="model.average" class="profit-info low-opac">⌀ <span [class]="getColorClass(model.average)">{{ numberToCurrency(model.average) }}</span></h3>
+
+</div>
