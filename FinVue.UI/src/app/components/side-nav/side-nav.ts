@@ -31,7 +31,6 @@ export class SideNav {
     if (this.currentMonth && monthIndex + 1 == this.currentMonth) {
         classList += " color-primary";
     }
-    console.log(monthIndex + 1, this.currentMonth)
     return classList;
   }
 

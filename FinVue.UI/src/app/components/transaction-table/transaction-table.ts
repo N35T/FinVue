@@ -14,8 +14,8 @@ import { numberToCurrency } from '../../services/currency.service';
 })
 export class TransactionTable {
   
-  public static PLANNING_MODE = "planning-mode";
-  public PLANNING_MODE = TransactionTable.PLANNING_MODE;
+  public static PLANNED_MODE = "planning-mode";
+  public PLANNED_MODE = TransactionTable.PLANNED_MODE;
 
   @Input()
   public mode!: string;
@@ -46,11 +46,11 @@ export class TransactionTable {
   public toggleTransactionList(id : string) {
     this.activeDropdowns.set(id, !(this.activeDropdowns.get(id) ?? false));
   }
-  public getActiveClassForId(id : string) : string {
-    return (this.activeDropdowns.get(id) ?? false) ? 'active' : '';
+  public isTransactionCategoryOpen(id : string) : boolean {
+    return this.activeDropdowns.get(id) ?? false;
   }
 
-  public openPayedDialog() {
+  public openPayedDialog(rt : RecurringTransaction) {
     // TODO:
   }
 }

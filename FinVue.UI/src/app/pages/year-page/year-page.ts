@@ -31,6 +31,7 @@ export class YearPage implements OnInit {
   constructor(private activatedRoute : ActivatedRoute, public currentDateService : CurrentDateService, private statsService : StatisticService) {
     this.activatedRoute.params.subscribe((params) => {
         this.currentDateService.currentDate.set(new CurrentDate(params['selectedYear']));
+        this.fetchData();
     })
   }
 
@@ -38,6 +39,9 @@ export class YearPage implements OnInit {
   ngOnInit(): void {
     Chart.register(...registerables);
     this.createCharts();
+  }
+
+  private fetchData() {
     this.statsService.getYearlyStatistics(this.currentDateService.currentDate().year).subscribe((e : YearlyTransactionStatistics) => {
       this.updateProfitCards(e);
       this.updateChartData(e);

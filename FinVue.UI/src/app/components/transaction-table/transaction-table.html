@@ -1,7 +1,7 @@
 
 <div class="group-table back2">
     <!-- PLANNED MODE ----------------------------------->
-    <ng-container *ngIf="mode === PLANNING_MODE">
+    <ng-container *ngIf="mode === PLANNED_MODE">
         <!--no planned available-->
         <h1 *ngIf="!recurringTransactions || recurringTransactions.length == 0">Keine geplanten Transaktionen verfügbar!</h1>
         <!--recurring transactions-->
@@ -17,7 +17,7 @@
                     <div>
                         <h3>{{ numberToCurrency(rt.valueInCent / 100) }}</h3>
                         <p class="low-opac">Alle {{ rt.monthFrequency }} Monate</p>
-                        <button class="color-primary complete" onclick="openPayedDialog(rt)">Bezahlt</button>
+                        <button class="color-primary complete" (click)="openPayedDialog(rt)">Bezahlt</button>
                     </div>
                 </div>
             </div>
@@ -39,13 +39,13 @@
     </ng-container>
 
     <!--  NORMAL TRANSACTIONS MODE .--------------------------------------------->
-    <ng-container *ngIf="mode !== PLANNING_MODE">
+    <ng-container *ngIf="mode !== PLANNED_MODE">
         <!-- No Transactions available -->
         <h1 *ngIf="!transactionsByCategory || transactionsByCategory.length == 0">Keine Transaktionen verfügbar!</h1>
         <!--normal transactions -->
         <ng-container *ngFor="let group of transactionsByCategory">
-            <h1 class="group" [style]="'color: ' + group.categoryColor" onclick="toggleTransactionList(mode + '-' + group.categoryName)"><span>></span> {{ group.categoryName }} <span class="low-opac">{{ numberToCurrency(group.totalSum / 100) }}</span></h1>
-            <div [class]="'transaction-list ' + getActiveClassForId(mode + '-' + group.categoryName)">
+            <h1 class="group" [style]="'color: ' + group.categoryColor" (click)="toggleTransactionList(mode + '-' + group.categoryName)"><span>></span> {{ group.categoryName }} <span class="low-opac">{{ numberToCurrency(group.totalSum / 100) }}</span></h1>
+            <div *ngIf="isTransactionCategoryOpen(mode + '-' + group.categoryName)" class="transaction-list">
                 <div *ngFor="let t of group.transactions" class="transaction">
                     <div>
                         <h3>{{ t.name }}</h3>

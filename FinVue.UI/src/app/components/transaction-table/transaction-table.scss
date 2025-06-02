@@ -74,13 +74,3 @@ dialog button.close:hover {
     background: var(--primary);
     color: var(--text);
 }
-
-.transaction-list {
-    display: none;
-    transition: ease-in-out;
-}
-
-.transaction-list.active {
-    display: block;
-    transition: ease-in-out;
-}

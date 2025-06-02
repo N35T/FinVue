@@ -7,7 +7,7 @@ import { RecurringTransaction } from "../models/entities/recurring-transaction.m
 @Injectable({
     providedIn: 'root'
 })
-export class CurrentDateService {
+export class TransactionService {
 
     constructor(private apiService : ApiService) {}
 
