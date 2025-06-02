@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
-import { YearlyTransactionStatistics } from '../models/yearly-transaction-statistics.models';
-import { MonthlyTransactionStatistics } from '../models/monthly-transaction-statistics.models';
+import { YearlyTransactionStatistics } from '../models/groupings/yearly-transaction-statistics.models';
+import { MonthlyTransactionStatistics } from '../models/groupings/monthly-transaction-statistics.models';
 
 @Injectable({
   providedIn: 'root'

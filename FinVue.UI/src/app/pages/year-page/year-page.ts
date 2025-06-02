@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CurrentDateService } from '../../services/current-date-service';
-import { CurrentDate } from '../../models/current-date.model';
+import { CurrentDate } from '../../models/ui/current-date.model';
 import { ProfitCard } from '../../components/profit-card/profit-card';
 import { Chart, registerables } from 'chart.js';
-import { ProfitCardModel } from '../../models/profit-card.model';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { ProfitCardModel } from '../../models/ui/profit-card.model';
+import { BehaviorSubject } from 'rxjs';
 import { StatisticService } from '../../services/statistics.service';
-import { YearlyTransactionStatistics } from '../../models/yearly-transaction-statistics.models';
-import { SumByCategory } from '../../models/sum-by-category.models';
+import { SumByCategory } from '../../models/groupings/sum-by-category.models';
 import { AsyncPipe } from '@angular/common';
+import { YearlyTransactionStatistics } from '../../models/groupings/yearly-transaction-statistics.models';
 
 @Component({
   selector: 'app-year-page',

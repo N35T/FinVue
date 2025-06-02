@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { ApiService } from "./api.service";
 import { Observable } from "rxjs";
-import { MonthlyTransactions } from "../models/monthly-transactions.model";
-import { RecurringTransaction } from "../models/recurring-transaction.model";
+import { MonthlyTransactions } from "../models/groupings/monthly-transactions.model";
+import { RecurringTransaction } from "../models/entities/recurring-transaction.model";
 
 @Injectable({
     providedIn: 'root'

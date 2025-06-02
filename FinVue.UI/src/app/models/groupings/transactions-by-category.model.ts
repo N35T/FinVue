@@ -1,4 +1,4 @@
-import { Transaction } from "./transaction.model";
+import { Transaction } from "../entities/transaction.model";
 
 export class TransactionsByCategory {
 

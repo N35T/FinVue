@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { CurrentDate } from '../models/current-date.model';
+import { CurrentDate } from '../models/ui/current-date.model';
 
 @Injectable({
   providedIn: 'root'

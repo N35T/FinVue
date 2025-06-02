@@ -1,5 +1,5 @@
-import { PaymentMethod } from "../constants/payment-method.constants";
-import { TransactionType } from "../constants/transaction-type.constants";
+import { PaymentMethod } from "../../constants/payment-method.constants";
+import { TransactionType } from "../../constants/transaction-type.constants";
 import { User } from "./user.model";
 
 export class Transaction {

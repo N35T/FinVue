@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CurrentDateService } from '../../services/current-date-service';
-import { CurrentDate } from '../../models/current-date.model';
+import { CurrentDate } from '../../models/ui/current-date.model';
 
 @Component({
   selector: 'app-month-page',

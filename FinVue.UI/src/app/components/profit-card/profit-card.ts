@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ProfitCardModel } from '../../models/profit-card.model';
+import { ProfitCardModel } from '../../models/ui/profit-card.model';
 
 @Component({
   selector: 'app-profit-card',

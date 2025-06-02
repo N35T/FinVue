@@ -1,4 +1,4 @@
-import { TransactionType } from "../constants/transaction-type.constants";
+import { TransactionType } from "../../constants/transaction-type.constants";
 
 export class RecurringTransaction {
 
