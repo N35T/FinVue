@@ -3,12 +3,13 @@ import { Component, Input } from '@angular/core';
 import { RecurringTransaction } from '../../models/entities/recurring-transaction.model';
 import { TransactionsByCategory } from '../../models/groupings/transactions-by-category.model';
 import { numberToCurrency } from '../../services/currency.service';
+import { LoadingSpinner } from '../loading-spinner/loading-spinner';
 
 
 
 @Component({
   selector: 'app-transaction-table',
-  imports: [CommonModule],
+  imports: [CommonModule, LoadingSpinner],
   templateUrl: './transaction-table.html',
   styleUrl: './transaction-table.scss'
 })
@@ -25,6 +26,9 @@ export class TransactionTable {
 
   @Input()
   public transactionsByCategory? : TransactionsByCategory[];
+
+  @Input()
+  public loading = false;
 
   public numberToCurrency = numberToCurrency;
 

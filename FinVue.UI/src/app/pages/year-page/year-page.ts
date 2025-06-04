@@ -63,6 +63,8 @@ export class YearPage implements OnInit {
   private updateChartData(stats: YearlyTransactionStatistics) {
     this.profitChart.data = this.createProfitChartData(stats.incomePerMonth, stats.outcomePerMonth, stats.getProfitByMonth(), stats.getCumulatedProfitByMonth());
     this.categoryChart.data = this.createCategoryChartData(stats.outcomeByCategory);
+    this.profitChart.update();
+    this.categoryChart.update();
   }
 
   private createProfitChart() {
@@ -118,7 +120,7 @@ export class YearPage implements OnInit {
       }
     };
 
-    new Chart("category-sums-chart", {
+    this.categoryChart = new Chart("category-sums-chart", {
       type: "pie",
       data: data,
       options: options
@@ -154,9 +156,9 @@ export class YearPage implements OnInit {
 
   private createCategoryChartData(outcomeSumsByCategory : SumByCategory[]) : any {
     return {
-      labels: ["Kategorien"],
+      labels: outcomeSumsByCategory.map(e => e.categoryName),
       datasets: [{
-          label: outcomeSumsByCategory.map(e => e.categoryName),
+          label: "Kategorien",
           data: outcomeSumsByCategory.map(e => e.totalSum / 100),
           backgroundColor: outcomeSumsByCategory.map(e => e.categoryColor),
           hoverOffset: 4

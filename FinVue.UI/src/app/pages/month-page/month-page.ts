@@ -12,6 +12,8 @@ import { RecurringTransaction } from '../../models/entities/recurring-transactio
 import { TransactionsByCategory } from '../../models/groupings/transactions-by-category.model';
 import { TransactionService } from '../../services/transactions.service';
 import { MonthlyTransactions } from '../../models/groupings/monthly-transactions.model';
+import { StatisticService } from '../../services/statistics.service';
+import { MonthlyTransactionStatistics } from '../../models/groupings/monthly-transaction-statistics.models';
 
 @Component({
   selector: 'app-month-page',
@@ -27,11 +29,14 @@ export class MonthPage {
   public outcomeProfitCard : BehaviorSubject<ProfitCardModel> = new BehaviorSubject(this.getDefaultProfitCardModel());
   public profitProfitCard : BehaviorSubject<ProfitCardModel> = new BehaviorSubject(this.getDefaultProfitCardModel());
 
-  public recurringTransactions : Subject<RecurringTransaction[]> = new Subject();
-  public incomeTransactions : Subject<TransactionsByCategory[]> = new Subject();
-  public outcomeTransactions : Subject<TransactionsByCategory[]> = new Subject();
+  public recurringLoading = new BehaviorSubject<boolean>(true);
+  public recurringTransactions : BehaviorSubject<RecurringTransaction[]> = new BehaviorSubject<RecurringTransaction[]>([]);;
+  public incomeLoading = new BehaviorSubject<boolean>(true);
+  public incomeTransactions : BehaviorSubject<TransactionsByCategory[]> = new BehaviorSubject<TransactionsByCategory[]>([]);
+  public outcomeLoading = new BehaviorSubject<boolean>(true);
+  public outcomeTransactions : BehaviorSubject<TransactionsByCategory[]> = new BehaviorSubject<TransactionsByCategory[]>([]);
 
-  constructor(private activatedRoute : ActivatedRoute, public currentDateService: CurrentDateService, private transactionService : TransactionService) {
+  constructor(private activatedRoute : ActivatedRoute, public currentDateService: CurrentDateService, private transactionService : TransactionService, private statsService : StatisticService) {
     this.activatedRoute.params.subscribe((params) => {
         this.currentDateService.currentDate.set(new CurrentDate(params['selectedYear'], params['selectedMonth']));
         this.fetchData();
@@ -42,13 +47,27 @@ export class MonthPage {
     this.transactionService.getRecurringTransactionsOfMonth(this.currentDateService.currentDate().year, this.currentDateService.currentDate().month!)
       .subscribe((e : RecurringTransaction[]) => {
         this.recurringTransactions.next(e);
+        this.recurringLoading.next(false);
       });
 
     this.transactionService.getTransactionOfMonth(this.currentDateService.currentDate().year, this.currentDateService.currentDate().month!)
       .subscribe((e : MonthlyTransactions) => {
         this.incomeTransactions.next(e.incomeTransactions);
+        this.incomeLoading.next(false);
         this.outcomeTransactions.next(e.outcomeTransactions);
+        this.outcomeLoading.next(false);
       })
+    
+    this.statsService.getMonthlyStatistics(this.currentDateService.currentDate().year, this.currentDateService.currentDate().month!)
+      .subscribe((e : MonthlyTransactionStatistics) => {
+        this.updateProfitCards(e);
+      })
+  }
+
+  private updateProfitCards(stats : MonthlyTransactionStatistics) {
+    this.incomeProfitCard.next(new ProfitCardModel(stats.totalIncome));
+    this.outcomeProfitCard.next(new ProfitCardModel(stats.totalOutcome));
+    this.profitProfitCard.next(new ProfitCardModel(stats.totalIncome - stats.totalOutcome));
   }
 
   public getTitle() : string {

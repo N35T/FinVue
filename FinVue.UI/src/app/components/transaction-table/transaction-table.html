@@ -1,7 +1,11 @@
 
 <div class="group-table back2">
+    <!-- Loading indicator -->
+    <ng-container *ngIf="loading">
+        <app-loading-spinner></app-loading-spinner>
+    </ng-container>
     <!-- PLANNED MODE ----------------------------------->
-    <ng-container *ngIf="mode === PLANNED_MODE">
+    <ng-container *ngIf="mode === PLANNED_MODE && !loading">
         <!--no planned available-->
         <h1 *ngIf="!recurringTransactions || recurringTransactions.length == 0">Keine geplanten Transaktionen verfügbar!</h1>
         <!--recurring transactions-->
@@ -39,7 +43,7 @@
     </ng-container>
 
     <!--  NORMAL TRANSACTIONS MODE .--------------------------------------------->
-    <ng-container *ngIf="mode !== PLANNED_MODE">
+    <ng-container *ngIf="mode !== PLANNED_MODE && !loading">
         <!-- No Transactions available -->
         <h1 *ngIf="!transactionsByCategory || transactionsByCategory.length == 0">Keine Transaktionen verfügbar!</h1>
         <!--normal transactions -->
