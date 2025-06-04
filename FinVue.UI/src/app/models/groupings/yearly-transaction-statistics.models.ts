@@ -1,8 +1,12 @@
-import { SumByCategory } from "./sum-by-category.models";
+import { Injectable } from "@angular/core";
+import { Adapter } from "../adapter.model";
+import { SumByCategory, SumByCategoryAdapter } from "./sum-by-category.models";
+
 
 export class YearlyTransactionStatistics {
 
     constructor(public incomePerMonth : number[], public outcomePerMonth : number[], public outcomeByCategory: SumByCategory[]) {}
+
 
     private incomeSum? : number;
     private incomeAvg? : number;
@@ -16,21 +20,21 @@ export class YearlyTransactionStatistics {
 
     private cumulatedProfitByMonth? : number[]
 
-    getTotalIncome() : number {
+    public getTotalIncome() : number {
         return this.incomeSum ??= this.incomePerMonth.reduce((partialSum, a) => partialSum + a, 0);
     }
-    getAverageIncome() : number {
+    public getAverageIncome() : number {
         return this.incomeAvg ??= this.getTotalIncome() / this.incomePerMonth.length;
     }
 
-    getTotalOutcome() : number {
+    public getTotalOutcome() : number {
         return this.outcomeSum ??= this.outcomePerMonth.reduce((partialSum, a) => partialSum + a, 0);
     }
-    getAverageOutcome() : number {
+    public getAverageOutcome() : number {
         return this.outcomeAvg ??= this.getTotalOutcome() / this.outcomePerMonth.length;
     }
 
-    getProfitByMonth() : number[] {
+    public getProfitByMonth() : number[] {
         if(this.profitByMonth) {
             return this.profitByMonth;
         }
@@ -41,14 +45,14 @@ export class YearlyTransactionStatistics {
         return this.profitByMonth;
     }
 
-    getTotalProfit() : number {
+    public getTotalProfit() : number {
         return this.profitSum ??= this.getProfitByMonth().reduce((partialSum, a) => partialSum + a, 0);
     }
-    getAverageProfit() : number {
+    public getAverageProfit() : number {
         return this.profitAvg ??= this.getTotalProfit() / this.incomePerMonth.length;
     }
 
-    getCumulatedProfitByMonth() : number[] {
+    public getCumulatedProfitByMonth() : number[] {
         if(this.cumulatedProfitByMonth) {
             return this.cumulatedProfitByMonth;
         }
@@ -58,5 +62,23 @@ export class YearlyTransactionStatistics {
             this.cumulatedProfitByMonth[i] = this.cumulatedProfitByMonth[i-1] + this.incomePerMonth[i]-this.outcomePerMonth[i];
         }
         return this.cumulatedProfitByMonth;
+    }
+}
+
+@Injectable({
+  providedIn: "root",
+})
+export class YearlyTransactionStatisticsAdapter implements Adapter<YearlyTransactionStatistics> {
+    constructor(
+        private sumByCategoryAdapter : SumByCategoryAdapter
+    ) { }
+
+    adapt (item: any): YearlyTransactionStatistics {
+        if (!item) 
+            throw new Error("Can't map item to model " + item);
+        return new YearlyTransactionStatistics(
+            item.incomePerMonth, 
+            item.outcomePerMonth, 
+            item.outcomeByCategory.map((e:any) => this.sumByCategoryAdapter.adapt(e)));
     }
 }
