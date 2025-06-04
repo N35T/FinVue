@@ -43,4 +43,11 @@ public struct Color {
     public static Color FromDto(int dto) {
         return new Color(dto);
     }
+
+
+    public static bool operator ==(Color? a, Color? b)
+        => a?._rgbaColor == b?._rgbaColor;
+    
+    public static bool operator !=(Color? a, Color? b)
+        => !(a == b);
 }

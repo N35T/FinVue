@@ -1,4 +1,5 @@
-﻿using FinVue.Core.Entities;
+﻿using System.Globalization;
+using FinVue.Core.Entities;
 using FinVue.Core.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,8 @@ public class DatabaseSeeding {
     public static List<Category> TestCategories { get; private set;}
     public static List<Transaction> TestTransactions { get; private set;}
     public static List<RecurringTransaction> TestRecurringTransactions { get; private set; }
+    
+    public static CultureInfo Culture = new CultureInfo("de-DE");
     
     internal DatabaseSeeding(ApplicationDbContext dbContext) {
         _dbContext = dbContext;
@@ -60,20 +63,20 @@ public class DatabaseSeeding {
     private Task SeedTransactionsAsync() {
 
         TestTransactions = new List<Transaction>() {
-            new Transaction(Guid.NewGuid().ToString(), "Kantine", 231, DateOnly.Parse("22.1.25"), TransactionType.Ausgaben, PaymentMethod.Girokarte, TestUsers,TestUsers, TestCategories[0]),
-            new Transaction(Guid.NewGuid().ToString(), "Kantine", 211, DateOnly.Parse("21.1.25"), TransactionType.Ausgaben, PaymentMethod.Girokarte, TestUsers,TestUsers, TestCategories[0]),
-            new Transaction(Guid.NewGuid().ToString(), "Kantine", 531, DateOnly.Parse("25.1.25"), TransactionType.Ausgaben, PaymentMethod.Bar, TestUsers,TestUsers, TestCategories[0]),
-            new Transaction(Guid.NewGuid().ToString(), "Kantine", 261, DateOnly.Parse("28.1.25"), TransactionType.Ausgaben, PaymentMethod.Girokarte, TestUsers,TestUsers, TestCategories[0]),
-            new Transaction(Guid.NewGuid().ToString(), "Kantine", 531, DateOnly.Parse("12.1.25"), TransactionType.Ausgaben, PaymentMethod.Bar, TestUsers,TestUsers, TestCategories[0]),
-            new Transaction(Guid.NewGuid().ToString(), "Kantine", 261, DateOnly.Parse("12.1.25"), TransactionType.Ausgaben, PaymentMethod.Girokarte, TestUsers,TestUsers, TestCategories[0]),
+            new Transaction(Guid.NewGuid().ToString(), "Kantine", 211, DateOnly.Parse("21.1.25", Culture), TransactionType.Ausgaben, PaymentMethod.Girokarte, TestUsers,TestUsers, TestCategories[0]),
+            new Transaction(Guid.NewGuid().ToString(), "Kantine", 231, DateOnly.Parse("22.1.25", Culture), TransactionType.Ausgaben, PaymentMethod.Girokarte, TestUsers,TestUsers, TestCategories[0]),
+            new Transaction(Guid.NewGuid().ToString(), "Kantine", 531, DateOnly.Parse("25.1.25", Culture), TransactionType.Ausgaben, PaymentMethod.Bar, TestUsers,TestUsers, TestCategories[0]),
+            new Transaction(Guid.NewGuid().ToString(), "Kantine", 261, DateOnly.Parse("28.1.25", Culture), TransactionType.Ausgaben, PaymentMethod.Girokarte, TestUsers,TestUsers, TestCategories[0]),
+            new Transaction(Guid.NewGuid().ToString(), "Kantine", 531, DateOnly.Parse("12.1.25", Culture), TransactionType.Ausgaben, PaymentMethod.Bar, TestUsers,TestUsers, TestCategories[0]),
+            new Transaction(Guid.NewGuid().ToString(), "Kantine", 261, DateOnly.Parse("12.1.25", Culture), TransactionType.Ausgaben, PaymentMethod.Girokarte, TestUsers,TestUsers, TestCategories[0]),
             
-            new Transaction(Guid.NewGuid().ToString(), "Miete", 44300, DateOnly.Parse("1.1.25"), TransactionType.Ausgaben, PaymentMethod.Überweisung, TestUsers,TestUsers, TestCategories[1]),
-            new Transaction(Guid.NewGuid().ToString(), "Miete", 44300, DateOnly.Parse("1.2.25"), TransactionType.Ausgaben, PaymentMethod.Überweisung, TestUsers,TestUsers, TestCategories[1]),
-            new Transaction(Guid.NewGuid().ToString(), "Strom", 12600, DateOnly.Parse("17.1.25"), TransactionType.Ausgaben, PaymentMethod.Überweisung, TestUsers,TestUsers, TestCategories[1]),
-            new Transaction(Guid.NewGuid().ToString(), "Wasser", 9800, DateOnly.Parse("17.1.25"), TransactionType.Ausgaben, PaymentMethod.Überweisung, TestUsers,TestUsers, TestCategories[1]),
-            new Transaction(Guid.NewGuid().ToString(), "GEZ", 5560, DateOnly.Parse("15.2.25"), TransactionType.Ausgaben, PaymentMethod.Überweisung, TestUsers,TestUsers, TestCategories[1]),
+            new Transaction(Guid.NewGuid().ToString(), "Miete", 44300, DateOnly.Parse("1.1.25", Culture), TransactionType.Ausgaben, PaymentMethod.Überweisung, TestUsers,TestUsers, TestCategories[1]),
+            new Transaction(Guid.NewGuid().ToString(), "Miete", 44300, DateOnly.Parse("1.2.25", Culture), TransactionType.Ausgaben, PaymentMethod.Überweisung, TestUsers,TestUsers, TestCategories[1]),
+            new Transaction(Guid.NewGuid().ToString(), "Strom", 12600, DateOnly.Parse("17.1.25", Culture), TransactionType.Ausgaben, PaymentMethod.Überweisung, TestUsers,TestUsers, TestCategories[1]),
+            new Transaction(Guid.NewGuid().ToString(), "Wasser", 9800, DateOnly.Parse("17.1.25", Culture), TransactionType.Ausgaben, PaymentMethod.Überweisung, TestUsers,TestUsers, TestCategories[1]),
+            new Transaction(Guid.NewGuid().ToString(), "GEZ", 5560, DateOnly.Parse("15.2.25", Culture), TransactionType.Ausgaben, PaymentMethod.Überweisung, TestUsers,TestUsers, TestCategories[1]),
             
-            new Transaction(Guid.NewGuid().ToString(), "Gehalt", 500000, DateOnly.Parse("1.1.25"), TransactionType.Einkommen, PaymentMethod.Girokarte, TestUsers,TestUsers, TestCategories[2]),
+            new Transaction(Guid.NewGuid().ToString(), "Gehalt", 500000, DateOnly.Parse("1.1.25", Culture), TransactionType.Einkommen, PaymentMethod.Girokarte, TestUsers,TestUsers, TestCategories[2]),
         };
 
         TestCategories[0].Transactions.AddRange(TestTransactions[0..6]);
