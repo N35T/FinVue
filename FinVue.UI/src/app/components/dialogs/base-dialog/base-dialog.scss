@@ -1,0 +1,27 @@
+#dialog-container {
+
+    padding: 1em;
+
+    .dialog-header {
+        display:flex;
+        justify-content: space-between;
+    }
+
+    .dialog-content {
+        margin-top: 1.0em;
+    }
+
+    .dialog-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: .5em;
+    }
+
+    .dialog-actions > button {
+        width: 6em;
+    }
+
+    ::ng-deep .loading .loader {
+        font-size: 5pt;
+    }
+}

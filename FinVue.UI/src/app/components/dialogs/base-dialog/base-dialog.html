@@ -1,0 +1,18 @@
+<div id="dialog-container">
+    <div class="dialog-header">
+        <h3 *ngIf="dialogTitle">{{ dialogTitle }} {{ loading() }}</h3>
+        <button mat-icon-button (click)="onClose()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    
+    <div class="dialog-content">
+        <ng-container #contentContainer></ng-container>
+    </div>
+    
+    <div class="dialog-actions">
+        <button mat-button (click)="onCancel()">Abbrechen</button>
+        <button *ngIf="!loading()" mat-raised-button color="primary" (click)="onSave()">Speichern</button>
+        <button *ngIf="loading()" mat-raised-button color="primary" disabled=""><app-loading-spinner class="loading" ></app-loading-spinner></button>
+    </div>
+</div>

@@ -1,3 +1,122 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+
+$custom-primary-colors: (
+  50:  #f0f5ec,
+  100: #dae7d1,
+  200: #c1d8b3,
+  300: #a8c994,
+  400: #94bd80,
+  500: #81a975, // main
+  600: #769c6d,
+  700: #678b61,
+  800: #587a55,
+  900: #3e5d3f,
+  A100: #d3f2c6,
+  A200: #a5e88e,
+  A400: #74db4e,
+  A700: #5cd633,
+  contrast: (
+    50: black,
+    100: black,
+    200: black,
+    300: black,
+    400: black,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: black,
+    A200: black,
+    A400: white,
+    A700: white,
+  )
+);
+
+$custom-accent-colors: (
+  50:  #e0f7f4,
+  100: #b3ece4,
+  200: #80e0d3,
+  300: #4dd4c2,
+  400: #26cabb,
+  500: #00c0b5, // main
+  600: #00b2a8,
+  700: #00a096,
+  800: #009084,
+  900: #007366,
+  A100: #a3fff6,
+  A200: #70fff1,
+  A400: #3dffec,
+  A700: #24fff2,
+  contrast: (
+    50: black,
+    100: black,
+    200: black,
+    300: black,
+    400: black,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: black,
+    A200: black,
+    A400: black,
+    A700: black,
+  )
+);
+
+$custom-warn-colors: (
+  50:  #fbeaea,
+  100: #f4c8c8,
+  200: #eca3a3,
+  300: #e37d7d,
+  400: #dc6060,
+  500: #ac4d4d, // main
+  600: #a04545,
+  700: #903b3b,
+  800: #803232,
+  900: #662121,
+  A100: #ffd7d7,
+  A200: #ffa3a3,
+  A400: #ff6f6f,
+  A700: #ff5555,
+  contrast: (
+    50: black,
+    100: black,
+    200: black,
+    300: black,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: black,
+    A200: black,
+    A400: white,
+    A700: white,
+  )
+);
+
+$custom-primary: mat.m2-define-palette($custom-primary-colors, 500, 300, 700);
+$custom-accent: mat.m2-define-palette($custom-accent-colors, 500, 300, 700);
+$custom-warn:   mat.m2-define-palette($custom-warn-colors, 500, 300, 700);
+
+$custom-theme: mat.m2-define-dark-theme((
+    color: (
+        primary: $custom-primary,
+        accent: $custom-accent,
+        warn: $custom-warn,
+    ),
+    density: 0,
+));
+
+@include mat.all-component-themes($custom-theme);
+
 * {
     box-sizing: border-box;
     scroll-behavior: smooth;
@@ -122,3 +241,6 @@ body::-webkit-scrollbar-thumb {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
     background-color: #474747;
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

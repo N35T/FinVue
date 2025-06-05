@@ -1,7 +1,10 @@
 using FinVue.Api.DataTransferObjects;
+using FinVue.Core.DataTransferObjects;
+using FinVue.Core.Entities;
 using FinVue.Core.Enums;
 using FinVue.Core.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FinVue.Api.Endpoints;
 
@@ -9,6 +12,7 @@ public static class Endpoints {
 
     public static void UseCustomEndpoints(this WebApplication app) {
         MapTransactions(app);
+        MapCategories(app);
         MapStatistics(app);
     }
 
@@ -41,6 +45,15 @@ public static class Endpoints {
         
     }
 
+    private static void MapCategories(WebApplication app) {
+        app.MapPost("/categories", async (CategoryService categoryService, [FromBody]CategoryDto category) => {
+            var res = await categoryService.AddCategoryAsync(new Category(Guid.NewGuid().ToString(), category.CategoryName,
+                new Color(category.CategoryColor)));
+
+            return Results.Ok(res);
+        });
+    }
+    
     private static void MapStatistics(WebApplication app) {
         app.MapGet("/statistics/byYear", async ([FromQuery]int year, TransactionService transactionService) => {
                 var incomeByMonth = 
