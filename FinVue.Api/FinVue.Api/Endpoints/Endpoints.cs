@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using FinVue.Api.DataTransferObjects;
 using FinVue.Core.DataTransferObjects;
 using FinVue.Core.Entities;
@@ -14,6 +15,7 @@ public static class Endpoints {
         MapTransactions(app);
         MapCategories(app);
         MapStatistics(app);
+        MapUsers(app);
     }
 
     private static void MapTransactions(WebApplication app) {
@@ -42,7 +44,57 @@ public static class Endpoints {
             .WithName("GetRecurringTransactionsOfMonth")
             .WithGroupName("Transactions")
             .WithOpenApi();
-        
+
+        app.MapPost("/transactions",
+            async (TransactionService transactionService, HttpContext ctx, [FromBody] TransactionDto transactionDto) => {
+                var currentUserId = ctx.GetUserId();
+                if (currentUserId is null) {
+                    return Results.Unauthorized();
+                }
+                var transaction = new Transaction {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = transactionDto.Name,
+                    ValueInCent = transactionDto.ValueInCent,
+                    PayDate = transactionDto.PayDate,
+                    Type = transactionDto.Type,
+                    PaymentMethod = transactionDto.PaymentMethod,
+                    CreationUserId = currentUserId,
+                    PayingUserId = transactionDto.PayingUser.Id,
+                    CategoryId = transactionDto.Category?.Id,
+                    CreationDate = DateTime.Now,
+                };
+                var res = await transactionService.AddTransactionAsync(transaction);
+                return Results.Ok(res);
+        });
+
+        app.MapPost("/transactions/recurring",
+            async (RecurringTransactionService rtService, [FromBody] RecurringTransactionDto rtDto) => {
+                var rt = new RecurringTransaction(
+                    Guid.NewGuid().ToString(),
+                    rtDto.Name,
+                    rtDto.ValueInCent,
+                    rtDto.MonthFrequency,
+                    rtDto.Type,
+                    rtDto.Category?.Id
+                );
+                var res = await rtService.AddRecurringTransactionAsync(rt);
+                return Results.Ok(res);
+            });
+
+        app.MapPost("/transactions/fromRecurring",
+            async(RecurringTransactionService rtService, UserService userService, HttpContext ctx, [FromBody] TransactionFromRecurringDto rtDto) => {
+                var userId = ctx.GetUserId();
+                if (userId is null) {
+                    return Results.Unauthorized();
+                }
+                var user = await userService.GetUserFromIdAsync(userId);
+                if (user is null) {
+                    return Results.BadRequest();
+                }
+                
+                var res = await rtService.MarkRecurringTransactionAsDone(rtDto.RecurringTransactionId, rtDto.PayDate, user);
+                return Results.Ok(res);
+            });
     }
 
     private static void MapCategories(WebApplication app) {
@@ -51,6 +103,17 @@ public static class Endpoints {
                 new Color(category.CategoryColor)));
 
             return Results.Ok(res);
+        });
+        app.MapGet("/categories", async (CategoryService categoryService) => {
+            var res = await categoryService.GetAllCategoriesAsync();
+            return Results.Ok(res);
+        });
+    }
+
+    private static void MapUsers(WebApplication app) {
+        app.MapGet("/users", async (UserService userService) => {
+            var users = await userService.GetAllUsersAsync();
+            return Results.Ok(users);
         });
     }
     
@@ -96,5 +159,9 @@ public static class Endpoints {
             .WithName("GetMonthlyStatistics")
             .WithGroupName("Statistics")
             .WithOpenApi();
+    }
+
+    private static string? GetUserId(this HttpContext ctx) {
+        return ctx.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     }
 }

@@ -28,7 +28,7 @@ public class Transaction {
     public Category? Category { get; set; }
     public string? CategoryId { get; set; }
     public string? RecurringTransactionId { get; set; }
-
+    
     public Transaction(string id, string name, int valueInCent, DateOnly payDate, TransactionType type, PaymentMethod paymentMethod, User creationUser, User payingUser, Category category) {
         Id = id;
         Name = name;
@@ -61,5 +61,5 @@ public class Transaction {
         RecurringTransactionId = rt.Id;
     }
 
-    private Transaction() {}
+    public Transaction() {}
 }

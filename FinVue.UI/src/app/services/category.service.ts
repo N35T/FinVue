@@ -14,5 +14,10 @@ export class CategoryService {
         return this.apiService.post('/categories', category)
             .pipe(map(e => this.categoryAdapter.adapt(e)));
     }
+
+    public getCategories() : Observable<Category[]> {
+        return this.apiService.get<Category[]>('/categories')
+            .pipe(map(item => item.map(e => this.categoryAdapter.adapt(e))));
+    }
 }
   

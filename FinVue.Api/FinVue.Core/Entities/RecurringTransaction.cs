@@ -37,15 +37,18 @@ public class RecurringTransaction {
 
     public List<Transaction> Transactions { get; private init; }
 
-    public RecurringTransaction(string id, string name, int valueInCent, int monthFrequency, TransactionType type, Category category) {
+    public RecurringTransaction(string id, string name, int valueInCent, int monthFrequency, TransactionType type, Category category) : this(id, name, valueInCent, monthFrequency, type, category.Id) {
+        Category = category;
+    }
+    
+    public RecurringTransaction(string id, string name, int valueInCent, int monthFrequency, TransactionType type, string? categoryId)  {
         Transactions = new List<Transaction>();
         Id = id;
         Name = name;
         ValueInCent = valueInCent;
         MonthFrequency = monthFrequency;
         Type = type;
-        Category = category;
-        CategoryId = category?.Id;
+        CategoryId = categoryId;
     }
     
     private protected RecurringTransaction() {}

@@ -3,6 +3,7 @@ import { PaymentMethod, PaymentMethodAdapter } from "../../constants/payment-met
 import { TransactionType, TransactionTypeAdapter } from "../../constants/transaction-type.constants";
 import { User, UserAdapter } from "./user.model";
 import { Adapter } from "../adapter.model";
+import { Category, CategoryAdapter } from "./category.model";
 
 export class Transaction {
 
@@ -16,6 +17,8 @@ export class Transaction {
         public paymentMethod : PaymentMethod,
         public payingUser : User,
         public creationUser? : User,
+        public category? : Category,
+        public recurringTransactionId? : string
     ) {}
 }
 
@@ -27,7 +30,8 @@ export class TransactionAdapter implements Adapter<Transaction> {
     constructor(
         private transactionTypeAdapter : TransactionTypeAdapter,
         private paymentMethodAdapter : PaymentMethodAdapter,
-        private userAdapter : UserAdapter
+        private userAdapter : UserAdapter,
+        private categoryAdapter : CategoryAdapter
     ) {}
 
     adapt (item: any): Transaction {
@@ -42,7 +46,9 @@ export class TransactionAdapter implements Adapter<Transaction> {
             this.transactionTypeAdapter.adapt(item.type),
             this.paymentMethodAdapter.adapt(item.paymentMethod),
             this.userAdapter.adapt(item.payingUser),
-            item.creationUser ? this.userAdapter.adapt(item.creationUser) : undefined
+            item.creationUser ? this.userAdapter.adapt(item.creationUser) : undefined,
+            item.category ? this.categoryAdapter.adapt(item.category) : undefined,
+            item.recurringTransactionId
         );
     }
 }

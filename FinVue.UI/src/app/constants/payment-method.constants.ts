@@ -2,7 +2,18 @@ import { Injectable } from "@angular/core";
 import { Adapter } from "../models/adapter.model";
 
 export enum PaymentMethod {
-    Bar = "Bar", Girokarte = "Girokarte", Kreditkarte = "Kreditkarte", Überweisung = "Überweisung", PayPal = "PayPal"
+    Bar = 0, Girokarte = 1, Kreditkarte = 2, Überweisung = 3, PayPal = 4
+}
+
+export const _PAYMENT_METHOD = ["Bar", "Girokarte", "Kreditkarte", "Überweisung", "PayPal"];
+
+export function paymentMethodToString(method : PaymentMethod) : string{
+    return _PAYMENT_METHOD[method];
+}
+
+export function stringToPaymentMethod(type : string) : PaymentMethod {
+    const i = _PAYMENT_METHOD.indexOf(type);
+    return i === -1 ? PaymentMethod.Überweisung : i
 }
 
 @Injectable({

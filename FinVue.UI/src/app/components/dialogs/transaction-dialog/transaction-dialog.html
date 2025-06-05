@@ -1,0 +1,81 @@
+<form [formGroup]="addTransactionForm" class="form">
+    <div class="span-cols recurring-toggle">
+        <mat-slide-toggle (toggleChange)="onChangeMode()" id="isRecurring" formControlName="isRecurring" />
+        <mat-label>Wiederkehrend</mat-label>
+    </div>
+    <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input matInput id="name" type="text" formControlName="name" />
+        @if (getNameForm().hasError('required')) {
+            <mat-error>Name kann nicht leer sein!</mat-error>
+        }
+    </mat-form-field>
+    <mat-form-field>
+        <!-- Hier Kommazahl angeben können -->
+        <mat-label>Betrag</mat-label>
+        <input matInput currencyMask [options]="{prefix: '',suffix: ' €', thousands: '.', decimal: ','}" id="value" type="text" inputmode="decimal" formControlName="value" />
+        @if (getValueForm().hasError('required')) {
+            <mat-error>Betrag kann nicht leer sein!</mat-error>
+        }
+    </mat-form-field>
+    <mat-form-field *ngIf="!isRecurring()">
+        <mat-label>Gezahlt am</mat-label>
+        <input matInput id="payDate" [matDatepicker]="picker" [max]="today" formControlName="payDate">
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        @if (getPayDateForm().hasError('required')) {
+            <mat-error>Tag kann nicht leer sein!</mat-error>
+        }
+    </mat-form-field>
+    <mat-form-field *ngIf="!isRecurring()">
+        <mat-label>Betroffener</mat-label>
+        <mat-select id="payingUser" formControlName="payingUser" >
+            @for (user of users|async; track user) {
+                <mat-option [value]="user.username">{{user.username}}</mat-option>
+            }
+        </mat-select>
+        @if (getPayingUserForm().hasError('required')) {
+            <mat-error>Betroffener kann nicht leer sein!</mat-error>
+        }
+    </mat-form-field>
+    <mat-form-field *ngIf="isRecurring()">
+        <mat-label>Monatsfrequenz</mat-label>
+        <input matInput id="monthFrequency" type="number" min="1" formControlName="monthFrequency" />
+        @if (getMonthFrequencyForm().hasError('required')) {
+            <mat-error>Monatsfrequenz kann nicht leer sein!</mat-error>
+        }
+    </mat-form-field>
+    <mat-form-field *ngIf="!isRecurring()">
+        <mat-label>Zahlungsmethode</mat-label>
+        <mat-select id="paymentMethod" formControlName="paymentMethod" >
+            @for (method of paymentMethods; track method) {
+                <mat-option [value]="method">{{method}}</mat-option>
+            }
+        </mat-select>
+        @if (getPaymentMethodForm().hasError('required')) {
+            <mat-error>Zahlungsmethode kann nicht leer sein!</mat-error>
+        }
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Transaktions Typ</mat-label>
+        <mat-select id="type" formControlName="type" >
+            @for (type of transactionTypes; track type) {
+                <mat-option [value]="type">{{type}}</mat-option>
+            }
+        </mat-select>
+        @if (getTypeForm().hasError('required')) {
+            <mat-error>Typ kann nicht leer sein!</mat-error>
+        }
+    </mat-form-field>
+    <mat-form-field class="span-cols">
+        <mat-label>Kategorie</mat-label>
+        <mat-select id="category" formControlName="category" >
+            @for (cat of categories|async; track cat) {
+                <mat-option [style]="'color:'+cat.categoryColor" [value]="cat.categoryName">{{cat.categoryName}}</mat-option>
+            }
+        </mat-select>
+        @if (getCategoryForm().hasError('required')) {
+            <mat-error>Kategorie kann nicht leer sein!</mat-error>
+        }
+    </mat-form-field>
+</form>

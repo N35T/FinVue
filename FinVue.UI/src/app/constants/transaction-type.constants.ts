@@ -2,10 +2,19 @@ import { Injectable } from "@angular/core";
 import { Adapter } from "../models/adapter.model";
 
 export enum TransactionType {
-    Einkommen = "Einkommen", 
-    Ausgaben = "Ausgaben"
+    Einkommen = 0, 
+    Ausgaben = 1
+}
+export const _TRANSACTION_TYPES = ["Einkommen", "Ausgaben"];
+
+export function transactionTypeToString(type : TransactionType) : string {
+    return _TRANSACTION_TYPES[type];
 }
 
+export function stringToTransactionType(type : string) : TransactionType {
+    const i = _TRANSACTION_TYPES.indexOf(type);
+    return i === -1 ? TransactionType.Ausgaben : i
+}
 
 @Injectable({
   providedIn: "root",

@@ -21,6 +21,7 @@ public static class DependencyInjection {
         services.AddTransient<TransactionService>();
         services.AddTransient<RecurringTransactionService>();
         services.AddTransient<CategoryService>();
+        services.AddTransient<UserService>();
         
         services.ConfigureAuth();
 
