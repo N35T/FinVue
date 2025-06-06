@@ -19,6 +19,7 @@ import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/cor
 import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { RecurringTransaction } from '../../../models/entities/recurring-transaction.model';
+import { DateOnly } from '../../../models/entities/date.model';
 
 @Component({
   selector: 'app-transaction-dialog',
@@ -66,7 +67,7 @@ export class TransactionDialog implements ISaveData, OnInit {
 
     ngOnInit(): void {
         this.userService.getUsers().subscribe(e => this.users.next(e)); 
-        this.categoryService.getCategories().subscribe(e => this.categories.next(e)); 
+        this.categoryService.getCategories().subscribe(e => {this.categories.next(e); console.log(e)}); 
     }
 
     onChangeMode() {
@@ -97,14 +98,15 @@ export class TransactionDialog implements ISaveData, OnInit {
 
         const name = this.getNameForm().value;
         const valueInCent = this.getValueForm().value!*100;
-        const payDate = this.getPayDateForm().value;
+        const payDate = DateOnly.fromDate(this.getPayDateForm().value!);
         const type = stringToTransactionType(this.getTypeForm().value!);
         const paymentMethod = stringToPaymentMethod(this.getPaymentMethodForm().value!);
         const payingUser = this.users.getValue().filter(e => e.username === this.getPayingUserForm().value)?.at(0);
         const category = this.categories.getValue().filter(e => e.categoryName === this.getCategoryForm().value)?.at(0);
 
-        const transaction = new Transaction("", name!, valueInCent, new Date(), payDate!, type, paymentMethod, payingUser!, undefined, category, undefined);
-        
+        const transaction = new Transaction("", name!, valueInCent, new Date(), payDate, type, paymentMethod, payingUser!, undefined, category, undefined);
+        console.log(transaction.toString())
+
         return this.transactionService.addTransaction(transaction);
     }
 
@@ -115,7 +117,7 @@ export class TransactionDialog implements ISaveData, OnInit {
         const type = stringToTransactionType(this.getTypeForm().value!);
         const category = this.categories.getValue().filter(e => e.categoryName === this.getCategoryForm().value)?.at(0);
 
-        const rt = new RecurringTransaction("", name!, valueInCent, monthFrequency!, type, false);
+        const rt = new RecurringTransaction("", name!, valueInCent, monthFrequency!, type, false, category);
 
         return this.transactionService.addRecurringTransaction(rt);
     }

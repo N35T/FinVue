@@ -70,14 +70,17 @@ export class BaseDialog implements AfterViewInit, OnDestroy {
             returnData: this.getReturnData()
         }
         if(isISaveData(this.componentRef?.instance)) {
+            console.log("starting save");
             this.loading.set(true);
             this.saveSubscription = this.componentRef?.instance.onSave()
                 .subscribe({
                     next: e => {
+                        console.log("saved, closing...")
                         data.saveData = e;
                         this.dialogRef.close({ action: BaseDialog.ACTION_SAVE, data: data });
                     },
                     error: error => {
+                        console.log(error)
                         this.loading.set(false);
                         return;
                     }
