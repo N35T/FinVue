@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RecurringTransaction } from '../../models/entities/recurring-transaction.model';
 import { TransactionsByCategory } from '../../models/groupings/transactions-by-category.model';
 import { numberToCurrency } from '../../services/currency.service';
@@ -7,6 +7,9 @@ import { LoadingSpinner } from '../loading-spinner/loading-spinner';
 import { MatDialog } from '@angular/material/dialog';
 import { BaseDialog } from '../dialogs/base-dialog/base-dialog';
 import { RecurringDoneDialog } from '../dialogs/recurring-done-dialog/recurring-done-dialog';
+import { transactionTypeToString } from '../../constants/transaction-type.constants';
+import { paymentMethodToString } from '../../constants/payment-method.constants';
+import { CurrentDate } from '../../models/ui/current-date.model';
 
 
 
@@ -33,7 +36,16 @@ export class TransactionTable {
     @Input()
     public loading = false;
 
+    @Input()
+    public tableDate!: CurrentDate;
+
+    @Output()
+    public transactionsUpdated: EventEmitter<any> = new EventEmitter();
+
     public numberToCurrency = numberToCurrency;
+
+    public transactionTypeToString = transactionTypeToString;
+    public paymentMethodToString = paymentMethodToString;
 
     constructor(private matDialog: MatDialog) { }
 
@@ -66,9 +78,18 @@ export class TransactionTable {
                 component: RecurringDoneDialog,
                 componentData: {
                     rt: rt,
+                    currentDate : this.tableDate
                 },
                 componentTitle: "Geplante Transaktion abschließen"
             }
-        })
+        });
+
+        dialogRef.afterClosed()
+            .subscribe(data => {
+                if(!data || data.action !== BaseDialog.ACTION_SAVE) {
+                    return;
+                }
+                this.transactionsUpdated?.emit();
+            })
     }
 }

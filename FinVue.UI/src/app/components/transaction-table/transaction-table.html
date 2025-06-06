@@ -16,7 +16,7 @@
                 <div *ngFor="let rt of getUnpaidRecurringTransactions()" class="transaction">
                     <div>
                         <h3>{{rt.name}}</h3>
-                        <p class="low-opac getTransactionTypeColorClass(rt.Type)">{{ rt.type }}</p>
+                        <p class="low-opac getTransactionTypeColorClass(rt.Type)">{{ transactionTypeToString(rt.type) }}</p>
                     </div>
                     <div>
                         <h3>{{ numberToCurrency(rt.valueInCent / 100) }}</h3>
@@ -31,7 +31,7 @@
                 <div *ngFor="let rt of getPayedRecurringTransactions()" class="transaction">
                     <div>
                         <h3 class="low-opac">{{ rt.name }}</h3>
-                        <p class="low-opac">{{ rt.type }}</p>
+                        <p class="low-opac">{{ transactionTypeToString(rt.type) }}</p>
                     </div>
                     <div>
                         <h3 class="low-opac">{{ numberToCurrency(rt.valueInCent / 100) }}</h3>
@@ -57,7 +57,7 @@
                     </div>
                     <div>
                         <h3>{{ numberToCurrency(t.valueInCent / 100) }}</h3>
-                        <p class="low-opac">{{ t.paymentMethod }}</p>
+                        <p class="low-opac">{{ paymentMethodToString(t.paymentMethod) }}</p>
                         <p>{{ t.payingUser.username }}</p>
                     </div>
                 </div>
