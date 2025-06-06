@@ -43,7 +43,7 @@ export class MonthPage {
     })
   }
   
-  private fetchData() {
+  public fetchData() {
     this.transactionService.getRecurringTransactionsOfMonth(this.currentDateService.currentDate().year, this.currentDateService.currentDate().month!)
       .subscribe((e : RecurringTransaction[]) => {
         this.recurringTransactions.next(e);

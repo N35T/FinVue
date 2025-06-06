@@ -18,13 +18,13 @@
         </div>
         <div>
             <div *ngIf="isTableActive('planned', true)" id="planned-table" class="table">
-                <app-transaction-table [recurringTransactions]="(recurringTransactions | async) ?? []" [loading]="(recurringLoading | async) ?? true" [mode]="PLANNED_MODE"/>
+                <app-transaction-table (transactionsUpdated)="fetchData()" [tableDate]="currentDateService.currentDate()" [recurringTransactions]="(recurringTransactions | async) ?? []" [loading]="(recurringLoading | async) ?? true" [mode]="PLANNED_MODE"/>
             </div>
             <div *ngIf="isTableActive('income')" id="income-table" class="table">
-                <app-transaction-table [transactionsByCategory]="(incomeTransactions | async) ?? []" [loading]="(incomeLoading | async) ?? true" mode="income"/>
+                <app-transaction-table [tableDate]="currentDateService.currentDate()" [transactionsByCategory]="(incomeTransactions | async) ?? []" [loading]="(incomeLoading | async) ?? true" mode="income"/>
             </div>
             <div *ngIf="isTableActive('outcome')" id="outcome-table" class="table">
-                <app-transaction-table [transactionsByCategory]="(outcomeTransactions | async) ?? []" [loading]="(outcomeLoading | async) ?? true" mode="outcome"/>
+                <app-transaction-table [tableDate]="currentDateService.currentDate()" [transactionsByCategory]="(outcomeTransactions | async) ?? []" [loading]="(outcomeLoading | async) ?? true" mode="outcome"/>
             </div>
         </div>
     </div>
