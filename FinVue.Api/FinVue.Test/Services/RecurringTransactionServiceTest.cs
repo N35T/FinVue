@@ -27,7 +27,7 @@ public class RecurringTransactionServiceTest {
 
     [Fact]
     public async Task RecurringTransactionService_Should_AddRecurringTransaction() {
-        var rt = new RecurringTransaction("afrf", "test", 100, 1, TransactionType.Einkommen, null);
+        var rt = new RecurringTransaction("afrf", "test", 100, 1, TransactionType.Einkommen, (string?)null);
         var res = await _sut.AddRecurringTransactionAsync(rt);
         
         Assert.NotNull(res);

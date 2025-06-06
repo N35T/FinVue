@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using FinVue.Api.DataTransferObjects;
 using FinVue.Core.DataTransferObjects;
@@ -19,31 +20,28 @@ public static class Endpoints {
     }
 
     private static void MapTransactions(WebApplication app) {
-        app.MapGet("/transactions/ofMonth", async ([FromQuery]int year, [FromQuery]int month, TransactionService transactionService) => {
+        app.MapGet("/transactions/ofMonth",
+            async ([FromQuery] int year, [FromQuery] int month, TransactionService transactionService) => {
                 var incomeTransactions =
                     await transactionService.GetAllTransactionsFromMonthAndYearAndTypeGroupByCategoryAsync(month, year,
                         TransactionType.Einkommen);
                 var outcomeTransactions =
                     await transactionService.GetAllTransactionsFromMonthAndYearAndTypeGroupByCategoryAsync(month, year,
                         TransactionType.Ausgaben);
-                
+
                 return Results.Ok(new MonthlyTransactions() {
                     IncomeTransactions = incomeTransactions,
                     OutcomeTransactions = outcomeTransactions
                 });
-            })
-            .WithName("GetTransactionsOfMonth")
-            .WithGroupName("Transactions")
-            .WithOpenApi();
-        
-        app.MapGet("/transactions/recurring/ofMonth", async ([FromQuery]int year, [FromQuery]int month, RecurringTransactionService recurringTransactionService) => {
-                var recurringOfMonth = await recurringTransactionService.GetAllRecurringTransactionsFromMonthAsync(year, (Month)month);
-                
-                return Results.Ok(recurringOfMonth);
-            })
-            .WithName("GetRecurringTransactionsOfMonth")
-            .WithGroupName("Transactions")
-            .WithOpenApi();
+            });
+
+        app.MapGet("/transactions/recurring/ofMonth", async ([FromQuery] int year, [FromQuery] int month,
+            RecurringTransactionService recurringTransactionService) => {
+            var recurringOfMonth =
+                await recurringTransactionService.GetAllRecurringTransactionsFromMonthAsync(year, (Month)month);
+
+            return Results.Ok(recurringOfMonth);
+        });
 
         app.MapPost("/transactions",
             async (TransactionService transactionService, HttpContext ctx, [FromBody] TransactionDto transactionDto) => {
@@ -64,7 +62,8 @@ public static class Endpoints {
                     CreationDate = DateTime.Now,
                 };
                 var res = await transactionService.AddTransactionAsync(transaction);
-                return Results.Ok(res);
+                res.PayingUser = transactionDto.PayingUser;
+                return Results.Ok(TransactionDto.FromModel(res));
         });
 
         app.MapPost("/transactions/recurring",
@@ -78,7 +77,7 @@ public static class Endpoints {
                     rtDto.Category?.Id
                 );
                 var res = await rtService.AddRecurringTransactionAsync(rt);
-                return Results.Ok(res);
+                return Results.Ok(RecurringTransactionDto.FromModel(res));
             });
 
         app.MapPost("/transactions/fromRecurring",
@@ -93,7 +92,7 @@ public static class Endpoints {
                 }
                 
                 var res = await rtService.MarkRecurringTransactionAsDone(rtDto.RecurringTransactionId, rtDto.PayDate, user);
-                return Results.Ok(res);
+                return Results.Ok(TransactionDto.FromModel(res));
             });
     }
 
@@ -102,10 +101,12 @@ public static class Endpoints {
             var res = await categoryService.AddCategoryAsync(new Category(Guid.NewGuid().ToString(), category.CategoryName,
                 new Color(category.CategoryColor)));
 
-            return Results.Ok(res);
+            return Results.Ok(CategoryDto.FromModel(res));
         });
         app.MapGet("/categories", async (CategoryService categoryService) => {
-            var res = await categoryService.GetAllCategoriesAsync();
+            var res = (await categoryService.GetAllCategoriesAsync())
+                .Select(CategoryDto.FromModel)
+                .ToList();
             return Results.Ok(res);
         });
     }
@@ -115,38 +116,52 @@ public static class Endpoints {
             var users = await userService.GetAllUsersAsync();
             return Results.Ok(users);
         });
+        app.MapPost("/users", async (UserService userService, HttpContext ctx) => {
+            var id = ctx.GetUserId();
+            var name = ctx.GetUserName();
+            if (id is null || name is null) {
+                return Results.Unauthorized();
+            }
+
+            var user = await userService.GetUserFromIdAsync(id);
+            if (user is not null) {
+                return Results.Ok(user);
+            }
+
+            user = new User(id, name);
+            var res = await userService.AddUserAsync(user);
+            return Results.Ok(res);
+        });
     }
     
     private static void MapStatistics(WebApplication app) {
-        app.MapGet("/statistics/byYear", async ([FromQuery]int year, TransactionService transactionService) => {
-                var incomeByMonth = 
-                    await transactionService.GetTotalSumFromYearAndAllRelevantMonthsAsync(TransactionType.Einkommen, year);
-                var outcomeByMonth =
-                    await transactionService.GetTotalSumFromYearAndAllRelevantMonthsAsync(TransactionType.Ausgaben, year);
-                var outcomeByCategory =
-                    await transactionService.GetTotalSumsFromYearGroupedByCategoryAsync(year, TransactionType.Ausgaben);
+        app.MapGet("/statistics/byYear", async ([FromQuery] int year, TransactionService transactionService) => {
+            var incomeByMonth =
+                await transactionService.GetTotalSumFromYearAndAllRelevantMonthsAsync(TransactionType.Einkommen, year);
+            var outcomeByMonth =
+                await transactionService.GetTotalSumFromYearAndAllRelevantMonthsAsync(TransactionType.Ausgaben, year);
+            var outcomeByCategory =
+                await transactionService.GetTotalSumsFromYearGroupedByCategoryAsync(year, TransactionType.Ausgaben);
 
-                var maxLength = Math.Max(Math.Max(incomeByMonth.Count, outcomeByMonth.Count), 1);
-                while (incomeByMonth.Count < maxLength) {
-                    incomeByMonth.Add(0);
-                }
+            var maxLength = Math.Max(Math.Max(incomeByMonth.Count, outcomeByMonth.Count), 1);
+            while (incomeByMonth.Count < maxLength) {
+                incomeByMonth.Add(0);
+            }
 
-                while (outcomeByMonth.Count < maxLength) {
-                    outcomeByMonth.Add(0);
-                }
+            while (outcomeByMonth.Count < maxLength) {
+                outcomeByMonth.Add(0);
+            }
 
-                return Results.Ok(new YearlyTransactionStatistics {
-                    IncomePerMonth = incomeByMonth.ToArray(),
-                    OutcomePerMonth = outcomeByMonth.ToArray(),
-                    OutcomeByCategory = outcomeByCategory.ToArray()
-                });
-            })
-        .WithName("GetYearlyStatistics")
-        .WithGroupName("Statistics")
-        .WithOpenApi();
-        
-        app.MapGet("/statistics/byMonth", async ([FromQuery]int year, [FromQuery]int month, TransactionService transactionService) => {
-                var totalIncome = 
+            return Results.Ok(new YearlyTransactionStatistics {
+                IncomePerMonth = incomeByMonth.ToArray(),
+                OutcomePerMonth = outcomeByMonth.ToArray(),
+                OutcomeByCategory = outcomeByCategory.ToArray()
+            });
+        });
+
+        app.MapGet("/statistics/byMonth",
+            async ([FromQuery] int year, [FromQuery] int month, TransactionService transactionService) => {
+                var totalIncome =
                     await transactionService.GetTotalSumFromYearAndMonthAsync(TransactionType.Einkommen, year, month);
                 var totalOutcome =
                     await transactionService.GetTotalSumFromYearAndMonthAsync(TransactionType.Ausgaben, year, month);
@@ -155,13 +170,13 @@ public static class Endpoints {
                     TotalIncome = totalIncome,
                     TotalOutcome = totalOutcome,
                 });
-            })
-            .WithName("GetMonthlyStatistics")
-            .WithGroupName("Statistics")
-            .WithOpenApi();
+            });
     }
 
     private static string? GetUserId(this HttpContext ctx) {
         return ctx.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    }
+    private static string? GetUserName(this HttpContext ctx) {
+        return ctx.User?.FindFirst(ClaimTypes.Name)?.Value;
     }
 }

@@ -15,4 +15,20 @@ public class TransactionDto {
     public User? CreationUser { get; set; }
     public CategoryDto? Category { get; set; }
     public string? RecurringTransactionId { get; set; }
+
+    public static TransactionDto FromModel(Transaction transaction) {
+        return new TransactionDto() {
+            Id = transaction.Id,
+            Name = transaction.Name,
+            ValueInCent = transaction.ValueInCent,
+            CreationDate = transaction.CreationDate,
+            CreationUser = transaction.CreationUser,
+            PaymentMethod = transaction.PaymentMethod,
+            PayingUser = transaction.PayingUser,
+            Category = transaction.Category != null ? CategoryDto.FromModel(transaction.Category) : null,
+            RecurringTransactionId = transaction.RecurringTransactionId,
+            PayDate = transaction.PayDate,
+            Type = transaction.Type
+        };
+    }
 }

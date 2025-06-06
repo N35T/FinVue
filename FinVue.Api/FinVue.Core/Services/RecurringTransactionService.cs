@@ -29,16 +29,19 @@ public class RecurringTransactionService {
     }
     // GetByID,
     public async Task<RecurringTransaction?> GetRecurringTransactionByIdAsync(string id) {
-        return await _dbContext.RecurringTransactions.FindAsync(id);
+        return await _dbContext.RecurringTransactions
+            .Include(e => e.Category)
+            .Where(e => e.Id == id)
+            .FirstOrDefaultAsync();
     }
     // GetAll
     public Task<List<RecurringTransaction>> GetAllRecurringTransactionsAsync() {
         return _dbContext.RecurringTransactions.ToListAsync();
     }
     // Schauen ob es welche in diesem Monat gibt -> Liste an RT_DTO mit unbezahl und bezahlt 
-    public Task<List<RecurringTransactionDto>> GetAllRecurringTransactionsFromMonthAsync(int year, Month month)
+    public async Task<List<RecurringTransactionDto>> GetAllRecurringTransactionsFromMonthAsync(int year, Month month)
     {
-        var unpayed = _dbContext.RecurringTransactions
+        var unpayed = await _dbContext.RecurringTransactions
             .Include(r => r.Transactions)
             .Select(e => new
             {
@@ -53,39 +56,23 @@ public class RecurringTransactionService {
                             (((int)month) - e.newestTransaction.PayDate.Month) %
                             e.recurringTransaction.MonthFrequency == 0
                         )
-            ).Select(e => new RecurringTransactionDto() {
-                Category = e.recurringTransaction.Category,
-                CategoryId = e.recurringTransaction.CategoryId,
-                Id = e.recurringTransaction.Id,
-                Name = e.recurringTransaction.Name,
-                MonthFrequency = e.recurringTransaction.MonthFrequency,
-                Type = e.recurringTransaction.Type,
-                ValueInCent = e.recurringTransaction.ValueInCent,
-                PayedThisMonth = false
-            });
+            ).Select(e => e.recurringTransaction)
+            .ToListAsync();
 
-        var payed = _dbContext.Transactions
+        var payed = await _dbContext.Transactions
             .Join(
                 _dbContext.RecurringTransactions,
                 t => t.RecurringTransactionId,
                 rt => rt.Id,
-                (t, rt) => new {RecurringTransaction = rt, Transaction = t }
+                (t, rt) => new { RecurringTransaction = rt, Transaction = t }
             )
             .Where(t => t.Transaction.PayDate.Month == (int)month && t.Transaction.PayDate.Year == year)
-            .Select(t => new RecurringTransactionDto() {
-                Category = t.RecurringTransaction.Category,
-                CategoryId = t.RecurringTransaction.CategoryId,
-                Id = t.RecurringTransaction.Id,
-                Name = t.RecurringTransaction.Name,
-                MonthFrequency = t.RecurringTransaction.MonthFrequency,
-                Type = t.RecurringTransaction.Type,
-                ValueInCent = t.RecurringTransaction.ValueInCent,
-                PayedThisMonth = true
-            });
-
-        return unpayed
-            .Concat(payed)
+            .Select(t => t.RecurringTransaction)
             .ToListAsync();
+
+        return unpayed.Select(RecurringTransactionDto.FromModel)
+            .Concat(payed.Select(e => RecurringTransactionDto.FromModel(e, true)))
+            .ToList();
     }
 
     // Mark as done and Create Transaktion and save it
