@@ -4,6 +4,7 @@ import { TransactionType, TransactionTypeAdapter } from "../../constants/transac
 import { User, UserAdapter } from "./user.model";
 import { Adapter } from "../adapter.model";
 import { Category, CategoryAdapter } from "./category.model";
+import { DateOnly, DateOnlyAdapter } from "./date.model";
 
 export class Transaction {
 
@@ -12,7 +13,7 @@ export class Transaction {
         public name : string,
         public valueInCent : number,
         public creationDate : Date,
-        public payDate : Date,
+        public payDate : DateOnly,
         public type : TransactionType,
         public paymentMethod : PaymentMethod,
         public payingUser : User,
@@ -31,7 +32,8 @@ export class TransactionAdapter implements Adapter<Transaction> {
         private transactionTypeAdapter : TransactionTypeAdapter,
         private paymentMethodAdapter : PaymentMethodAdapter,
         private userAdapter : UserAdapter,
-        private categoryAdapter : CategoryAdapter
+        private categoryAdapter : CategoryAdapter,
+        private dateOnlyAdapter : DateOnlyAdapter
     ) {}
 
     adapt (item: any): Transaction {
@@ -42,7 +44,7 @@ export class TransactionAdapter implements Adapter<Transaction> {
             item.name,
             item.valueInCent,
             item.creationDate,
-            item.payDate,
+            this.dateOnlyAdapter.adapt(item.payDate),
             this.transactionTypeAdapter.adapt(item.type),
             this.paymentMethodAdapter.adapt(item.paymentMethod),
             this.userAdapter.adapt(item.payingUser),

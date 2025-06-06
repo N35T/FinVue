@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { TransactionType, TransactionTypeAdapter } from "../../constants/transaction-type.constants";
 import { Adapter } from "../adapter.model";
+import { Category, CategoryAdapter } from "./category.model";
 
 export class RecurringTransaction {
 
@@ -11,6 +12,7 @@ export class RecurringTransaction {
         public monthFrequency : number,
         public type : TransactionType,
         public payedThisMonth : boolean,
+        public category? : Category
     ) {}
 }
 
@@ -21,6 +23,7 @@ export class RecurringTransactionAdapter implements Adapter<RecurringTransaction
 
     constructor(
         private transactionTypeAdapter : TransactionTypeAdapter,
+        private categoryAdapter : CategoryAdapter
     ) {}
 
     adapt (item: any): RecurringTransaction {
@@ -32,7 +35,8 @@ export class RecurringTransactionAdapter implements Adapter<RecurringTransaction
             item.valueInCent,
             item.monthFrequency,
             this.transactionTypeAdapter.adapt(item.type),
-            item.payedThisMonth
+            item.payedThisMonth,
+            item.category ? this.categoryAdapter.adapt(item.category) : undefined
         );
     }
 }
