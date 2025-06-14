@@ -5,7 +5,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration
     .AddJsonFile("appsettings.json")
-    .AddJsonFile("appsettings.Development.json")
     .AddEnvironmentVariables();
     
 builder.Services.AddDataServices(builder.Configuration, builder.Environment.IsDevelopment());
