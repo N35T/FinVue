@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CurrentDateService } from '../../services/current-date-service';
 import { CurrentDate } from '../../models/ui/current-date.model';
 import { ProfitCard } from '../../components/profit-card/profit-card';
-import { Chart, registerables } from 'chart.js';
+import { ArcElement, CategoryScale, Chart, Legend, LinearScale, LineController, LineElement, PieController, PointElement, Title, Tooltip } from 'chart.js';
 import { ProfitCardModel } from '../../models/ui/profit-card.model';
 import { BehaviorSubject } from 'rxjs';
 import { StatisticService } from '../../services/statistics.service';
@@ -37,7 +37,7 @@ export class YearPage implements OnInit {
 
 
   ngOnInit(): void {
-    Chart.register(...registerables);
+    Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, ArcElement, PieController, Tooltip, Legend ,Title);
     this.createCharts();
   }
 
