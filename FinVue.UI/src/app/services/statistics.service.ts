@@ -25,4 +25,8 @@ export class StatisticService {
             .pipe(map(e => this.monthStatsAdapter.adapt(e)));
     }
 
+    public getYearOfOldestTransaction() : Observable<number> {
+        return this.apiService.get<number>('/statistics/oldest');
+    }
+
 }
