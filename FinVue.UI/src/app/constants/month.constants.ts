@@ -1,0 +1,2 @@
+export const MONTHS_SHORT = ["Jan", "Feb", "Mär", "Mai", "Apr", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"];
+export const MONTHS = ["Januar", "Februar", "März", "Mai", "April", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];

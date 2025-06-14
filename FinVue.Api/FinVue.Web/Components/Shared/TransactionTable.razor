@@ -1,0 +1,108 @@
+﻿@using System.Collections.ObjectModel
+@using FinVue.Core.DataTransferObjects
+@using FinVue.Core.Services
+@using FinVue.Core.Entities
+@using FinVue.Core.Enums
+@using System.Globalization
+@using Microsoft.IdentityModel.Tokens
+
+<script>
+    function toggleTransactionList(group, id) {
+        if (group.classList.contains("active")) {
+            group.firstElementChild.innerHTML = ">";
+        } else {
+            group.firstElementChild.innerHTML = "v";
+        }
+        group.classList.toggle("active");
+        document.getElementById(id).classList.toggle("active");
+    }
+
+    function openDialog(id) {
+        document.getElementById(id).showModal();
+    }
+</script>
+
+<div class="group-table back2">
+    @if (IsPlanned) {
+        @if (RecurringTransactions is null) {
+            <h1>Keine geplanten Transaktionen verfügbar!</h1>
+        } else {
+            <h1 class="group planned">Ausstehend</h1>
+            <div class="transaction-list active">
+                @foreach (RecurringTransactionDto rt in RecurringTransactions.Where(r => r.PayedThisMonth is false)) {
+                    string type = "color-primary";
+                    @if (rt.Type == TransactionType.Ausgaben) type = "color-red";
+                    <div class="transaction">
+                        <div>
+                            <h3>@rt.Name</h3>
+                            <p class="low-opac @type">@rt.Type</p>
+                        </div>
+                        <div>
+                            <h3>@NumberToCurrency(rt.ValueInCent)</h3>
+                            <p class="low-opac">Alle @rt.MonthFrequency Monate</p>
+                            <button class="color-primary complete" onclick="openDialog('@rt.Id')">Bezahlt</button>
+                            <dialog class="back2 no-link-design" id="@rt.Id">
+                                <button class="align-right color-red close" onclick="document.getElementById('@rt.Id').close()">x</button>
+                                <AddTransaction Rt="@rt"></AddTransaction>
+                                <button class="align-right color-primary" onclick="document.getElementById('@rt.Id').close()">Bestätigen</button>
+                            </dialog>
+                        </div>
+                    </div>
+                }
+            </div>
+            <h1 class="group planned">Bezahlt</h1>
+            <div class="transaction-list active">
+                @foreach (RecurringTransactionDto rt in RecurringTransactions.Where(r => r.PayedThisMonth is true)) {
+                    <div class="transaction">
+                        <div>
+                            <h3 class="low-opac">@rt.Name</h3>
+                            <p class="low-opac">@rt.Type</p>
+                        </div>
+                        <div>
+                            <h3 class="low-opac">@NumberToCurrency(rt.ValueInCent)</h3>
+                            <p class="low-opac">Alle @rt.MonthFrequency Monate</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    } else if (TransactionsByCategory is null || TransactionsByCategory.IsNullOrEmpty()) {
+        <h1>Keine Transaktionen verfügbar!</h1>
+    } else {
+        @foreach (TransactionsByCategoryDto group in TransactionsByCategory) {
+            <h1 class="group" style="color: @group.CategoryColor" onclick="toggleTransactionList(this, '@(Type + "-" + group.CategoryName)')"><span>></span> @group.CategoryName <span class="low-opac">@NumberToCurrency(group.TotalSum)</span></h1>
+            <div class="transaction-list" id="@(Type + "-" + group.CategoryName)">
+                @foreach (Transaction t in group.Transactions) {
+                    <div class="transaction">
+                        <div>
+                            <h3>@t.Name</h3>
+                            <p class="low-opac">@t.PayDate.ToString()</p>
+                        </div>
+                        <div>
+                            <h3>@NumberToCurrency(t.ValueInCent)</h3>
+                            <p class="low-opac">@t.PaymentMethod</p>
+                            <p>@t.PayingUser.Username</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    }
+</div>
+
+@code {
+
+    [Parameter]
+    public List<TransactionsByCategoryDto>? TransactionsByCategory { get; set; }
+
+    [Parameter]
+    public List<RecurringTransactionDto>? RecurringTransactions { get; set; }
+
+    [Parameter] public string Type { get; set; } = string.Empty;
+
+    private bool IsPlanned => "planned".Equals(Type);
+
+    public string NumberToCurrency(int valueInCent) {
+        return (valueInCent/100.0).ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
+    }
+}

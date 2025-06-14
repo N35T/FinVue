@@ -1,0 +1,246 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+
+$custom-primary-colors: (
+  50:  #f0f5ec,
+  100: #dae7d1,
+  200: #c1d8b3,
+  300: #a8c994,
+  400: #94bd80,
+  500: #81a975, // main
+  600: #769c6d,
+  700: #678b61,
+  800: #587a55,
+  900: #3e5d3f,
+  A100: #d3f2c6,
+  A200: #a5e88e,
+  A400: #74db4e,
+  A700: #5cd633,
+  contrast: (
+    50: black,
+    100: black,
+    200: black,
+    300: black,
+    400: black,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: black,
+    A200: black,
+    A400: white,
+    A700: white,
+  )
+);
+
+$custom-accent-colors: (
+  50:  #e0f7f4,
+  100: #b3ece4,
+  200: #80e0d3,
+  300: #4dd4c2,
+  400: #26cabb,
+  500: #00c0b5, // main
+  600: #00b2a8,
+  700: #00a096,
+  800: #009084,
+  900: #007366,
+  A100: #a3fff6,
+  A200: #70fff1,
+  A400: #3dffec,
+  A700: #24fff2,
+  contrast: (
+    50: black,
+    100: black,
+    200: black,
+    300: black,
+    400: black,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: black,
+    A200: black,
+    A400: black,
+    A700: black,
+  )
+);
+
+$custom-warn-colors: (
+  50:  #fbeaea,
+  100: #f4c8c8,
+  200: #eca3a3,
+  300: #e37d7d,
+  400: #dc6060,
+  500: #ac4d4d, // main
+  600: #a04545,
+  700: #903b3b,
+  800: #803232,
+  900: #662121,
+  A100: #ffd7d7,
+  A200: #ffa3a3,
+  A400: #ff6f6f,
+  A700: #ff5555,
+  contrast: (
+    50: black,
+    100: black,
+    200: black,
+    300: black,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: black,
+    A200: black,
+    A400: white,
+    A700: white,
+  )
+);
+
+$custom-primary: mat.m2-define-palette($custom-primary-colors, 500, 300, 700);
+$custom-accent: mat.m2-define-palette($custom-accent-colors, 500, 300, 700);
+$custom-warn:   mat.m2-define-palette($custom-warn-colors, 500, 300, 700);
+
+$custom-theme: mat.m2-define-dark-theme((
+    color: (
+        primary: $custom-primary,
+        accent: $custom-accent,
+        warn: $custom-warn,
+    ),
+    density: 0,
+));
+
+@include mat.all-component-themes($custom-theme);
+
+* {
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+@font-face {
+    font-family: "JetBrainsMono Nerd Font";
+    src: local(JetBrains Mono Bold Nerd Font Complete), url("/fonts/JetbrainsBold.woff2") format("woff2"), url("/fonts/JetbrainsBold.ttf") format("truetype");
+    font-stretch: normal;
+    font-style: normal;
+    font-display: swap;
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: "JetBrainsMono Nerd Font";
+    src: local(JetBrains Mono Regular Nerd Font Complete), url("/fonts/JetbrainsRegular.woff2") format("woff2"), url("/fonts/JetbrainsRegular.ttf") format("truetype");
+    font-stretch: normal;
+    font-style: normal;
+    font-display: swap;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: local(Roboto-Regular), url("/fonts/Roboto-Regular.ttf") format("truetype");
+}
+
+
+:root, ::backdrop {
+    --background: #20201d;
+    --back1: #10101055;
+    --back2: #101010;
+    --primary: #81a975;
+    --text: #ede3e3;
+    --red: #ac4d4d;
+    --font-size--small: 14px;
+    --font-size--default: 16px;
+    --font-size--medium: 20px;
+    --font-size--large: 24px;
+    --font-size--large-heading: 32px;
+    --font-size--large-heading-plus: 40px;
+}
+
+.span-cols {
+    grid-column: 1 / -1;
+}
+
+.no-grid-entry {
+    position: absolute;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+
+    margin: 0;
+    
+    background: var(--background);
+    color: var(--text);
+    font-family: 'Roboto';
+}
+
+.align-left {
+    justify-self: left;
+    text-align: left;
+}
+
+.align-right {
+    float: right;
+}
+
+h1,h2,h3 {
+    font-family: 'JetBrainsMono Nerd Font';
+}
+
+.back2 {
+    background: var(--back2);
+}
+
+.color-primary {
+    color: var(--primary);
+}
+
+.bg-primary {
+    background: var(--primary);
+}
+
+.color-red {
+    color: var(--red);
+}
+
+.low-opac {
+    opacity: .6;
+}
+
+.no-link-design, .no-link-design:visited {
+    color: var(--text);
+    text-decoration: none;
+}
+
+dialog {
+    color: var(--text);
+    border: none;
+}
+
+body::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    background-color: #1f1f1f;
+}
+
+body::-webkit-scrollbar {
+    width: 8px;
+    background-color: #1f1f1f;
+}
+
+body::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #474747;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

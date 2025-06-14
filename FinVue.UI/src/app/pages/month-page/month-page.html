@@ -1,0 +1,32 @@
+<section id="view-content">
+    <h1 class="span-cols align-left">{{ getTitle() }}</h1>
+    <div>
+        <app-profit-card title="Einkommen (Gesamt)" [model]="(incomeProfitCard | async) || getDefaultProfitCardModel()"/>
+    </div>
+    <div>
+        <app-profit-card title="Ausgaben (Gesamt)" [reverseColors]="true" [model]="(outcomeProfitCard | async) || getDefaultProfitCardModel()"/>
+    </div>
+    <div>
+        <app-profit-card title="Profit (Gesamt)" [model]="(profitProfitCard | async) || getDefaultProfitCardModel()"/>
+    </div>
+
+    <div class ="span-cols align-left" style="width: 100%">
+        <div class="buttons">
+            <button id="planned" (click)="switchTableTo('planned')" [class]="isTableActive('planned', true) ? 'active' : ''">Geplante Transaktionen</button>
+            <button id="income" (click)="switchTableTo('income')" [class]="isTableActive('income') ? 'active' : ''">Einkommen</button>
+            <button id="outcome" (click)="switchTableTo('outcome')" [class]="isTableActive('outcome') ? 'active' : ''">Ausgaben</button>
+        </div>
+        <div>
+            <div *ngIf="isTableActive('planned', true)" id="planned-table" class="table">
+                <app-transaction-table (transactionsUpdated)="fetchData()" [tableDate]="currentDateService.currentDate()" [recurringTransactions]="(recurringTransactions | async) ?? []" [loading]="(recurringLoading | async) ?? true" [mode]="PLANNED_MODE"/>
+            </div>
+            <div *ngIf="isTableActive('income')" id="income-table" class="table">
+                <app-transaction-table [tableDate]="currentDateService.currentDate()" [transactionsByCategory]="(incomeTransactions | async) ?? []" [loading]="(incomeLoading | async) ?? true" mode="income"/>
+            </div>
+            <div *ngIf="isTableActive('outcome')" id="outcome-table" class="table">
+                <app-transaction-table [tableDate]="currentDateService.currentDate()" [transactionsByCategory]="(outcomeTransactions | async) ?? []" [loading]="(outcomeLoading | async) ?? true" mode="outcome"/>
+            </div>
+        </div>
+    </div>
+
+</section>

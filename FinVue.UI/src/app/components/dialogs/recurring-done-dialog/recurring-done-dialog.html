@@ -1,0 +1,21 @@
+<form [formGroup]="markTransactionForm" class="form">
+
+    <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input matInput id="name" type="text" formControlName="name" />
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Betrag</mat-label>
+        <input matInput currencyMask [options]="{prefix: '',suffix: ' €', thousands: '.', decimal: ','}" id="value" type="text" inputmode="decimal" formControlName="value" />
+    </mat-form-field>
+
+    <mat-form-field class="span-cols">
+        <mat-label>Gezahlt am</mat-label>
+        <input matInput id="payDate" [matDatepicker]="picker" [min]="minDate" [max]="maxDate" formControlName="payDate">
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        @if (getPayDateForm().hasError('required')) {
+            <mat-error>Tag kann nicht leer sein!</mat-error>
+        }
+    </mat-form-field>
+</form>

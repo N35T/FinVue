@@ -1,0 +1,125 @@
+﻿@using FinVue.Web.Components.Layout
+@using FinVue.Web.Components.Shared
+@using Newtonsoft.Json
+@using FinVue.Core.Services
+@using FinVue.Core.Enums
+@using FinVue.Core.DataTransferObjects
+@using System.Globalization
+@using FinVue.Web.Auth
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize(Roles = Roles.AccessRole)]
+
+@page "/"
+@page "/year"
+@page "/year/{Year:int}"
+
+@inject TransactionService TransactionService
+
+<PageTitle>@Year - Übersicht</PageTitle>
+
+<SideNav Year="@Year" />
+
+<section id="view-content">
+    <h1 class="span-cols align-left category-select">Alle Kategorien</h1>
+    <div id="income-card">
+        <ProfitCard Title="Einkommen (Gesamt)" Value="@TotalIncome" AverageValue="@AverageIncome"/>
+    </div>
+    <div id="outcome-card">
+        <ProfitCard Title="Ausgaben (Gesamt)" ReverseColors="true" Value="@TotalOutcome" AverageValue="@AverageOutcome"/>
+    </div>
+    <div id="profit-card">
+    <ProfitCard Title="Profit (Gesamt)" Value="@TotalProfit" AverageValue="@AverageProfit"/>
+    </div>
+    
+    
+    <canvas id="profit-chart" class="span-cols back2" style="width:100%; height: 20rem"></canvas>
+    
+    <canvas id="category-sums-chart" class="span-cols back2" style="width:100%; height: 20rem"></canvas>
+    
+</section>
+<script>
+let plotData = {
+    income: JSON.parse("@JsonConvert.SerializeObject(IncomeSumsPerMonth)").map(e => e / 100),
+    outcome: JSON.parse("@JsonConvert.SerializeObject(OutcomeSumsPerMonth)").map(e => e / 100),
+    profit: JSON.parse("@JsonConvert.SerializeObject(ProfitSumsPerMonth)").map(e => e / 100),
+    cumProfit: JSON.parse("@JsonConvert.SerializeObject(CumulatedProfitPerMonth)").map(e => e / 100),
+    sumByCategory: JSON.parse("@JsonConvert.SerializeObject(OutcomeByCategory.Select(e => new {
+        CategoryName = e.CategoryName,
+        CategoryColor = e.CategoryColor,
+        TotalSum = e.TotalSum
+    }))"),
+};
+</script>
+<PageScript Src="./Components/Pages/YearPage.razor.js"></PageScript>
+
+@code {
+
+    [Parameter]
+    public int Year { get; set; }
+    
+    public List<int> IncomeSumsPerMonth { get; set; }
+    public List<int> OutcomeSumsPerMonth { get; set; }
+    public int[] ProfitSumsPerMonth { get; set; }
+    public int[] CumulatedProfitPerMonth { get; set; }
+    
+    public string TotalIncome { get; set; }
+    public string AverageIncome { get; set; }
+    
+    public string TotalOutcome { get; set; }
+    public string AverageOutcome { get; set; }
+    
+    public string TotalProfit { get; set; }
+    public string AverageProfit { get; set; }
+    
+    public List<SumByCategoryDto> OutcomeByCategory { get; set; }
+
+    protected override async Task OnInitializedAsync() {
+        await base.OnInitializedAsync();
+        Year = Year == 0 ? DateTime.Now.Year : Year;
+
+        await InitializeData();
+        InitializeProfitCards();
+        
+    }
+
+    private async Task InitializeData() {
+        IncomeSumsPerMonth = await TransactionService.GetTotalSumFromYearAndAllRelevantMonthsAsync(TransactionType.Einkommen, Year);
+        OutcomeSumsPerMonth = await TransactionService.GetTotalSumFromYearAndAllRelevantMonthsAsync(TransactionType.Ausgaben, Year);
+        var maxLength = Math.Max(Math.Max(IncomeSumsPerMonth.Count, OutcomeSumsPerMonth.Count), 1);
+        while (IncomeSumsPerMonth.Count < maxLength) {
+            IncomeSumsPerMonth.Add(0);
+        }
+
+        while (OutcomeSumsPerMonth.Count < maxLength) {
+            OutcomeSumsPerMonth.Add(0);
+        }
+
+        ProfitSumsPerMonth = new int[maxLength];        
+        CumulatedProfitPerMonth = new int[maxLength];
+        ProfitSumsPerMonth[0] = IncomeSumsPerMonth[0] - OutcomeSumsPerMonth[0];
+        CumulatedProfitPerMonth[0] = ProfitSumsPerMonth[0];
+        for (int i = 1; i < maxLength; ++i) {
+            ProfitSumsPerMonth[i] = IncomeSumsPerMonth[i] - OutcomeSumsPerMonth[i];
+            CumulatedProfitPerMonth[i] = CumulatedProfitPerMonth[i-1] + ProfitSumsPerMonth[i];
+        }
+
+        OutcomeByCategory = await TransactionService.GetTotalSumsFromYearGroupedByCategoryAsync(Year, TransactionType.Ausgaben);
+    }
+    
+    private void InitializeProfitCards() {
+        var income = IncomeSumsPerMonth.Sum() / 100.0;
+        var outcome = OutcomeSumsPerMonth.Sum() / 100.0;
+
+        TotalIncome = income.ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
+        TotalOutcome = outcome.ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
+        TotalProfit = (income - outcome).ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
+        
+        var avgIncome = IncomeSumsPerMonth.Average() / 100.0;
+        var avgOutcome = OutcomeSumsPerMonth.Average() / 100.0;
+
+        AverageIncome = avgIncome.ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
+        AverageOutcome = avgOutcome.ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
+        AverageProfit = (avgIncome - avgOutcome).ToString("C", CultureInfo.GetCultureInfoByIetfLanguageTag("de-DE"));
+    }
+}

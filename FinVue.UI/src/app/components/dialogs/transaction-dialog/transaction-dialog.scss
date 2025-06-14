@@ -1,0 +1,10 @@
+.form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1em;
+    row-gap: .5em;
+}
+
+.recurring-toggle {
+    margin-bottom: 1em;
+}

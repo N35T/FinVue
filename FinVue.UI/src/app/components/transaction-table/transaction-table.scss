@@ -1,0 +1,76 @@
+.group-table {
+    padding: 1em;
+}
+
+.transaction, .transaction > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.transaction > div > p {
+    padding: 0em 2em;
+}
+
+.transaction {
+    padding: 0em 2em;
+    justify-content: space-between;
+}
+
+    .transaction:hover {
+        background: var(--background);
+    }
+
+.group:hover + .transaction-list, .group:hover {
+    background: var(--background);
+}
+
+.group {
+    padding: 20px 0.5em;
+    margin: 0;
+    cursor: pointer;
+}
+
+    .group.planned {
+        cursor: default;
+    }
+
+button.complete {
+    border: none;
+    background: var(--background);
+    padding: 0.8em;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+::backdrop {
+    background: var(--background);
+    opacity: 0.90;
+}
+
+dialog button {
+    border: none;
+    background: var(--background);
+    padding: 0.8em;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+dialog button:hover {
+    color: var(--text);
+    background: var(--primary);
+}
+
+dialog button.close:hover {
+    color: var(--text);
+    background: var(--red);
+}
+
+.transaction:hover > div > .complete {
+    background: var(--back2);
+}
+
+.transaction:hover button.complete:hover {
+    background: var(--primary);
+    color: var(--text);
+}

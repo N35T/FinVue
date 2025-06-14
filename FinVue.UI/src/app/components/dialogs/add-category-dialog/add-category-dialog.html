@@ -1,0 +1,17 @@
+<form [formGroup]="addCategoryForm" class="form">
+
+    <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input matInput id="name" type="text" formControlName="name" />
+        @if (getNameForm()?.hasError('required')) {
+        <mat-error>Name kann nicht leer sein!</mat-error>
+        }
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Farbe</mat-label>
+        <input matInput id="color" type="color" formControlName="color" />
+        @if (getColorForm()?.hasError('required')) {
+            <mat-error>Farbe kann nicht leer sein!</mat-error>
+        }
+    </mat-form-field>
+</form>

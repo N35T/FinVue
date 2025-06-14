@@ -1,0 +1,12 @@
+<nav class="back2" id="side-nav">
+    <div class="block">
+        <a class="no-link-design" [routerLink]="buildLink()">
+            <span [class]="!currentMonth ? 'color-primary' : ''">Ganzes Jahr</span>
+        </a>
+    </div>
+    <div class="block" *ngFor="let month of monthNames">
+        <a class="no-link-design" [routerLink]="buildLink(month)">
+            <span [class]="getMonthClasses(month)">{{month}}</span>
+        </a>
+    </div>
+</nav>

@@ -18,7 +18,7 @@ jobs:
 
     - name: Run Unit Tests
       run: |
-        cd FinVue/FinVue.Test
+        cd FinVue.Api/FinVue.Test
         dotnet tool install -g dotnet-reportgenerator-globaltool
         dotnet test --logger "console;verbosity=detailed" --collect:"XPlat Code Coverage"
         reportgenerator "-reports:TestResults/*/coverage*" "-targetdir:coverage" "-reporttypes:TextSummary" "-classfilters:-AMOGUS.Core.Common*;-AMOGUS.Core.DataTransferObjects*;-AMOGUS.*.DependencyInjection;-AMOGUS.Core.Domain*;-AMOGUS.Infrastructure.Identity*;-AMOGUS.Infrastructure.Persistence*"
