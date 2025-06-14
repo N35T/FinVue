@@ -45,6 +45,12 @@ public class TransactionService {
             .ToListAsync();
     }
 
+    public Task<Transaction?> GetOldestTransactionAsync() {
+        return _dbContext.Transactions
+            .OrderBy(e => e.PayDate)
+            .FirstOrDefaultAsync();
+    }
+
     public virtual async Task<Transaction> AddTransactionAsync(Transaction transaction) {
         _dbContext.Transactions.Add(transaction);
         var changedRows = await _dbContext.SaveChangesAsync();
@@ -106,6 +112,10 @@ public class TransactionService {
             .OrderBy(e => e.Key)
             .Select(e => new { Month = e.Key, Sum = e.Sum(t => t.ValueInCent) })
             .ToListAsync();
+
+        if(sumByMonths.Count == 0) { 
+            return new List<int>();
+        }
 
         var lastMonth = sumByMonths.Max(x => x.Month);
         return Enumerable.Range(1, lastMonth)

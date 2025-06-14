@@ -133,6 +133,13 @@ public static class Endpoints {
     }
     
     private static void MapStatistics(WebApplication app) {
+        app.MapGet("/statistics/oldest", async (TransactionService transactionService) => {
+            var oldestT = await transactionService.GetOldestTransactionAsync();
+            if(oldestT is null) {
+                return DateTime.Now.Year;
+            }
+            return oldestT.PayDate.Year;
+        }).RequireAuthorization("finvue_user");
         app.MapGet("/statistics/byYear", async ([FromQuery] int year, TransactionService transactionService) => {
             var incomeByMonth =
                 await transactionService.GetTotalSumFromYearAndAllRelevantMonthsAsync(TransactionType.Einkommen, year);
