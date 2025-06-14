@@ -25,11 +25,11 @@ services:
     environment:
       - ConnectionStrings__DefaultConnection=Host=finvue-db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
       - DatabaseConfig__Version=16
-      - JwtConfig__KeyPath=/keys
+      - JwtConfig__KeyPath=/app/keys
       - JwtConfig__Issuer=${JWT_ISSUER}
       - JwtConfig__Audience=${JWT_AUDIENCE}
     volumes:
-      - ${JWT_KEY_PATH}:/keys
+      - ${JWT_KEY_PATH}:/app/keys
     networks:
       - finvue-network
     user: ${USER_ID}:${GROUP_ID}
