@@ -41,6 +41,6 @@ export class ApiService {
         if(endpoint.charAt(0) == '/')
         endpoint = endpoint.substring(1);
 
-        return new URL('/api/' + endpoint, this.baseUrl).href;
+        return this.baseUrl + '/' + endpoint
     }
 }

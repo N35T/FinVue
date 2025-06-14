@@ -13,11 +13,10 @@ services:
       - ${DATA_DIR}/postgres_data:/var/lib/postgresql/data
     networks:
       - finvue-network
-    user: ${USER_ID}:${GROUP_ID}
 
   backend:
     container_name: finvue-backend
-    image: finvue-backend:latest
+    image: ${REGISTRY_URL}/finvue-backend:latest
     env_file: .env
     expose:
       - "8080"
@@ -26,16 +25,18 @@ services:
     environment:
       - ConnectionStrings__DefaultConnection=Host=finvue-db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
       - DatabaseConfig__Version=16
-      - JwtConfig__KeyPath=${JWT_KEY_PATH}
+      - JwtConfig__KeyPath=/keys
       - JwtConfig__Issuer=${JWT_ISSUER}
       - JwtConfig__Audience=${JWT_AUDIENCE}
+    volumes:
+      - ${JWT_KEY_PATH}:/keys
     networks:
       - finvue-network
     user: ${USER_ID}:${GROUP_ID}
 
   frontend:
     container_name: finvue-frontend
-    image: finvue-frontend:latest
+    image: ${REGISTRY_URL}/finvue-frontend:latest
     env_file: .env
     ports:
       - "${FINVUE_WEB_UI_PORT}:80"
@@ -43,7 +44,6 @@ services:
       - backend
     networks:
       - finvue-network
-    user: ${USER_ID}:${GROUP_ID}
 
 networks:
   finvue-network:

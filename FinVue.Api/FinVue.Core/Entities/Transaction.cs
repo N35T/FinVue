@@ -16,8 +16,14 @@ public class Transaction {
             _valueInCent = value;
         }
     }
-    
-    public DateTime CreationDate { get; set; } = DateTime.Now;
+
+    private DateTime _dateCreated = DateTime.Now;
+
+    public DateTime CreationDate {
+        get => DateTime.SpecifyKind(_dateCreated, DateTimeKind.Utc);
+        set => _dateCreated = value;
+    }
+
     public DateOnly PayDate { get; set; }
     public TransactionType Type { get; set; }
     public PaymentMethod PaymentMethod { get; set; }
