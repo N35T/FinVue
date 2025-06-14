@@ -55,9 +55,13 @@ jobs:
       REGISTRY_URL: ${{ secrets.REGISTRY_URL }}
       REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
       REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
-      VERSION: $(basename "$GITHUB_REF")
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set VERSION
+        run: echo "VERSION=$(basename $GITHUB_REF)" >> $GITHUB_ENV
+
       - name: Publish
         run: |
           cd app
