@@ -27,7 +27,9 @@ echo "Building frontend image... "
 docker build -t $FRONTEND_IMAGE:latest -t $FRONTEND_IMAGE:$VERSION -f ../FinVue.UI/Dockerfile ../FinVue.UI
 
 echo "Pushing artefacts... "
-docker push $BACKEND_IMAGE
-docker push $FRONTEND_IMAGE
+docker push $BACKEND_IMAGE:latest
+docker push $BACKEND_IMAGE:$VERSION
+docker push $FRONTEND_IMAGE:latest
+docker push $FRONTEND_IMAGE:$VERSION
 
 echo "Build and push completed successfully for version $VERSION."
