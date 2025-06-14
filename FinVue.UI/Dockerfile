@@ -8,6 +8,7 @@ RUN npm ci
 COPY . .
 
 ENV API_BASE_URL=/api
+ENV IDENTITY_PROVIDER_URL=https://identity.n35t.local/auth/login?returnUrl=https://finvue.n35t.local
 
 RUN npm run config
 
