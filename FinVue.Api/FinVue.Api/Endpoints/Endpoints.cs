@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using FinVue.Api.DataTransferObjects;
 using FinVue.Core.DataTransferObjects;
@@ -6,7 +5,6 @@ using FinVue.Core.Entities;
 using FinVue.Core.Enums;
 using FinVue.Core.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FinVue.Api.Endpoints;
 
@@ -33,7 +31,7 @@ public static class Endpoints {
                     IncomeTransactions = incomeTransactions,
                     OutcomeTransactions = outcomeTransactions
                 });
-            });
+            }).RequireAuthorization("finvue_user");
 
         app.MapGet("/transactions/recurring/ofMonth", async ([FromQuery] int year, [FromQuery] int month,
             RecurringTransactionService recurringTransactionService) => {
@@ -41,7 +39,7 @@ public static class Endpoints {
                 await recurringTransactionService.GetAllRecurringTransactionsFromMonthAsync(year, (Month)month);
 
             return Results.Ok(recurringOfMonth);
-        });
+        }).RequireAuthorization("finvue_user");
 
         app.MapPost("/transactions",
             async (TransactionService transactionService, HttpContext ctx, [FromBody] TransactionDto transactionDto) => {
@@ -64,7 +62,7 @@ public static class Endpoints {
                 var res = await transactionService.AddTransactionAsync(transaction);
                 res.PayingUser = transactionDto.PayingUser;
                 return Results.Ok(TransactionDto.FromModel(res));
-        });
+        }).RequireAuthorization("finvue_user");
 
         app.MapPost("/transactions/recurring",
             async (RecurringTransactionService rtService, [FromBody] RecurringTransactionDto rtDto) => {
@@ -78,7 +76,7 @@ public static class Endpoints {
                 );
                 var res = await rtService.AddRecurringTransactionAsync(rt);
                 return Results.Ok(RecurringTransactionDto.FromModel(res));
-            });
+            }).RequireAuthorization("finvue_user");
 
         app.MapPost("/transactions/fromRecurring",
             async(RecurringTransactionService rtService, UserService userService, HttpContext ctx, [FromBody] TransactionFromRecurringDto rtDto) => {
@@ -93,7 +91,7 @@ public static class Endpoints {
                 
                 var res = await rtService.MarkRecurringTransactionAsDone(rtDto.RecurringTransactionId, rtDto.PayDate, user);
                 return Results.Ok(TransactionDto.FromModel(res));
-            });
+            }).RequireAuthorization("finvue_user");
     }
 
     private static void MapCategories(WebApplication app) {
@@ -102,20 +100,20 @@ public static class Endpoints {
                 new Color(category.CategoryColor)));
 
             return Results.Ok(CategoryDto.FromModel(res));
-        });
+        }).RequireAuthorization("finvue_user");
         app.MapGet("/categories", async (CategoryService categoryService) => {
             var res = (await categoryService.GetAllCategoriesAsync())
                 .Select(CategoryDto.FromModel)
                 .ToList();
             return Results.Ok(res);
-        });
+        }).RequireAuthorization("finvue_user");
     }
 
     private static void MapUsers(WebApplication app) {
         app.MapGet("/users", async (UserService userService) => {
             var users = await userService.GetAllUsersAsync();
             return Results.Ok(users);
-        });
+        }).RequireAuthorization("finvue_user");
         app.MapPost("/users", async (UserService userService, HttpContext ctx) => {
             var id = ctx.GetUserId();
             var name = ctx.GetUserName();
@@ -131,7 +129,7 @@ public static class Endpoints {
             user = new User(id, name);
             var res = await userService.AddUserAsync(user);
             return Results.Ok(res);
-        });
+        }).RequireAuthorization("finvue_user");
     }
     
     private static void MapStatistics(WebApplication app) {
@@ -157,7 +155,7 @@ public static class Endpoints {
                 OutcomePerMonth = outcomeByMonth.ToArray(),
                 OutcomeByCategory = outcomeByCategory.ToArray()
             });
-        });
+        }).RequireAuthorization("finvue_user");
 
         app.MapGet("/statistics/byMonth",
             async ([FromQuery] int year, [FromQuery] int month, TransactionService transactionService) => {
@@ -170,7 +168,7 @@ public static class Endpoints {
                     TotalIncome = totalIncome,
                     TotalOutcome = totalOutcome,
                 });
-            });
+            }).RequireAuthorization("finvue_user");
     }
 
     private static string? GetUserId(this HttpContext ctx) {

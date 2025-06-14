@@ -30,13 +30,14 @@ public static class DependencyInjection {
 
     private static void ConfigureAuth(this IServiceCollection services) {
         services.AddSingleton<JwtHandler>();
-        services.AddAuthorization();
         
         services.AddAuthentication(opt => {
             opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
         }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, null);
+        
+        services.AddAuthorization();
 
         // Add Jwt configuration after initialization
         services.AddSingleton<IConfigureOptions<JwtBearerOptions>, JwtOptionsConfiguration>();
