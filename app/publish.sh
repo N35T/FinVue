@@ -8,7 +8,7 @@ set -e
 # VERSION - this version
 
 if [[ -z "$REGISTRY_URL" || -z "$REGISTRY_USERNAME" || -z "$REGISTRY_PASSWORD" || -z "$VERSION" ]]; then
-  echo "ERROR: REGISTRY_URL, REGISTRY_USERNAME, REGISTRY_PASSWORD and COMMIT_SHA environment variables must be set."
+  echo "ERROR: REGISTRY_URL, REGISTRY_USERNAME, REGISTRY_PASSWORD and VERSION environment variables must be set."
   exit 1
 fi
 
@@ -18,7 +18,7 @@ BACKEND_IMAGE="$REGISTRY_URL/finvue-backend"
 FRONTEND_IMAGE="$REGISTRY_URL/finvue-frontend"
 
 echo "Logging into container registry $REGISTRY_URL..."
-docker login "$REGISTRY_URL" -u "$REGISTRY_USERNAME" -p "$REGISTRY_PASSWORD"
+echo $REGISTRY_PASSWORD | docker login -u "$REGISTRY_USERNAME" --password-stdin
 
 echo "Building backend image... "
 docker build -t $BACKEND_IMAGE:latest -t $BACKEND_IMAGE:$VERSION -f ../FinVue.Api/FinVue.Api/Dockerfile ../FinVue.Api
