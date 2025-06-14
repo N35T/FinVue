@@ -12,11 +12,17 @@ namespace FinVue.Data;
 
 public static class DependencyInjection {
 
-    public static IServiceCollection AddDataServices(this IServiceCollection services, IConfiguration configuration) {
+    public static IServiceCollection AddDataServices(this IServiceCollection services, IConfiguration configuration, bool isDevelopment) {
 
-        services.AddDbContext<ApplicationDbContext>(opt => {
-            opt.UseSqlite(configuration.GetConnectionString("DefaultConnection"));
-        });
+        if(isDevelopment) {
+            services.AddDbContext<ApplicationDbContext>(opt => {
+                opt.UseSqlite(configuration.GetConnectionString("DefaultConnection"));
+            });
+        } else {
+            services.AddDbContext<ApplicationDbContext>(opt => {
+                opt.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
+            });
+        }
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
         services.AddTransient<TransactionService>();
         services.AddTransient<RecurringTransactionService>();

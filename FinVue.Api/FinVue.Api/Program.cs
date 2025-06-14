@@ -8,7 +8,7 @@ builder.Configuration
     .AddJsonFile("appsettings.Development.json")
     .AddEnvironmentVariables();
     
-builder.Services.AddDataServices(builder.Configuration);
+builder.Services.AddDataServices(builder.Configuration, builder.Environment.IsDevelopment());
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
