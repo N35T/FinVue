@@ -1,4 +1,15 @@
 <nav class="back2" id="top-nav">
-    <button (click)="addTransaction()" class="color-primary back2 align-right add" matTooltip="Neue Transaktion">+ 💸</button>
-    <button (click)="addCategory()" class="color-primary back2 align-right add" matTooltip="Neue Kategorie">+ 📂</button>
+    <div class="yearsDropDown">
+        <mat-form-field>
+            <mat-select id="yearsDropDown" [formControl]="yearsDropDown" (valueChange)="navigateToYear($event)">
+                @for (year of years|async; track year) {
+                    <mat-option [value]="year">{{year}}</mat-option>
+                } 
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="buttons">
+        <button (click)="addTransaction()" class="color-primary back2 align-right add" matTooltip="Neue Transaktion">+ 💸</button>
+        <button (click)="addCategory()" class="color-primary back2 align-right add" matTooltip="Neue Kategorie">+ 📂</button>
+    </div> 
 </nav>
