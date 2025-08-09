@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents();
 
-builder.Services.AddDataServices(builder.Configuration);
+builder.Services.AddDataServices(builder.Configuration, builder.Environment.IsDevelopment());
 
 var app = builder.Build();
 
