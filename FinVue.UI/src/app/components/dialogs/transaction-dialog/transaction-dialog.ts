@@ -97,7 +97,7 @@ export class TransactionDialog implements ISaveData, OnInit {
         }
 
         const name = this.getNameForm().value;
-        const valueInCent = this.getValueForm().value!*100;
+        const valueInCent = Math.round(this.getValueForm().value!*100);
         const payDate = DateOnly.fromDate(this.getPayDateForm().value!);
         const type = stringToTransactionType(this.getTypeForm().value!);
         const paymentMethod = stringToPaymentMethod(this.getPaymentMethodForm().value!);
@@ -113,7 +113,7 @@ export class TransactionDialog implements ISaveData, OnInit {
     private createRecurringTransaction() : Observable<any> {
         const name = this.getNameForm().value;
         const monthFrequency = this.getMonthFrequencyForm().value;
-        const valueInCent = this.getValueForm().value!*100;
+        const valueInCent = Math.round(this.getValueForm().value!*100);
         const type = stringToTransactionType(this.getTypeForm().value!);
         const category = this.categories.getValue().filter(e => e.categoryName === this.getCategoryForm().value)?.at(0);
 
